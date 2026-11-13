@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531040;
-	b=sDqO3l+ZlFgH5CP4gooKax5Y9q9kDaYjrdd1ZdKP56VYoagVIhTQcRY03zFPNolSPKwY
-	 idRsHNvgplRkq3J9IY+oT2twBE1dyclA7FlMssbPW43pEiWOxFAmLd4FzWdRAK58lMSmh
-	 AD8C2idsP4CCd4D5nu+kLyAqlN4O70noS2GP16l+vUBLkNYFBItcstFTdy07iSmZyGsAt
-	 ceG/GvjaCoVh+RqNznOHidoFzmIyMqskryD2QrGfBCw4PIjgcGkW54tlaj59xakJrHaC1
-	 4txxq8aIamyOc6yyM55/XH+YRCr9O9DtQlqlg5ly8PSr045sI+UjwXyGaHyUElXOsyQ==
+	t=1794531063;
+	b=hHR8SNavhOxJLfw3n4Qb93EriZvkaYDfiHqzOB9heBlCoDrLjvXzXhM4j3fLBt0n7WDk
+	 z22qRNJPf+m3+nxAluVi0k71b6dIW4s7TBzrZeX6rzt1NyA9GzVqiFE+5ZdHwNF5HA391
+	 rPHTdA3WeRenfTwbXYbBaoFo5UifT2iz5l0ZBZU8shc6kCYbtK1rXyqM+wsHcFIRsTkDD
+	 z8+CIs3YnwPo1/T00mlrA8GSFRKMO6YiK8nSLIO/mTMqtju2nu30tPL/4Ww7FOlmH6AS3
+	 K5h4vuiJ2vv7lq0NMxayudylf/m2X7MPzYNMjREoFzN2lXmVG0zXxhpA5uTyLNTfp0Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531040;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794531063;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
-	bh=xcjCuXLuyrEQvtO3AjIqcYfMwPpbsImC7herEE8hUZM=;
-	b=KAsbCqrO4qs3/LYQsaYoziYY2gALIl7/o5WWb8E+lMYWykAlAfjawJrhio+pyyEfDYEb
-	 YRQqveyjB6WSGhan1oh/ItfsFiu/cTnZ6OA9DvS7VhWNpU15FQfJZMfSCpM2v7Hc44e6E
-	 i1S+9bWAAKkjhHXX2rcRUVBNQsSBpuJB7JIH2+Vmvdb5OmZ9u5uGDkGaW1ThN+D6qNadc
-	 HX8+XWoHXNckjFqzyefDooAdInMJbA7VSKOT4WduvhsMKMqUGnJNkl5MSxYcEk9pmRHES
-	 gJqQrsmjasEE5yrvJF/M4FUZ7Rx8UsgBmwc3DgPptkge/MBhmuyW7PS3PCtS7A09zPw==
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=03EXbnRkMo+YA7pX6ZIL45pVSzt6P3Ln3Yqjh2bhzWg=;
+	b=y3BD1NTX3jKmiZxULkXPHQ2nj4wFXmpdSsTuKzjvQK+LJB5mk3xoFrsW0pkVZPJEu+v6
+	 t0lOfHMd2JK9e21G3OYLCZ4d5BoU4Sxn/t/SXAnwMSDZc2d6w+fcpORrciQo5ZUotgEIa
+	 PGOvTwLsmOgabRDAFJLYP4nlwAat+edIg4bSHdkS4azBdJZYQTsxROQDhiScaN2uDZraq
+	 67THVo7H75f3tYeqxoZQd83myi45f6djJ/JVyglaIk7pLqBjQdLa3aGfeAk09ZGPUMZSQ
+	 g6WATeui3TTMY/6LR7XKYuR7o0na5nzu1yEor/BU9sMrrcUXIj6aWM6nPVyrSM/7wCw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Jg386Y9i;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BujtTeGe;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 6CE7160A6F45;
-	Fri, 13 Nov 2026 00:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 5BB02606A323;
+	Fri, 13 Nov 2026 00:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Jg386Y9i
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id ED27C1F000C4;
-	Fri, 13 Nov 2026 00:50:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BujtTeGe
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id DAF621F000C4;
+	Fri, 13 Nov 2026 00:51:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531040;
-	bh=xcjCuXLuyrEQvtO3AjIqcYfMwPpbsImC7herEE8hUZM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Jg386Y9iIkQSm9oQuqSIAJPyIf6N8l5seetpwoXHcve1VjrX6N3AF+4Vatjmgk2LE
-	 jkyoVKk0QtTlX3JyG38PRvNbnI3FlTv2/JBOLjEgitRjDRLYWlixaU5Y2uAiIkuuCI
-	 3cwaGMJbCiuIIz35up01FT/lzv64v+61oqolbWCj8DpoFLEqcqhsxfv9468w2NncAm
-	 uM8l6HscKFGm1AamsvF+ftblgVcFySjo0t6Vlz22e17Uw8h1HIbbefE6IA3ND7krB7
-	 hQljDGYGSUweiiUKGt2SqVMgQLKRRRWnic/c2rfda8nQvx9F6SJHluEhLCHf7IXO7t
-	 FzLx/JAtAtSpg==
+	s=k20260515; t=1794531063;
+	bh=03EXbnRkMo+YA7pX6ZIL45pVSzt6P3Ln3Yqjh2bhzWg=;
+	h=From:To:Cc:Subject:Date;
+	b=BujtTeGe6OkRVIz+iIfRWu0AKRxf8u3bzVL1Br3Pg8VI+4LpPTQFOWc2blGdcKnzt
+	 Ls13AmKajrTbm52gB7/SUYHWQXEUDagCMJCcw6z0kAy6ild1snpSPikEEZyi6dgNWh
+	 M/8VGE5effvYV9PCnh1Ts9OWZHRpyyf89fipxAUvhZ55HgWdUCM+NSf38580d/ba13
+	 nLTcD5wLBWqCXZyCrIMl+nXpubIJoNpddoIUXL/eI89oazkjnCzYFRO/+pDugvXOwv
+	 t13oAiWb8IrokUd4BGTLFxnbWum2323Ouig8dGglvZUMnMpu/ei7V5z8aBdz1Z7UKg
+	 RTj9OxmEj9V6Q==
 From: Joel Fernandes <jfern@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	"Paul E . McKenney" <paulmck@kernel.org>,
@@ -52,15 +52,11 @@ To: linux-kernel@vger.kernel.org,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>
-Cc: rcu@vger.kernel.org,
-	Kunwu Chan <kunwu.chan@gmail.com>,
-	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH for-v7.5 11/11] rcu: Improve duplicate callback diagnostics
-Date: Thu, 12 Nov 2026 19:50:13 -0500
-Message-ID: <20261113005017.2772440-12-jfern@kernel.org>
+Cc: rcu@vger.kernel.org
+Subject: [PATCH for-v7.5 0/5] RCU docs patches for v7.5
+Date: Thu, 12 Nov 2026 19:50:49 -0500
+Message-ID: <20261113005056.2793983-1-jfern@kernel.org>
 X-Mailer: git-send-email 2.54.0
-In-Reply-To: <20261113005017.2772440-1-jfern@kernel.org>
-References: <20261113005017.2772440-1-jfern@kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -72,57 +68,27 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Kunwu Chan <kunwu.chan@gmail.com>
+This series has the RCU docs patches for the v7.5 merge window.
 
-Use ratelimited diagnostics with dump_stack() for duplicate
-callback detection in rcu_do_enqueue().
+Joel Fernandes (1):
+  doc: Document atomic SRCU in Design/Requirements/Requirements.rst
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
-Reviewed-by: Joel Fernandes <jfern@kernel.org>
-Signed-off-by: Joel Fernandes <jfern@kernel.org>
----
- kernel/rcu/tree.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Paul E. McKenney (1):
+  doc: Document additional RCU task-stall dump information
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index aea3aef7397e..a8ede50dbeff 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -25,6 +25,7 @@
- #include <linux/rcupdate_wait.h>
- #include <linux/interrupt.h>
- #include <linux/llist.h>
-+#include <linux/ratelimit.h>
- #include <linux/sched.h>
- #include <linux/sched/debug.h>
- #include <linux/nmi.h>
-@@ -3154,9 +3155,12 @@ static void check_cb_ovld(struct rcu_data *rdp)
-  * already disabled, and a drain of a remote CPU re-issues onto the draining
-  * CPU.
-  */
-+static DEFINE_RATELIMIT_STATE(rcu_dup_rs,
-+			      DEFAULT_RATELIMIT_INTERVAL,
-+			      DEFAULT_RATELIMIT_BURST);
-+
- static void rcu_do_enqueue(struct rcu_head *head, rcu_callback_t func, bool lazy_in)
- {
--	static atomic_t doublefrees;
- 	unsigned long flags;
- 	bool lazy;
- 	struct rcu_data *rdp;
-@@ -3167,9 +3171,10 @@ static void rcu_do_enqueue(struct rcu_head *head, rcu_callback_t func, bool lazy
- 		 * Use rcu:rcu_callback trace event to find the previous
- 		 * time callback was passed to call_rcu().
- 		 */
--		if (atomic_inc_return(&doublefrees) < 4) {
-+		if (__ratelimit(&rcu_dup_rs)) {
- 			pr_err("%s(): Double-freed CB %p->%pS()!!!  ", __func__, head, head->func);
- 			mem_dump_obj(head);
-+			dump_stack();
- 		}
- 		WRITE_ONCE(head->func, rcu_leak_callback);
- 		return;
+Yonghao Zhang (1):
+  doc: Fix stale RCU_GP_WAIT_FQS value in stallwarn.rst
+
+Zqiang (2):
+  doc: Update recent SRCU API additions to whatisRCU.rst
+  tools/rcu: Add new APIs to rcu-updaters.sh
+
+ .../RCU/Design/Requirements/Requirements.rst  | 28 +++++--
+ Documentation/RCU/stallwarn.rst               | 73 ++++++++++++++++++-
+ Documentation/RCU/whatisRCU.rst               |  7 +-
+ tools/rcu/rcu-updaters.sh                     |  3 +
+ 4 files changed, 101 insertions(+), 10 deletions(-)
+
 -- 
 2.54.0
 
