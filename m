@@ -1,104 +1,76 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.198.65
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794604944;
-	b=CuL+wHKRJ+RWZmHdBA2ijffAhkdlhxLFh8dp82eS9HH0A6jA7P0kaGK5RL1B7cpKFx7p
-	 2RLQKKOa8Dfif37vjQ0/GMpXsn3SjTepWdh1G+OyNe0zHezLtX2lFdLWDJ8whoFLdS8FT
-	 +qtxqbZW33L/xfcYYV7HCGWBKdmIWxH5lgGWJucEStrcUTXAwgTvh1bggpcMx1M5nr+Sv
-	 9lR907byzM8cOEgGYDQkRADp1V6ZA6B0uPc345PRdBLLPEVDf+RzpwWJRz64UkXrKFmV8
-	 VTGK0STUMHaomGD6dtVWSM9SC/Z8qiX+9735whBfuJtX/lwhg/xn9DmMxuPbJHdFXAw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794604944;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Message-ID:Date:
-	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-ClientProxiedBy:MIME-Version:
-	 X-MS-PublicTrafficType:X-MS-TrafficTypeDiagnostic:
-	 X-MS-Office365-Filtering-Correlation-Id:X-MS-Exchange-SenderADCheck:
-	 X-MS-Exchange-AntiSpam-Relay:X-Microsoft-Antispam:
-	 X-Microsoft-Antispam-Message-Info:X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=iUUWfOIisgbrCVW4YUkL53arxf4v09B5XfJcE7IY+wo=;
-	b=V+KIhs8YFsOKvBOkeSVntUBGhq8SRF6HGaw8qj4Oq5lwZaCOjEOXZaPXiVyMzRGz1j63
-	 nofF+ZGlvwyaQEPaEgb5s0ML2mDKaLBYTrQaQjpvZWxrJQ63J7QKQTB37JWbfXbAMi+ow
-	 ldv6ZWtr1pqLPkbyOo+V2z4+lLnP03rNozDCp1ohK6MnH4JkOli0FJtcVO9GpJS6AqSzM
-	 2oJ7/ZilF4tl85Cy75q/Ggis1e87qhthHdwSlW72tPwrTkomPcQv0tlUP/0nlVX2gc8uU
-	 wbVIHZAnGV0WYS25CrrNAfwWdod3m+PH7HL6RCFpJIxQSh5LsIYqtTDUGWyTLUqMErg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nvidia.com;
-	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=hPrIO+RI;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.198.65
-Received: from CY7PR03CU001.outbound.protection.outlook.com (mail-westcentralusazon11010065.outbound.protection.outlook.com [40.93.198.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=203.205.221.240
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794623065;
+	b=UAKgF22rBcPsREsFaQE/yyfBtasAevMdmczDFQk2dXDekHHdMGHToRsiK/vnGXZWjIxh
+	 Dt3X7cEX/4HApktEMoCOURNKhI4g9IfvdoiWCB/mTOVfwhFr1Tr/qe92o8FUMP7Nco1+X
+	 bqipU74w9ABfKPOx34MDC/Y5G9usx7t+ZbafiJueTJNN6M7b2W1tHPhULGRH9DkH6FHeS
+	 jUshOw4xBQleup9sMrTpJrg5rmzyI63YNlZlNgu/kvCSFCv5x195MB4dda/6rYnF6wsHZ
+	 RgsL78YxS6LaE6zsocVBiZRmFVSDPF5faPLYI/vOitz4KkN6XWPDFwDK+7CTbLM9how==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794623065;
+	h=DMARC-Filter:DKIM-Signature:Received:X-QQ-mid:Message-ID:
+	 X-QQ-XMAILINFO:X-QQ-XMRINFO:From:To:Cc:Subject:X-OQ-MSGID:References:
+	 Date:Content-Type:Content-Transfer-Encoding:MIME-Version;
+	bh=pfTfdXu3L5OFlWQyk002244ztNSmP+yZNWJOAOIlzFo=;
+	b=EkJ7JjZtlnXiLScGct7PHvhBq0ffzDT1oA94HY2rHUeea1iOmElcDSJC3BwWp3ybX3Sy
+	 pzSgUO/5DJQYVWryQs0eTrvfetGqh5UryY6UG+yEewnbSUAzZFujM1CEn9JuEkE6ZP+zB
+	 IPDQtKTZ3DP3JBPBraijAPubSTuTWHRt1sf+yhHYi9T4SobtyxygH6RoK2HdMrs5+qdnf
+	 HWnUXNDOxrcpdTrxJVm8Cc903ugqgkAPdUAyJM05GwNvaFI/yXbPI0gYdqdwueZYMDwYC
+	 PZQqIUoo6XRbxUOIenQ6UOv/BzTI/8qXtZk3a+BwSijYVq5uRljWiNtSclOoRs8HT0g==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=qq.com;
+	spf=pass smtp.mailfrom=qq.com;
+	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=Sl3o106G;
+	arc=none smtp.remote-ip=203.205.221.240
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB353606A32D;
-	Fri, 13 Nov 2026 21:22:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EB353606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46088606A323
+	for <rcu@vger.kernel.org>; Sat, 14 Nov 2026 02:24:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46088606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=hPrIO+RI
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=qrJV41DC+LA63t5QptakcjmO2QlY+O35CFG+nxrhjYbB3oPKo9YtourrAU4j3RYCqjR1RU4TshNYar1Z+LVbU8kd2KK8C8wke5txm6Tl9V4IseL4fdESPABpqZ2/l3n6OUiS4pOvIddYRE7qnOH+L8JTTH5aqyamNyBZGhrNpdxn9bAB/Q3utRvLQ5E1VK6HqF6EBldis1Z0+ZUxIsOzom8zMUioDNabG9t0mc6WiW5AdEEO/pIw7pjnR2fUcNVtFKpzRAMAFCiW44gGa9eqX39yt+U7uRRJIk91e2fSK6hGKG2ZgX/BfBQqkD0ap1p8cIFIt3+lE2pkMzARan1N6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=iUUWfOIisgbrCVW4YUkL53arxf4v09B5XfJcE7IY+wo=;
- b=iU5ZUs5+P4/ksE5EzXeYjhI+XoioKqTC7/W2dNPWvcqw4j8zhvjXKkEEDqyj1vBpSr0wRqq4NQsfMlxUa1KQRQFIsnyLKFTpAu3gZeMVWMl0f688YRmyPzRkaNHuIkGKBGSNYcJwL22Dj6BsvgdYV2BVVggjfwl1LwV2+CosTAfN6HTzPibAxgyLyaOBntPG7wR9afKKXawUC+Bdf/ePyZftnlKUOyzTki8Ip5gyUtICV0/2Lb97KW7og2ejVtljvsIlhXVmPHUeOdrhFjAPCprrFSqg5XFpDilOazfnXvnhWSe+PiaM6xOdiM6FCvarH2Zfpf7mzX7cxoRkkWgvCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=iUUWfOIisgbrCVW4YUkL53arxf4v09B5XfJcE7IY+wo=;
- b=hPrIO+RIknyNjW28tMYHKpKfVb3Gu5KUF6VHY+aDkDTQFLjirH0aFA6owz0vqXQK493Lz2mjccormEClslkGV38PLNY75q65wsnAenlz99GnFcz0v66KY6ed/3gi8FWiMl/3FCP7ejM60JBZCR3f4xcy3o4wfV75h+YegCk0CMFlYqxtgr5Orio3bv0O6lGwI1ikTB9SZ1bP4YSAIq85ljc4bnHSenQ4gsi4u1SjLO+cKs4finBNf2JFJ2RtAtfxjEMM1Oug16qafwyGFVouRHbNDSHYOhgrqBvnzKnxvo1kG23S1q6/02YkhdPPcMBrw8owe93tVy4EwDwZ/E2fIw==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com (2603:10b6:8:102::18)
- by CH1PPFC8B3B7859.namprd12.prod.outlook.com (2603:10b6:61f:fc00::622) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.11; Fri, 13 Nov
- 2026 21:22:18 +0000
-Received: from DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6]) by DM4PR12MB7742.namprd12.prod.outlook.com
- ([fe80::8df:c519:298a:94f6%6]) with mapi id 15.21.0615.007; Fri, 13 Nov 2026
- 21:22:18 +0000
-Message-ID: <29fffc1a-081c-489e-b61b-3b37b2bf8bdf@nvidia.com>
-Date: Fri, 13 Nov 2026 16:22:16 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 2/7] rcutorture: Stop disabling RT throttling for
- boost testing
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
- Frederic Weisbecker <frederic@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Boqun Feng <boqun@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>, Uladzislau Rezki <urezki@gmail.com>,
- Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Davidlohr Bueso <dave@stgolabs.net>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20261111213826.2035045-1-joelagnelf@nvidia.com>
- <20261111213826.2035045-3-joelagnelf@nvidia.com>
- <20261113155622.3SM4n6rp@linutronix.de>
-Content-Language: en-US
-From: Joel Fernandes <joelagnelf@nvidia.com>
-In-Reply-To: <20261113155622.3SM4n6rp@linutronix.de>
-Content-Type: text/plain; charset=UTF-8
+	dkim=pass (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=Sl3o106G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1794623060; bh=pfTfdXu3L5OFlWQyk002244ztNSmP+yZNWJOAOIlzFo=;
+	h=From:To:Cc:Subject:References:Date;
+	b=Sl3o106GOKHri/Ez0UUB5hDpv/sBCiFmEA+uhTZ87W31ay47qLurUhIE2zBiED0dx
+	 ozXRV10rHMOHIIwlCYTMm6qT+mP5y5A+CIKosVZSnwMn3x0OEVF5fnRpDASUA3syZi
+	 V4jSESvk2BpGYRnoy1P1uo5ouxpHn66GdxbQp+2s=
+Received: from [172.18.4.77] ([202.113.185.209])
+	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
+	id 61294AE8; Sat, 14 Nov 2026 10:24:18 +0800
+X-QQ-mid: xmsmtpt1794623058t474ixiin
+Message-ID: <tencent_0836A27053A7BED946E49CE04D27A31E7D09@qq.com>
+X-QQ-XMAILINFO: NwU6Bou9okj/Vy5/iPDS9fDjwOnC2a3cKNPsTkp/82Cye/KhmYsRt+l2Mzxl5L
+	 al8eq6PeTGOQFd+FtTGPVxFzjCyFIosp8vys4ZUBQZhKFJ4Y+9lejGUtGhNNJ3UL8H9nwcnvNjpt
+	 PGz/E0acj0rfR50Vncj1B62fxl+put5Bz63P8IYdouljN0PcShnKUK+8iz7IMSLTfQBGzPvH97al
+	 +I6X6gpTfabRh6R/xDAE5poXxgpEpEZZnmokiUg9BM1y9fLRuoNz8kI3iGtpmNxWs+HxHaDrH9Sq
+	 9wB4J6PLOH23ugrukcWenUVg7/IAu91ceE0TgDtZf5Luem00Dtc+wOnwliHvfkad4sBAnoIuPWXB
+	 tTxRKeYRYfP76n9sxHXxue9c/Q2vnGH6dhLmL5dp18ERdnOkWtYtg35MOEbCX2gpH73YGN8iFt12
+	 7tLPaWGN5SE6CNjhVQooZ8kw+/f1ckbzVoKHDuPPFU+7jsigL7zunDuHBysYaDMoZNiVUS6kVyjR
+	 JZr6FCl5y0J60Im1v+gvdMoW8vmuomIuGbKk0gPKq6QW7tKVZKoqKNBu8JutMbM33OQ2/Zhh4Vrw
+	 YLH5oiT1/t3iYTGWcAFeBRnuEdnEKwCjh1vA/gCPCi8fU1mdJZDdyJDpRhezbtveHoySLJriKPr0
+	 d0EU2fm/TkN63ZGhN24XSvQXqoMvu7FOHsw1+ei/dHIn/tltwL72reeLh87s+vy1h3qLiAMSKpgA
+	 B8eHwftNvIffBqGA7BexITYH7Pm40NpZ6jTIAbQ+fX+0UYG6LO6zzxafsZUZ3z0YBdkTIozhMs9q
+	 u4eAnkhWM8JQWfl/ZfMNPUrtuZ78/8zHhOmIoRZNJt+PQDT1wUfk6qsdajs4HHG57ysQj+OiG2Yu
+	 eKIfJZUPus0mDuHnGqlEzvAZ3XIGk/b09R/FTGuuJixOyl5VsobXBUY+EZ8BU01VRBcNZMiWXlZj
+	 ZDUmOLppksxiz+31UwxF5nSHeT++/aVxZrcU2JlEmR82CYEtrw79xSzRpUp2wrznF800GXXyiq2i
+	 kA1etJxpHwlSTBQGFPsDXbKxZVsewQSkPEv3GDwA==
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+From: Guikun Yang <yangguikun19@qq.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
+ rcu@vger.kernel.org, linux-modules@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: [Bug report] srcu_module_coming() dereferences unvalidated
+ ___srcu_struct_ptrs entries - wild kernel-memory write on module load
+X-OQ-MSGID: <srcu-struct-ptrs-wildwrite-20261114@qq.com>
+References: <mod-r-offset-oob-20261113@qq.com>
+Date: Sat, 14 Nov 2026 09:30:00 +0800
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BL1PR13CA0209.namprd13.prod.outlook.com
- (2603:10b6:208:2be::34) To DM4PR12MB7742.namprd12.prod.outlook.com
- (2603:10b6:8:102::18)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -108,88 +80,130 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB7742:EE_|CH1PPFC8B3B7859:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1765e600-a438-4588-623e-08df41cc3214
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|1800799024|376014|23010399003|366016|10067099003|4143699003|11063799006|261022105027099003|56012099006|261026140227099003|261026121527099003|261028144727099003|261022075727099003|261009223027099003|18002099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	MZ2k1vQfgJo/5lwkZNru3uNc67WKwOqFs5HOcOUhYNmTsssz7G3EkNXoqrPMk77zKLPP9X3UIy5N+kwXyVGu3pULQnTe12ApFXEnCq2adYeMxJEK4FrpHoHjQ6cdMJC8B/UoZoEjIxQZKgeNWtwNVgFSOATI7t51oUn8mhW1J3SivoWJ8d/7dpP2Gu+sbozIQE/azDk6mrLu7M7TaW4Z2D95X73ky4CjWLt6hXu24AFTmOEFWhTCnjjTvgEzjH1ruzwAhjU25JQAxz7hzGP4gG4p8MkV157ch1PMLAPTZD4vRIxnyil8EMTGjMIzSrYxwKnAvRUujur0rCBuPZ3vbOsYnq7/5IB/hNUnhbZaiFBFp9+NlC2d4Vc2kcz4TZNmcGCUFkgZTQHWg5wf2VDlWAdMZI8o0zakZeq8XISCIY1k/TzkiONB00JxjRD2jtbRCcSlPF4HYdFwccbw8/+edTOYD1QFBuFsoibF1tugCaqfZvb3dSgCKt+ndbWAfdGj5SZDP9hsz6O8PWDWgQqXwMBw6JE/amy3Xl7V3BpNou502mMCK6gIE4e/tuC0mNCMwfr9LXfzdE6EYvSE3W1yKETsQcm0AiiL+yfhIljnvLH7uMAhhrNQ6x++uXp/96y2UNKiYaIc9ZpNmSvWcmNjBt9cMvNJ3EqP+g7hcsW8pfs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB7742.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(376014)(23010399003)(366016)(10067099003)(4143699003)(11063799006)(261022105027099003)(56012099006)(261026140227099003)(261026121527099003)(261028144727099003)(261022075727099003)(261009223027099003)(18002099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UzlwWTVwR2t4OVJXUkFSS3ZNMWhabTlEclVodDRsdTJjU3hlaFk1KzNHaThj?=
- =?utf-8?B?UVNXQTB0MWQvcHJPNFk0bmRoTkZpdkQwME51QXlta1hnZG1lZjN0aFg5L3I5?=
- =?utf-8?B?d2hlWFFRVnFtTkI2MnZLOXVVWmdKdDZaanJrU1BYZ1pTSVl2NmJ2MzdGZ01W?=
- =?utf-8?B?Z1dtVGhLYVFaRWlYSmV4SmhKL0dvckxLNk5BdjlzanhmWWJUaitLaEtrai8v?=
- =?utf-8?B?NlM1WnIvV2dXcDhwQ3NwZ0g4bUJwekhWakVrQURhTDJsVU9Tdk9ncnNHZzdJ?=
- =?utf-8?B?WUJWalVvUHJoVDdPNWlRamo0ZFppb2t6NnU1S3hqRVc0NmNvYmtQU1FlSW9t?=
- =?utf-8?B?emY3MExKNmt3RkVTNVFqRXJudm5pakhVMENwdDZIQy9qamM3MnJERTl6Z0xH?=
- =?utf-8?B?VFRDYnVRUmpyMjE4UFNkWWZuSVBoUlY3aEJGcHlrN1BxNERZd0srMURpMzlG?=
- =?utf-8?B?S3JYM0RqcUR0TUkyVFFndStNV1NwZ1A5MElUN2tBR0xNUC9SbjhxUEhRNDcz?=
- =?utf-8?B?M3hVeWtkTHU5SXBhbFl5OEJyZTlldFJYL0dxemxrcWFQVUp3NlgraEdiSml2?=
- =?utf-8?B?RnpiaGV4MGtHTHhOa3dCL2VPVThOZTdBWTltMzAzNnFqME93NWdqZjBkanlC?=
- =?utf-8?B?cWZ6YS9HQnRnb3h1OUprWWIzOHBEcEs1TEI0SHkxY0l1R0haYmxZR0txRVFU?=
- =?utf-8?B?TVdBQXE2M3M1Q1krUFJ3TkZPblhsTXhwWmhvc01EZDQ5UVNIak8yWU9UWnZN?=
- =?utf-8?B?a0t0T3NPV3FsazY4bU1CcmhyUU9NNWZxQ0ZZcTVKb0Q5K1FUZEYwaDJsc1B5?=
- =?utf-8?B?Z1dCbzJhSFF4SjY4RzVEMTZNdm1HTi9WMlBZbGFQNXVwazYxUktpb3h5cXZ4?=
- =?utf-8?B?WDBuKzJDUW9BbjBCenByTTFMU29IUnFtM0YzeUpLVmRNeXV3amd5WGNoeUdZ?=
- =?utf-8?B?L3FuR0V3VXlOTDB1Z3o0bXk3ZjkrNncvZzFoRWtaTnJrLzRJNzZuWG82REpQ?=
- =?utf-8?B?T3pqMTNYa2NGbFljSm5WQ0kyN1UyMEVYUjFrR2VvaUIxUlg3WXF0WkdHRUJM?=
- =?utf-8?B?elhRKzFVMndabDRFWldlNzgvWEtaVFJ3M1BvQlNqdjM4cXdRMHJlVTh5Tysz?=
- =?utf-8?B?YjJldUZzd1ZnZ0xacnhubnQxbFZnNDN6V2lrdUxiZC9FeFljeVhrVjhXUEdl?=
- =?utf-8?B?a3k1VFRQNnlCdGc0Z0dwUCtqQi9OSTliUi9yamFGcVF6WGdqZTNoOW1lSm45?=
- =?utf-8?B?S3B4SEV4M2FQd1dTVEFOZFdZekIycTJJZjJqUHIrR3VXb2ZKU0JYUzZuTDd5?=
- =?utf-8?B?STJsZkNuSm1kank3UEVxRzVOMDF5Z3RnMkhMWG1BQVhKM3lUQndvMkV0VmIy?=
- =?utf-8?B?dDdXSzMyenMrdlQ0NDBkZVpGdDdqU2ppcSt0V3N0Q0NUQjlzUUtRbTh6OXE0?=
- =?utf-8?B?cDUxVjY3c2tvMWE0YWZWWDhINk9wT3k5MkE4L0swQ0pVQlgxUWM0TnlxWGJx?=
- =?utf-8?B?Wlg3Y2pMQmthMWhXL2RuUWNFYzlOWGZkb0F5S09SYUkrRnNDU3NuR0NPSzRk?=
- =?utf-8?B?b0cydEhVR1B5enRaRzF0TEEyVklWeVNFbENENUZVVm80NDU2OUI0bElib290?=
- =?utf-8?B?SHg2VDFIa2VvenpCY1NMeUVLbW9naEJqcEw5TkNhSUJMUGJ3aW9BU3hrL3Jl?=
- =?utf-8?B?N1Q2NW04dm44Z05wNDNCVHNHelZWU1Ywd09peWdqTmJCZFQwS1I1NTY1VStI?=
- =?utf-8?B?ZXZzWms2Vm8xQWpwdVFYanBrcHVzaWxSVzJsR1ZxMko5UnRBNXl1TDhvMGFP?=
- =?utf-8?B?QXBWN1pvSzdGZk1EblE5SEZuWnZBY1FtZ1JaUkl6VEdZNU5VSEF1SXo5eFdm?=
- =?utf-8?B?Vm41M0FqRDRCbUlXYmhWUjJUeXd5dU1SdjdnT1VsbnVZUUdDdFFDNFlMaTBI?=
- =?utf-8?B?cWFmempaK3BiRGN1VDRkbGY4ZVRhWUF4d2M4emJEUGRNdE5qWW8xa295c0Yy?=
- =?utf-8?B?ZHE4b1lPQkh3ZkxuV0tPc3BBQmMxam85V3BLTHR3YnFjSjNkdUgrTXRGYnY3?=
- =?utf-8?B?b292eFdaTkd6L1IzQzc4VE5RcUxRWjRpWTc3S3YzTWcvL2Z1US83YVEvSEdK?=
- =?utf-8?B?cjdRUU4rVGljR1Uxb3ZaMDNwZThQZXI3NUF4Um5KczZ3WFZhQ3NaU2IrYiti?=
- =?utf-8?B?SFJIYWhlNjlwN0pOM1dFNkRpelZ1VGIzUHR6ZVBTZW1lN0VDVzNGWFhJUVRI?=
- =?utf-8?B?TDhhNUVsbUdLNk9ZTGt3MmRvTVJhbCs0MldjVEpxd01McVI5bm84L2dTZDNC?=
- =?utf-8?B?OEZxODZLY0RRSXdRMSszQmVZTjVYQVRQR2pMbmFObFIveWV6VUd5Zz09?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1765e600-a438-4588-623e-08df41cc3214
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB7742.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2026 21:22:18.1405
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TxYx8HD5CKYHMY+4XOo5K2rqKsDCqvJp9ZHulbXlY6cJqDROgKdz/yC8VFAFiF2+sLUKKKGDGZWhNJIsrzn5ng==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH1PPFC8B3B7859
 
+From: Guikun Yang <yangguikun19@qq.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
+    rcu@vger.kernel.org, linux-modules@vger.kernel.org,
+    linux-kernel@vger.kernel.org
+Subject: [Bug report] srcu_module_coming() dereferences unvalidated
+ ___srcu_struct_ptrs entries - wild kernel-memory write on module load
 
+Hi Paul, Luis,
 
-On 11/13/2026 10:56 AM, Sebastian Andrzej Siewior wrote:
-> On 2026-11-11 16:38:20 [-0500], Joel Fernandes wrote:
->> The CPU-hungry-reader boost test depends on RT throttling to bound the
->> CPU time an unboosted reader can obtain, so there is no longer any
->> reason to disable it.  Remove the code that does so, along with the
->> now-unneeded sched/sysctl.h include.
-> 
-> Can I talk you into replacing this with
->   20261113-sched_dl-v3-3-a76ffa1cdeee@linutronix.de ?
-> 
-> It removes an additional declaration in RCU's header file plus (the more
-> important part) it explains that it is not doing anything rather than
-> saying it is no longer needed due to the rework.
+The module loader hands the contents of the ___srcu_struct_ptrs section
+to SRCU as an array of absolute struct srcu_struct * pointers, with no
+validation of any entry. srcu_module_coming() then writes through each
+one during the MODULE_STATE_COMING notification, inside init_module().
+A crafted module whose synthetic section contains an arbitrary 64-bit
+value therefore gets a kernel-heap pointer written to an
+attacker-chosen address.
 
-Sure, I will take yours instead and include it in my series.
+  Oops: general protection fault, probably for non-canonical address
+  0xe00006aaa0000021: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN NOPTI
+  KASAN: probably user-memory-access in range
+  [0x0000555500000108-0x000055550000010f]
+  RIP: 0010:srcu_module_notify+0x480/0x610
+  RAX: 0000607f57d191c0   (alloc_percpu return, the value being written)
+  RBX: 0000555500000100   (the section entry, verbatim from the file)
+  RDI: 0000555500000108   (&ssp->sda)
+   notifier_call_chain
+   blocking_notifier_call_chain_robust
+   load_module
+   __do_sys_init_module
 
-thanks,
+## The three pieces
 
-Joel Fernandes
+Loader, zero validation (kernel/module/main.c):
+
+  mod->srcu_struct_ptrs = section_objs(info, "___srcu_struct_ptrs",
+                                       sizeof(*mod->srcu_struct_ptrs),
+                                       &mod->num_srcu_structs);
+
+section_objs() counts entries and returns sh_addr; the bytes' validity
+is entirely up to the ELF file.
+
+Generator, absolute pointer (include/linux/srcutree.h):
+
+  struct srcu_struct * const __srcu_struct_##name
+        __section("___srcu_struct_ptrs") = &name
+
+Unlike __tracepoints_ptrs (PREL32 self-relative on x86), this is a
+link-time absolute address. In a hand-built section the bytes are
+whatever the attacker writes, and since no .rela entry targets them,
+apply_relocations() never touches them either.
+
+Consumer, write on load (kernel/rcu/srcutree.c, unchanged from 7.3 to
+mainline 2026-11-14):
+
+  ssp = *(sspp++);
+  ssp->sda = alloc_percpu(struct srcu_data);       /* wild write */
+  if (WARN_ON_ONCE(!ssp->sda))
+          return -ENOMEM;
+  ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];        /* second write */
+
+ssp->sda sits at offset 8, so an entry value V makes the kernel write
+a freshly allocated percpu pointer to V+8, and a pointer derived from
+it to V. The unload/rollback path (srcu_module_going()) dereferences
+ssp->srcu_sup and frees ssp->sda through the same unchecked entries.
+
+## Why this is more than a crash
+
+The write value is a kernel heap address and the target is a fully
+attacker-chosen 64-bit address. Pointing the entry at a
+userland-readable mapping leaks the percpu allocation address directly
+to userspace, defeating percpu-base randomization and contributing to
+KASLR defeat. Pointing it at any zero-filled kernel address lands the
+write. A non-canonical target gives the deterministic #GP above
+(reproduced 7.3.0, KASAN inline, DEBUG_PAGEALLOC).
+
+## The fix has an in-tree precedent
+
+jump_label.c validates exactly this class of pointer in the same
+module-notification path (kernel/jump_label.c:716):
+
+  if (within_module((unsigned long)key, mod)) {
+          static_key_set_entries(key, iter);
+          continue;
+  }
+
+The suggested fix mirrors it in srcu_module_coming() and
+srcu_module_going():
+
+  for (i = 0; i < mod->num_srcu_structs; i++) {
+          ssp = *(sspp++);
++         if (!ssp || !within_module((unsigned long)ssp, mod))
++                 return -EINVAL;
+          ssp->sda = alloc_percpu(struct srcu_data);
+
+__tracepoints_ptrs and __bpf_raw_tp_map are sibling pointer sections
+with the same exposure; a shared check in find_module_sections()
+would cover the class, but the SRCU entries are the concrete
+write-what-where primitive demonstrated here.
+
+This is the second report in this series: the relocation r_offset
+bounds gap went out as <mod-r-offset-oob-20261113@qq.com> yesterday.
+Both are cases of the module loader consuming section contents that
+its ELF validity layer never checked.
+
+## Reproducer
+
+Carrier is a real xt_mark.ko built from the same tree as the test
+kernel (vermagic, this_module size, 11 undefined symbols all
+matching). A section synthesizer appends an 8-byte
+___srcu_struct_ptrs entry (0x0000555500000100), fixing shstrtab,
+e_shnum and e_shoff. Same boot, three steps:
+
+  1. load original xt_mark.ko   -> 0
+  2. unload                     -> 0
+  3. load synthesized module    -> the Oops above
+
+The A/B pair, the synthesizer and the reproducer are available on
+request.
+
+Tested on 7.3.0; kernel/rcu/srcutree.c and the loader path are
+unchanged in mainline as of 2026-11-14.
+
+Thanks,
+Guikun Yang
+
