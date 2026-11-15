@@ -1,76 +1,72 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=203.205.221.240
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.198
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794623065;
-	b=UAKgF22rBcPsREsFaQE/yyfBtasAevMdmczDFQk2dXDekHHdMGHToRsiK/vnGXZWjIxh
-	 Dt3X7cEX/4HApktEMoCOURNKhI4g9IfvdoiWCB/mTOVfwhFr1Tr/qe92o8FUMP7Nco1+X
-	 bqipU74w9ABfKPOx34MDC/Y5G9usx7t+ZbafiJueTJNN6M7b2W1tHPhULGRH9DkH6FHeS
-	 jUshOw4xBQleup9sMrTpJrg5rmzyI63YNlZlNgu/kvCSFCv5x195MB4dda/6rYnF6wsHZ
-	 RgsL78YxS6LaE6zsocVBiZRmFVSDPF5faPLYI/vOitz4KkN6XWPDFwDK+7CTbLM9how==
+	t=1794708452;
+	b=TGCL1zvy301/ypIupYtOtABINBDVcO6HlwAdZtkcLj9XdxkWjw0Td8HJNmyysIajPPBl
+	 i0HoqMYCpaaSSiRI3+CZQ4421aiTZ0WETKsjF3qEZ1cD55fp3IBAM73YPi1L8EhRXo3uB
+	 RbracLJquFwdB0FLNtBV8ZuCgwHGhCn7zv42WhEYd+8KZppPpbvcYa3MyFA5Xe72Fbs+F
+	 g3vT2gV1HPxbcMcapYxo5Qg2VBGHlsmkJODnqanaF1NGJpmHle1Nzp/wAfltUt96vjUD6
+	 L0/mNxmDrs/7EA0Vlk3xQIcNm9zDz6jBkTOffU3h5GY0kZwap5RIfx7D2M6sR344XOA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794623065;
-	h=DMARC-Filter:DKIM-Signature:Received:X-QQ-mid:Message-ID:
-	 X-QQ-XMAILINFO:X-QQ-XMRINFO:From:To:Cc:Subject:X-OQ-MSGID:References:
-	 Date:Content-Type:Content-Transfer-Encoding:MIME-Version;
-	bh=pfTfdXu3L5OFlWQyk002244ztNSmP+yZNWJOAOIlzFo=;
-	b=EkJ7JjZtlnXiLScGct7PHvhBq0ffzDT1oA94HY2rHUeea1iOmElcDSJC3BwWp3ybX3Sy
-	 pzSgUO/5DJQYVWryQs0eTrvfetGqh5UryY6UG+yEewnbSUAzZFujM1CEn9JuEkE6ZP+zB
-	 IPDQtKTZ3DP3JBPBraijAPubSTuTWHRt1sf+yhHYi9T4SobtyxygH6RoK2HdMrs5+qdnf
-	 HWnUXNDOxrcpdTrxJVm8Cc903ugqgkAPdUAyJM05GwNvaFI/yXbPI0gYdqdwueZYMDwYC
-	 PZQqIUoo6XRbxUOIenQ6UOv/BzTI/8qXtZk3a+BwSijYVq5uRljWiNtSclOoRs8HT0g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794708452;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Received:Date:Mime-Version:
+	 Message-ID:Subject:From:To:Cc:Content-Type;
+	bh=qFFVcUdbJVLPGQu7ocAyjzf3pNHMMiFCOAAxSb8MYyA=;
+	b=22DUy/76MNWM1sfDd8QsyvEwdzHrErrSKa1BaGdG/d0mntFuJf/5l6KXLKD4+zioUebF
+	 0gyvSmit4W321//bEx7+IkLzS7LpEN5JqO74LhiZw+Idt/1h1BboOKUoIbPEz2GVSRY10
+	 J+2GM6WtWAsqqHpdRXlfJfp87SJw+Q1yYAhLyoM7TSdh3zuF4G9BcCU4irOxUMC0cRTJO
+	 UPrkCSLaWzoDa0qWUtI2FxOUwD+RCdYISzB2T/RfWG6lUFaVk6PPIIcUfE/pJWJ48Wmdu
+	 YlIhyYKEeT8S6NRroeiC2TaomhJ27L8qcWQVbnJZ6FcMN7+G1BjDiwx2VFcfof8PJMg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=Sl3o106G;
-	arc=none smtp.remote-ip=203.205.221.240
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=flex--chriswiseman.bounces.google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b="K/fLvnOC";
+	arc=none smtp.remote-ip=74.125.82.198
+Received: from mail-dy1-f198.google.com (mail-dy1-f198.google.com [74.125.82.198])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46088606A323
-	for <rcu@vger.kernel.org>; Sat, 14 Nov 2026 02:24:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46088606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DE9606A323
+	for <rcu@vger.kernel.org>; Sun, 15 Nov 2026 02:07:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D9DE9606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--chriswiseman.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=Sl3o106G
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794623060; bh=pfTfdXu3L5OFlWQyk002244ztNSmP+yZNWJOAOIlzFo=;
-	h=From:To:Cc:Subject:References:Date;
-	b=Sl3o106GOKHri/Ez0UUB5hDpv/sBCiFmEA+uhTZ87W31ay47qLurUhIE2zBiED0dx
-	 ozXRV10rHMOHIIwlCYTMm6qT+mP5y5A+CIKosVZSnwMn3x0OEVF5fnRpDASUA3syZi
-	 V4jSESvk2BpGYRnoy1P1uo5ouxpHn66GdxbQp+2s=
-Received: from [172.18.4.77] ([202.113.185.209])
-	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
-	id 61294AE8; Sat, 14 Nov 2026 10:24:18 +0800
-X-QQ-mid: xmsmtpt1794623058t474ixiin
-Message-ID: <tencent_0836A27053A7BED946E49CE04D27A31E7D09@qq.com>
-X-QQ-XMAILINFO: NwU6Bou9okj/Vy5/iPDS9fDjwOnC2a3cKNPsTkp/82Cye/KhmYsRt+l2Mzxl5L
-	 al8eq6PeTGOQFd+FtTGPVxFzjCyFIosp8vys4ZUBQZhKFJ4Y+9lejGUtGhNNJ3UL8H9nwcnvNjpt
-	 PGz/E0acj0rfR50Vncj1B62fxl+put5Bz63P8IYdouljN0PcShnKUK+8iz7IMSLTfQBGzPvH97al
-	 +I6X6gpTfabRh6R/xDAE5poXxgpEpEZZnmokiUg9BM1y9fLRuoNz8kI3iGtpmNxWs+HxHaDrH9Sq
-	 9wB4J6PLOH23ugrukcWenUVg7/IAu91ceE0TgDtZf5Luem00Dtc+wOnwliHvfkad4sBAnoIuPWXB
-	 tTxRKeYRYfP76n9sxHXxue9c/Q2vnGH6dhLmL5dp18ERdnOkWtYtg35MOEbCX2gpH73YGN8iFt12
-	 7tLPaWGN5SE6CNjhVQooZ8kw+/f1ckbzVoKHDuPPFU+7jsigL7zunDuHBysYaDMoZNiVUS6kVyjR
-	 JZr6FCl5y0J60Im1v+gvdMoW8vmuomIuGbKk0gPKq6QW7tKVZKoqKNBu8JutMbM33OQ2/Zhh4Vrw
-	 YLH5oiT1/t3iYTGWcAFeBRnuEdnEKwCjh1vA/gCPCi8fU1mdJZDdyJDpRhezbtveHoySLJriKPr0
-	 d0EU2fm/TkN63ZGhN24XSvQXqoMvu7FOHsw1+ei/dHIn/tltwL72reeLh87s+vy1h3qLiAMSKpgA
-	 B8eHwftNvIffBqGA7BexITYH7Pm40NpZ6jTIAbQ+fX+0UYG6LO6zzxafsZUZ3z0YBdkTIozhMs9q
-	 u4eAnkhWM8JQWfl/ZfMNPUrtuZ78/8zHhOmIoRZNJt+PQDT1wUfk6qsdajs4HHG57ysQj+OiG2Yu
-	 eKIfJZUPus0mDuHnGqlEzvAZ3XIGk/b09R/FTGuuJixOyl5VsobXBUY+EZ8BU01VRBcNZMiWXlZj
-	 ZDUmOLppksxiz+31UwxF5nSHeT++/aVxZrcU2JlEmR82CYEtrw79xSzRpUp2wrznF800GXXyiq2i
-	 kA1etJxpHwlSTBQGFPsDXbKxZVsewQSkPEv3GDwA==
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-From: Guikun Yang <yangguikun19@qq.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
- rcu@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [Bug report] srcu_module_coming() dereferences unvalidated
- ___srcu_struct_ptrs entries - wild kernel-memory write on module load
-X-OQ-MSGID: <srcu-struct-ptrs-wildwrite-20261114@qq.com>
-References: <mod-r-offset-oob-20261113@qq.com>
-Date: Sat, 14 Nov 2026 09:30:00 +0800
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	dkim=pass (2048-bit key, unprotected) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=K/fLvnOC
+Received: by mail-dy1-f198.google.com with SMTP id 5a478bee46e88-37628596fc9so5959234eec.0
+        for <rcu@vger.kernel.org>; Sat, 14 Nov 2026 18:07:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20260707; t=1794708451; x=1795313251; darn=vger.kernel.org;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=qFFVcUdbJVLPGQu7ocAyjzf3pNHMMiFCOAAxSb8MYyA=;
+        b=K/fLvnOC5vYtObowL3m1TdTwiWcegpqOrLcWFLP7xoTsBtwLPWrTTwL5wZmIKyhR3O
+         0WCz9aUunCv/kRBiLKd+/t6u2PZp3LyhEVJ1AqeMexZ57E9Kr84oeWIkoKL6acd4J9tw
+         Bc49oA1wL+LNWQNWHjvHA2ziKLc/OiMCqzhkyvEK9xOblPQY8sWZ7d5U5gPb8JJILdDs
+         JLqr4zTINbqVrGTkkpFSojE0L42qHJJytzmCCdZxRiLrfaemlDDfW8lM3d4E28JC3iFV
+         fODA4ZQQNcJut2R4Caq7b620vdms/bzvTTbLjhllO1oNARrWaZz6kClCTgfswDmaSYmz
+         C0YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794708451; x=1795313251;
+        h=content-type:cc:to:from:subject:message-id:mime-version:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=qFFVcUdbJVLPGQu7ocAyjzf3pNHMMiFCOAAxSb8MYyA=;
+        b=2yPN2bt2AQYF7/zJ88rhj6fneY/xTEYQ5cWDBewl3GvelA1VKSxICg5h1heI2wliJL
+         /Dp2yBM62AymU8v8Js+iSq8It8uV8TkJzbdQwA2NddMJj/Xo2I1gx5WhndWWyyrH9TQ2
+         5bLReGOJM9IeFEmM4H1j4tHMLZ6L7u0aL+D5O3nQNllsNC6tIaWJVIjTVG8jnZ0DIZNS
+         f96b6sNWs3NsaNYMNVRgTVvD9CH6g5zqDgTKavbrxjyP0jh0psBFxQNMIkiXMpu2kaFT
+         T/UpmtOJBSwh0onC2Hr2kaLUhdLWU2QTw7ep4jyOEwkRJp1+RJZ3pCBuC5R3ud7GBn8u
+         7nEQ==
+X-Forwarded-Encrypted: i=1; AL+hErF6ZFGnucIMT5L+epNtjJqH7D0rGDfYvp2P+Q6XzTYmddE3m08pLrjznakIXHFTS5ES7T4=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+TdbFOI2uBBXomJNercW0Dcm0fHIQs3RabY66fKbonoqARV03o
+	YYrR6N1pvp47veCLuBKmgbN2P+OjhEFnpBzo5GuB8VnzXQcnXXqnQoN7//aE5WfkLHG+YZhllF+
+	UqcYkxu7lOrzb7J/8P5pfGQqrUUhJ1w==
+X-Received: from dyff26.prod.google.com ([2002:a05:693c:805a:b0:378:1191:3e95])
+ (user=chriswiseman job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:693c:83cf:10b0:36a:79e7:2fd with SMTP id 5a478bee46e88-379684b838cmr7445866eec.40.1794708450620;
+ Sat, 14 Nov 2026 18:07:30 -0800 (PST)
+Date: Sun, 15 Nov 2026 02:07:29 GMT
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -79,131 +75,71 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
+Mime-Version: 1.0
+Message-ID: <18e815d3ba49a353.3137322e32332e3235332e313736.192c60.0000sendgmr@google.com>
+Subject: [PATCH] rcu/nocb: Keep lazy timer intact on second lazy callback
+From: Chris Wiseman <chriswiseman@google.com>
+To: Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Joel Fernandes <joelagnelf@nvidia.com>, Joel Fernandes <joel@joelfernandes.org>, 
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun@kernel.org>, 
+	Josh Triplett <josh@joshtriplett.org>, Tze-nan Wu <Tze-nan.Wu@mediatek.com>, 
+	Cheng-jui Wang <cheng-jui.wang@mediatek.com>, Steven Rostedt <rostedt@goodmis.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	stable@vger.kernel.org, Chris Wiseman <chriswiseman@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Guikun Yang <yangguikun19@qq.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Luis Chamberlain <mcgrof@kernel.org>, Petr Pavlu <petr.pavlu@suse.com>,
-    rcu@vger.kernel.org, linux-modules@vger.kernel.org,
-    linux-kernel@vger.kernel.org
-Subject: [Bug report] srcu_module_coming() dereferences unvalidated
- ___srcu_struct_ptrs entries - wild kernel-memory write on module load
+wake_nocb_gp_defer() checks waketype == RCU_NOCB_WAKE_LAZY and
+rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT in one if-statement.
 
-Hi Paul, Luis,
+When the first lazy call_rcu() in a NOCB group arms rdp_gp->nocb_timer
+for the 10-second lazy flush delay and sets rdp_gp->nocb_defer_wakeup to
+RCU_NOCB_WAKE_LAZY, the next CPU in the group that queues its first lazy
+callback calls wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY, ...). Because
+rdp_gp->nocb_defer_wakeup is no longer RCU_NOCB_WAKE_NOT, it misses the
+first branch and falls into the else block for RCU_NOCB_WAKE, calling
+mod_timer(&rdp_gp->nocb_timer, jiffies + 1) and resetting the 10-second
+lazy timer down to 1 jiffy. The same fallthrough also shortens a pending
+2-jiffy RCU_NOCB_WAKE_BYPASS timer to 1 jiffy.
 
-The module loader hands the contents of the ___srcu_struct_ptrs section
-to SRCU as an array of absolute struct srcu_struct * pointers, with no
-validation of any entry. srcu_module_coming() then writes through each
-one during the MODULE_STATE_COMING notification, inside init_module().
-A crafted module whose synthetic section contains an arbitrary 64-bit
-value therefore gets a kernel-heap pointer written to an
-attacker-chosen address.
+Commit 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power") wrote
+this check against rdp->nocb_defer_wakeup, and commit 463d46044f04
+("rcu: Fix delayed execution of hurry callbacks") switched it to
+rdp_gp->nocb_defer_wakeup, which exposed the fallthrough across all CPUs
+sharing rdp_gp.
 
-  Oops: general protection fault, probably for non-canonical address
-  0xe00006aaa0000021: 0000 [#1] SMP DEBUG_PAGEALLOC KASAN NOPTI
-  KASAN: probably user-memory-access in range
-  [0x0000555500000108-0x000055550000010f]
-  RIP: 0010:srcu_module_notify+0x480/0x610
-  RAX: 0000607f57d191c0   (alloc_percpu return, the value being written)
-  RBX: 0000555500000100   (the section entry, verbatim from the file)
-  RDI: 0000555500000108   (&ssp->sda)
-   notifier_call_chain
-   blocking_notifier_call_chain_robust
-   load_module
-   __do_sys_init_module
+Give waketype == RCU_NOCB_WAKE_LAZY its own branch and only arm
+nocb_timer when rdp_gp->nocb_defer_wakeup is RCU_NOCB_WAKE_NOT.
 
-## The three pieces
+Fixes: 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power")
+Fixes: 463d46044f04 ("rcu: Fix delayed execution of hurry callbacks")
+Cc: stable@vger.kernel.org
+Signed-off-by: Chris Wiseman <chriswiseman@google.com>
+---
+ kernel/rcu/tree_nocb.h | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Loader, zero validation (kernel/module/main.c):
-
-  mod->srcu_struct_ptrs = section_objs(info, "___srcu_struct_ptrs",
-                                       sizeof(*mod->srcu_struct_ptrs),
-                                       &mod->num_srcu_structs);
-
-section_objs() counts entries and returns sh_addr; the bytes' validity
-is entirely up to the ELF file.
-
-Generator, absolute pointer (include/linux/srcutree.h):
-
-  struct srcu_struct * const __srcu_struct_##name
-        __section("___srcu_struct_ptrs") = &name
-
-Unlike __tracepoints_ptrs (PREL32 self-relative on x86), this is a
-link-time absolute address. In a hand-built section the bytes are
-whatever the attacker writes, and since no .rela entry targets them,
-apply_relocations() never touches them either.
-
-Consumer, write on load (kernel/rcu/srcutree.c, unchanged from 7.3 to
-mainline 2026-11-14):
-
-  ssp = *(sspp++);
-  ssp->sda = alloc_percpu(struct srcu_data);       /* wild write */
-  if (WARN_ON_ONCE(!ssp->sda))
-          return -ENOMEM;
-  ssp->srcu_ctrp = &ssp->sda->srcu_ctrs[0];        /* second write */
-
-ssp->sda sits at offset 8, so an entry value V makes the kernel write
-a freshly allocated percpu pointer to V+8, and a pointer derived from
-it to V. The unload/rollback path (srcu_module_going()) dereferences
-ssp->srcu_sup and frees ssp->sda through the same unchecked entries.
-
-## Why this is more than a crash
-
-The write value is a kernel heap address and the target is a fully
-attacker-chosen 64-bit address. Pointing the entry at a
-userland-readable mapping leaks the percpu allocation address directly
-to userspace, defeating percpu-base randomization and contributing to
-KASLR defeat. Pointing it at any zero-filled kernel address lands the
-write. A non-canonical target gives the deterministic #GP above
-(reproduced 7.3.0, KASAN inline, DEBUG_PAGEALLOC).
-
-## The fix has an in-tree precedent
-
-jump_label.c validates exactly this class of pointer in the same
-module-notification path (kernel/jump_label.c:716):
-
-  if (within_module((unsigned long)key, mod)) {
-          static_key_set_entries(key, iter);
-          continue;
-  }
-
-The suggested fix mirrors it in srcu_module_coming() and
-srcu_module_going():
-
-  for (i = 0; i < mod->num_srcu_structs; i++) {
-          ssp = *(sspp++);
-+         if (!ssp || !within_module((unsigned long)ssp, mod))
-+                 return -EINVAL;
-          ssp->sda = alloc_percpu(struct srcu_data);
-
-__tracepoints_ptrs and __bpf_raw_tp_map are sibling pointer sections
-with the same exposure; a shared check in find_module_sections()
-would cover the class, but the SRCU entries are the concrete
-write-what-where primitive demonstrated here.
-
-This is the second report in this series: the relocation r_offset
-bounds gap went out as <mod-r-offset-oob-20261113@qq.com> yesterday.
-Both are cases of the module loader consuming section contents that
-its ELF validity layer never checked.
-
-## Reproducer
-
-Carrier is a real xt_mark.ko built from the same tree as the test
-kernel (vermagic, this_module size, 11 undefined symbols all
-matching). A section synthesizer appends an 8-byte
-___srcu_struct_ptrs entry (0x0000555500000100), fixing shstrtab,
-e_shnum and e_shoff. Same boot, three steps:
-
-  1. load original xt_mark.ko   -> 0
-  2. unload                     -> 0
-  3. load synthesized module    -> the Oops above
-
-The A/B pair, the synthesizer and the reproducer are available on
-request.
-
-Tested on 7.3.0; kernel/rcu/srcutree.c and the loader path are
-unchanged in mainline as of 2026-11-14.
-
-Thanks,
-Guikun Yang
-
+diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+index b6cfee4e5039..347d718befd0 100644
+--- a/kernel/rcu/tree_nocb.h
++++ b/kernel/rcu/tree_nocb.h
+@@ -335,10 +335,12 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+ 	 * Bypass wakeup overrides previous deferments. In case of
+ 	 * callback storms, no need to wake up too early.
+ 	 */
+-	if (waketype == RCU_NOCB_WAKE_LAZY &&
+-	    rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
+-		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
+-		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
++	if (waketype == RCU_NOCB_WAKE_LAZY) {
++		if (rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
++			mod_timer(&rdp_gp->nocb_timer,
++				  jiffies + rcu_get_jiffies_lazy_flush());
++			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
++		}
+ 	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+ 		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+ 		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+-- 
+2.52.0.rc1
