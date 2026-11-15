@@ -1,49 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794716789;
-	b=hgj2NJyM9wGBAgLjkkzLQtzfqWh25jRZXbLasWvtEpOYEeeB2yvG2wW5D+fIDbqxNaO8
-	 9KpLEoNbD3R3wq86AP3rarQ5h0Zx8QlU7rFarlTAW7HSCKjm2U7wjVz/5iww0oF9UUx6d
-	 4r4X1c0qoqhvbf8sMTRWVoQkIPy0ouXTpQbxE3dMhts1k/V17ZSrEqnzUvHnMwpgh7WVB
-	 vhjd/1nbEnCtwaUYc24/MGL4lnec1ZVu+KRjOqMdei9t903EZ49aeoruLQZiBaczh8bPv
-	 +glJd3N9Cs47FHxoOi+FAoBkzOgVktvhLaIA0cWwX9//nCkqghirrG1YuXA1kBpgHZA==
+	t=1794731548;
+	b=UAFTf+HB/NidSzZgP2SFLuy2JWxkLBuGVgM/f974jUIe5j5C7CL3utZ444rxaXq2tbit
+	 1r3TygP/VAx4ShA/nqXBGZMCn57IQNWuo4lv6GV1sw3ocG4WxrAfoUjalnyiLcrcF0RWA
+	 lcIRrQ3qi+ecFW5idZD/vQQtUXpkOUjoqILi0FZPQsTGwYk57HjK38l+cMgC587CKH+Ui
+	 gHpRH/noVuNnlMX2rNwR2sW/TF5usfHgyzNdwAXeRMVIwTXyAeO4M2OfrFU3l2yJe0P/d
+	 FmtyJEYGtPdntk/ZGSn7NKlJ3fAQ4yR5M8wD+ygoj1igvE2ud7IqpfXKuvwH91uv/Tw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794716789;
-	h=Received:DKIM-Signature:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:
-	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=PE1T7Z5KhZcynu05MtgfaEQGAVsUUdvQevTG2LkwgU0=;
-	b=mCQUbcdYoc5+PlwkqsnUk6MOUrPVxsknybIIeDnR9a4UEmEypDl1q85109KeOQdcJDHJ
-	 1vQRvDgy/Q/guS9cw5vkpEMPrbq63Z4gIyiOQ6Ji5HTTUqP9L9/Plggq8nIQhbxG9vxG6
-	 fZx2g9ZcAIPVte7F14zx9fCd+RooyRLtkG64wgQ43HKzkis8Q1M1/BD339O2L8c0/YSXE
-	 9cTer6qT2CZpepRtAhIZO+wcgsLoABqRhdDexdeCz89WyvEoMM55CRydVBH4mJITodulF
-	 20JtDCIuCjQDwbT3iiBf+faiIAaIVMNKd/P7CasWzGdjWWdjjttFZNmBfm30RUZPr3A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794731548;
+	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
+	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
+	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=GCh8Ifwi9uvxPPglO9UrnRFnfH7l5jkW/d7XdsHHxuw=;
+	b=FeTDINiTCeYY8OWQ2Aya2LS/GSrO/A6TwfVJ59IPmRC4AWLfuinyfeZUsg2h2wIog0Gl
+	 rAled0t09vSle0x1zdZnueNi4QsdAM8kWNUAUCS2mcHFGw5V8hghLm59ugMo2pOCkUBHR
+	 zakxtud9jHJMEmF8kUgM4gevHQMlVaQWeQAVevD1lE0q+oTgvFaGACxNhKdj8GjIgsnEU
+	 pfzhABC1vvf3rsNg2o3V0kjIQ1e3d9c/1o+9Z1BS6vaWBmHiELfx7Vx7DLUYI5aOYYYv6
+	 mu+Cm7pzudP14kVzRPwx7LULLWb72aUOAPaj5Npb0Gd4ci+n6DELrd5kbxDac5aKBpA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UHTzTboY;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UBAiMSoh;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10A22606A329;
-	Sun, 15 Nov 2026 04:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0703606A31E
+	for <rcu@vger.kernel.org>; Sun, 15 Nov 2026 08:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UHTzTboY
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79E6A1F000C4;
-	Sun, 15 Nov 2026 04:26:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UBAiMSoh
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5EFDF1F000D3
+	for <rcu@vger.kernel.org>; Sun, 15 Nov 2026 08:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794716788;
-	bh=PE1T7Z5KhZcynu05MtgfaEQGAVsUUdvQevTG2LkwgU0=;
-	h=From:Date:Subject:To:Cc;
-	b=UHTzTboYfT+0FUVWPaFs3CBRV+60pYByu+ICQjNjd+D7cj8oqYHlFSDzCIYxt0JNq
-	 /sKSyzVY2GG6qn8sx0VsjDExZopjVM0aJdTTttw3HtdPbrBDDPeDPJpwfpLWn504DA
-	 YBxKFuK6PHNN47p36qcuqX8YRIW0iqlSeSdw+rcqB+BF35WzdbkpmzJAhY5HUnG9kh
-	 XnuLdDyCFuqsLqB5h/r/XGVI5Wp4jHWCaGq8Qutac9MQuvU+3HqGYTCVJI5hd8j4a+
-	 EvRCfCG6RFo18kXmgMt9DqAhSIwdZxa3If7ZvaGIGnvxW1NR0nGRNCkIDHkXo8eQDa
-	 N4EKxB47qLcPg==
-From: Nathan Chancellor <nathan@kernel.org>
-Date: Sat, 14 Nov 2026 21:26:10 -0700
-Subject: [PATCH] rcu/nocb: Avoid unsequenced accesses to jiffies in
- show_rcu_nocb_state()
+	s=k20260515; t=1794731548;
+	bh=GCh8Ifwi9uvxPPglO9UrnRFnfH7l5jkW/d7XdsHHxuw=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc;
+	b=UBAiMSohkM5KfXVEBDBy7CRMSsOwbi1hP3rk3TU9/89oUkVe6UCm24Vb3CmDvF4z/
+	 yOY2RgiM29r4sEzCm3ye06DBabOoobyPOBVJdK/ul04D58nDcjm6CSoPQQlwL3m5Wl
+	 cMULqRqaEbyaqO5ca8h1WaukMsbfXjTwzBSoBZ6LvdM5fKavmHsNrligN54uDxAUuI
+	 2hHStRSpuj80FGStPpW38bJWdVKz4ajq+TfMvojqW7zhOt8LatpTF1QE3lCuDVaj+/
+	 LVg1FCcDhsaxf+rveFojuvcmQ5VjVEFROICOciEYtkVmmOOBvFchnHvXia5UB1PoJH
+	 RHbGFhep+UAhA==
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-91ea16d8072so27245406d6.2
+        for <rcu@vger.kernel.org>; Sun, 15 Nov 2026 00:32:28 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AL+hErF8mv73KgUEGEcJxO5zGdBw1CQlBpVnHTI9qd/Ktkjs3JBmeC0vRIh0Y8x9W+BDxPptp3A=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8YSt4q1clASQudmiuB00FJ8irba1PRVpW374otj5e0oTkMU0Mg
+	aTvi2q0qrrvxk15NW0I9F5CTmUuyGnU6wjnmW1O91dRKg6+5nXdOQWGQO6R6VCserR+z+rQgm/2
+	PWrIBpNE9sFSaOds3dvGXeWdV3hkjDJY=
+X-Received: by 2002:a05:620a:2614:b0:939:fde0:a71b with SMTP id
+ af79cd13be357-9494b86e99fmr1135729085a.0.1794731547421; Sun, 15 Nov 2026
+ 00:32:27 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -53,102 +59,107 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20261114-rcu-tree_nocb-wunsequenced-v1-1-057996a86f0e@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAA/yXMQQrCQAwF0KuUrA00Q6niVUTEZn51XKSa6ahQe
- ndHXb7NWyjDEzLtm4Ucz5TTZBWyaUivZ7uAU6ym0IZeRDp2LTw7cLJJB34Vy3gUmCJyG6JIv93
- p2AWqwd0xpvcvPxz/zmW4QefvSOv6AZK2dnp+AAAA
-X-Change-ID: 20261114-rcu-tree_nocb-wunsequenced-02d11678cf42
-To: "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
- Joel Fernandes <jfern@kernel.org>, Josh Triplett <josh@joshtriplett.org>, 
- Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org, 
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev, stable@vger.kernel.org, 
- Nathan Chancellor <nathan@kernel.org>
-X-Mailer: b4 0.17-dev
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2941; i=nathan@kernel.org;
- h=from:subject:message-id; bh=7OmRRHFXh1lWL/xG22s5IPrApVcaF15LGgvPQEIuTBU=;
- b=owGbwMvMwCUmm602sfCA1DTG02pJDFk/TfJa94gduDl1nayy18pNik8mzyt6rRV6UOhs33zx/
- N5//7K9O0pZGMS4GGTFFFmqH6seNzScc5bxxqlJMHNYmUCGMHBxCsBEZk9m+B+TEWwlbPRcWjV7
- /Zy++fGLzR+K/Hh7NXLJx3vnTfcz1Kxh+O9Zsbzs2rywDrEyd7NJTzZleiql6KUyH3594q1/+3H
- jZj4A
-X-Developer-Key: i=nathan@kernel.org; a=openpgp;
- fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
+References: <20261103113711.1832834-1-max.kellermann@ionos.com>
+ <20261103113711.1832834-4-max.kellermann@ionos.com> <CAGsJ_4y+LX-CSnDJ59VT2nc-i=rB=4iMuBQYawMCktk-_SPykg@mail.gmail.com>
+ <CAKPOu+9XP8CP-EiLqd_Q-F6EWUQPgi4Ysz7wu8LZijR+j0_uyQ@mail.gmail.com>
+In-Reply-To: <CAKPOu+9XP8CP-EiLqd_Q-F6EWUQPgi4Ysz7wu8LZijR+j0_uyQ@mail.gmail.com>
+From: Barry Song <baohua@kernel.org>
+Date: Sun, 15 Nov 2026 16:32:16 +0800
+X-Gmail-Original-Message-ID: <CAGsJ_4zp8WJosxkVwRtfEvySBwp38bLd-0g6cV0G1BPb2V=hPg@mail.gmail.com>
+X-Gm-Features: AclHuK903Z9BUzVG_q0fBix3SipsrwutJuy-Sym-wmyWv56RpJEBqKKFqIWDC2c
+Message-ID: <CAGsJ_4zp8WJosxkVwRtfEvySBwp38bLd-0g6cV0G1BPb2V=hPg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] mm/mglru: cache the last memcg node, make tail
+ insertion constant time
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
+	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
+	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-After a recent improvement in clang to warn on unsequenced accesses to
-volatile variables [1], an instance appears in show_rcu_nocb_state(),
-which can break the build with CONFIG_WERROR=y / W=e:
+On Wed, Nov 4, 2026 at 3:55=E2=80=AFPM Max Kellermann <max.kellermann@ionos=
+.com> wrote:
+>
+> On Wed, Nov 4, 2026 at 4:40=E2=80=AFAM Barry Song <baohua@kernel.org> wro=
+te:
+> >
+> > On Tue, Nov 3, 2026 at 7:37=E2=80=AFPM Max Kellermann <max.kellermann@i=
+onos.com> wrote:
+> > >
+> > > Rotating or onlining a memcg currently uses hlist_nulls_add_tail_rcu(=
+)
+> > > which walks the destination bin to find its tail while holding
+> > > `memcg_lru.lock` with interrupts disabled.  With thousands of cgroups=
+,
+> > > this takes a long time and causes severe lock contention.
+> >
+> > This is the main cause of the soft lockups and RCU stalls,
+> > right? If so, we may want to add a Fixes tag.
+>
+> Yes. I added (for v3): Fixes: e4dde56cd208 ("mm: multi-gen LRU:
+> per-node lru_gen_folio lists")
+>
+> This commit added lru_gen_rotate_memcg() which calls
+> hlist_nulls_add_tail_rcu() (full linked list walk under spinlock).
+>
+> > The fix itself may not be directly applicable to stable
+> > kernels, but based on the logic of this patch, we should
+> > be able to work out a backport, right?
+>
+> The primary copy of these patches lives in our kernel branch that is
+> based on 6.18 LTS.  So I already have a set of patches that can be
+> backported more easily.  Do you want me to submit these versions, too
+> - and if yes, how?
+>
+> For me, it is not entirely clear if a stable backport is really
+> necessary (thus I did not Cc stable).  It's not a bug; just awful
+> performance when you have thousands of memcgs, but few people have
+> that.  But that's up for you to decide.
 
-  In file included from kernel/rcu/tree.c:5123:
-  kernel/rcu/tree_nocb.h:1651:3: error: unsequenced accesses to volatile qualified 'jiffies' [-Werror,-Wunsequenced]
-   1650 |                 jiffies - rdp->nocb_bypass_first,
-        |                 ~~~~~~~
-   1651 |                 jiffies - rdp->nocb_nobypass_last,
-        |                 ^
+Okay, thanks!
 
-Per C11 5.1.2.3.2, accessing a volatile object is a side effect. Per C11
-6.5.2, unsequenced side effects on the same scalar object are undefined
-behavior. Per C11 6.5.2.2.10/12, the evaluation of arguments in a
-function call is indeterminately sequenced, meaning any side effects in
-the arguments are unsequenced.
+I guess we can only reproduce the soft lockup with thousands of
+memcgs being rapidly rotated by artificial test scripts? In real-world
+scenarios, would this be more likely to manifest as a performance issue
+rather than a soft lockup?
 
-Add a local variable to hold the value of jiffies before the function
-call so that there are no unsequenced side effects, clearing up the
-warning.
+If so, let's focus on upstream mainline development first.
 
-Cc: stable@vger.kernel.org
-Fixes: f7a81b12d6af ("rcu/nocb: Print no-CBs diagnostics when rcutorture writer unduly delayed")
-Closes: https://github.com/ClangBuiltLinux/linux/issues/2192
-Link: https://github.com/llvm/llvm-project/commit/955715460eaf9188c241c74750637fc82dfcc423 [1]
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
- kernel/rcu/tree_nocb.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+>
+> > Another option is to leave the cleanups in patches 1 and 2
+> > out for now, and make patch 3 self-contained as the first
+> > patch in your series, if that makes backporting easier.
+>
+> I don't think that makes backporting any easier - they are not really
+> cleanups, but refactoring to make [3/5] as simple&small as possible.
+> I wouldn't squash them; it improves nothing but makes review harder.
+>
+> > I'd appreciate it if you could also mention Ridong's earlier
+> > work in the changelog:
+> >
+> > https://lore.kernel.org/all/20251119083722.1365680-1-chenridong@huaweic=
+loud.com/
+>
+> Aye.
+>
+> > > +       if (at_head || !last)
+> > >                 hlist_nulls_add_head_rcu(&lrugen->list, head);
+> >
+> > Do we still need at_head now that MEMCG_LRU_OLD has been removed?
+>
+> Yes, for the "!last" case.  This is, unfortunately, a special case.
+> If you prefer, we could move this special-casing to the hlist_nulls
+> API so callers need not be aware of it.
 
-diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-index b6cfee4e5039..8448a7c578e8 100644
---- a/kernel/rcu/tree_nocb.h
-+++ b/kernel/rcu/tree_nocb.h
-@@ -1618,6 +1618,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 	struct rcu_segcblist *rsclp = &rdp->cblist;
- 	bool waslocked;
- 	bool wassleep;
-+	unsigned long j;
- 
- 	if (rdp->nocb_gp_rdp == rdp)
- 		show_rcu_nocb_gp_state(rdp);
-@@ -1639,6 +1640,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		rsclp->gp_seq[RCU_NEXT_READY_TAIL].exp);
- 	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
- 	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
-+	j = jiffies;
- 	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
- 		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
-@@ -1647,8 +1649,8 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 		"lL"[raw_spin_is_locked(&rdp->nocb_lock)],
- 		"sS"[!!rdp->nocb_cb_sleep],
- 		".W"[swait_active(&rdp->nocb_cb_wq)],
--		jiffies - rdp->nocb_bypass_first,
--		jiffies - rdp->nocb_nobypass_last,
-+		j - rdp->nocb_bypass_first,
-+		j - rdp->nocb_nobypass_last,
- 		rdp->nocb_nobypass_count,
- 		".D"[rcu_segcblist_ready_cbs(rsclp)],
- 		rcu_segcblist_segempty(rsclp, RCU_DONE_TAIL) ? "" : bufd,
+I mean, you might not need `at_head` at all if you rebase your code
+onto either mm-new or mm-unstable.
 
----
-base-commit: 18b332441bbf59fa537929fe390238e137a6caff
-change-id: 20261114-rcu-tree_nocb-wunsequenced-02d11678cf42
+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/log/?h=3Dmm-new
+https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git/log/?h=3Dmm-uns=
+table
 
-Best regards,
---  
-Cheers,
-Nathan
-
+Thanks
+Barry
