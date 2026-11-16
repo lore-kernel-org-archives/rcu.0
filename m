@@ -1,60 +1,65 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794788160;
-	b=pbDWcn7xw6kYFjweOB4N4+UCw/3G8ryy8gLgLEwxdqkl0RiiwqIl5tSt2JanqF4FqT/J
-	 IBeuIoLe3vnl1eU6vx/a0XoXgCHS1LMKl1hjQOZmA9VekKD2Nf2PC1UIJ7VpwEhmnyuKn
-	 +EmwHpEXcWVu1E/emc52CUCE3jb99199z9bMart3nTIAehphucpjukqjaJ8VwxXizn/j9
-	 2peKB3H8MaV25ePQEJjNxIiDGDxAbUVu8WqBdJ4mM+Tg7lIVj4AEDX8K1enYJWcINamLS
-	 o/Txjwbz/zCeg6N9mdyUvJaI4v9rW0ETXjZZopiFbzfGTfB5n9hF4bFgUwLWF0nvy0w==
+	t=1794790143;
+	b=s4dPj0wPIl02SogIkM2WNnwa0FCutpXSaCGWwb59JFRu4TfX4fTn6sj+V+q656cv26ZQ
+	 xihMcNPVtgM5M3AiELWtroSLsTkch0SLtkfWDKpWJUxhDNMZ2oRhk3wMycbkxLyRJVvaf
+	 VWlFBggYg4CSKlbpohQdB14U4PLnaLFA4uOyN7s5X9ab3ClW+3uHpoJEfIhivEUhz7vTO
+	 6CDEcpXIseWyZ+Y+km7MgICYLX4MSIYbIfim9BWPDNh2dVeZyjcH3ud7AQbUYIjefYoMP
+	 +NkEswk1JImzeRQxNvUIeAhIPBh8REwbZWUcM0DHBvU16L4gYrJnz0dqvYdI2T/3Yjg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794788160;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=XbflNfoz1rdC4d5kBQ1bUVRq6zWboFqnaVnEoOvRsHY=;
-	b=amI1oKrRCCMxv5mIcVACD/9i8qX1LlkKwUYsN7lMjd3I26HJcFCRQQFGQoEgn3TiD1X1
-	 klSNJvbARM+8Ce3hVLCzwnemc6xxhL4uVHIjIATcW5tm7DqQkdV2DMj9jV7D1K5lGaMJk
-	 nxtok7jHmaT907iNrucna0pW85g2GQROGIvZsxkkzGdZz79Qj2DxHfUxwVLFPV1sw8N1v
-	 SYFXjuIREgBX5/2S9j39PQyK32OFyTjCKPdtZ2pRyy5Nyfs9nF7lTFZBTgG614g1L9Wx8
-	 I60wTL/xGVL9apPTbpcY+3QQcUyFOmOAvck5XgPcEH9QbcRpX0pvMXEzYGm4eyIldkQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794790143;
+	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
+	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=7B4CD7AhexizOc7pFHBbwCQlAUUwVUZRIBZIAJ5e5uA=;
+	b=SZjoRTinIP+Tse+d3S3LX5RAN1mGvqcqshbHCi/B0zxP3Z8JBmA83+efjuPdv3af7yyR
+	 rf7L9ZI7sWAiq7X65F3RDDqtI8sXeF1o2jhNjfo/iwBdi4uSGXA60pxpuIYpe+5L/i1xU
+	 rYNaOBxkbqCSzOZB9nd925AKATI/L9N2TXOz9g2gElGUDj7XwiSqKZ1ddJlzFjQED2BTu
+	 /TJMpvGTMKpHYW4RWtcvNal5M/QPqAb7ezc1BFQ+wOLLZ6SDueH9oPWTeChZp+9epflIu
+	 Cs7iOqBXqbS4t9Cc7oIuCCCMWgT+WwQQgdLT39zy4sYc+t5A8vz5c86DNUskZGrtrig==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bp9HFEmm;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UVxlh2Ul;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 02125606A31F;
-	Mon, 16 Nov 2026 00:15:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2B2606A31F;
+	Mon, 16 Nov 2026 00:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=bp9HFEmm
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 7048A1F000C4;
-	Mon, 16 Nov 2026 00:15:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UVxlh2Ul
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE921F000C5;
+	Mon, 16 Nov 2026 00:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794788159;
-	bh=XbflNfoz1rdC4d5kBQ1bUVRq6zWboFqnaVnEoOvRsHY=;
-	h=From:To:Cc:Subject:Date;
-	b=bp9HFEmmGyo4Y8XZCQON32KppS8KTJN7EbqjHg62h3Dxb4YkUNhXf1ifdNX7xh4eG
-	 JyMNWvkGk/WXeSDEnDBh92QyQrf/pf4Ep13S/tYO2ywZerWeDR58214Mw7RFFvHHFK
-	 C+q6/DBe5ytIIy1V7SFNz0EB3u9VJeB2DS3D4T3p+a9dBvOaRsQPb9U9IbBJiqwZBf
-	 Y9m5QigtLyp9fZAYEHnHLYMSgcjXSdR0b6pn/zXLEz4dd3yJFGhoVtLuq1Oe/j5C+/
-	 2xXzvL6mrC62neXa1GxqiC0BgJL9ia/L5vaGb2GbJ1ueOVsGZukMJNBbovl0YFRbMs
-	 l5/8okG3elj0w==
-From: Joel Fernandes <jfern@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: "Paul E . McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
+	s=k20260515; t=1794790143;
+	bh=7B4CD7AhexizOc7pFHBbwCQlAUUwVUZRIBZIAJ5e5uA=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
+	b=UVxlh2UlItQLZgi45jk6Dv5h7rZ1dXedkKzaPxSQSuOvpcI0x3SaeGLZxhMX1WGTq
+	 OfK6/n1BnXZpDumajPBg9fF2ESXudtGEZjWI4k2PttjlxtgNM2lYqd6yCWY1VA2uwH
+	 xlvOYUGrXMBgH45CubGFmfWCRgnANhi/jw0S9RzSRb6QYps2W19kKJEUV4THA19Yxq
+	 bIJZrjtAyYiPRmCBQOkuuW23HWFfrDuByb1CarHdzRT81+LXqyCUpEPQCh+fQ5uicG
+	 ncK9n0Ay2GvdMt7fAf/Tex9Ew043z1PyOtTtNhscZA0MdPIRZ7LWlgleVGY8wk8chM
+	 Qh/ssqAPXoSGw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id D92ADCE0C39; Sun, 15 Nov 2026 16:49:02 -0800 (PST)
+Date: Sun, 15 Nov 2026 16:49:02 -0800
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Joel Fernandes <jfern@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Boqun Feng <boqun@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Song Liu <song@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	rcu@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [GIT PULL] RCU fixes for v7.4
-Date: Sun, 15 Nov 2026 19:15:56 -0500
-Message-ID: <20261116001556.763913-1-jfern@kernel.org>
-X-Mailer: git-send-email 2.54.0
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
+	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH for-v7.5 13/14] rcutorture: Disable RCU priority boost
+ testing on non-TREE03 scenarios
+Message-ID: <423dba4b-d7fd-4d43-913a-96ebdbe3a3be@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20261113005747.2977123-14-jfern@kernel.org>
+ <20261115233651.GB3906606@joelbox>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -64,66 +69,43 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261115233651.GB3906606@joelbox>
 
-Hi Linus,
+On Sun, Nov 15, 2026 at 06:36:51PM -0500, Joel Fernandes wrote:
+> Hi Paul,
+> 
+> Can I fold in the below diff?  Sashiko found this issue in [1]: 12/14 removes
+> CONFIG_RCU_BOOST=n from NOCB01 and NOCB02, so boosting is now on there too and
+> rcu_torture_boost() would start, but this patch adds rcutorture.test_boost=0
+> only for TREE01, TREE02, TREE08 and TREE09.  The diff sets it for the two NOCB
+> scenarios as well.
 
-Please pull these RCU fixes into v7.4.
+Please do!
 
-The following changes since commit aebb7274476403040d582c61478df8f4a7bf9cd3:
+							Thanx, Paul
 
-  Linux 7.4-rc3 (2026-11-15 14:30:11 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rcu/linux.git tags/rcu-fixes.v7.4-20261115a
-
-for you to fetch changes up to c3f98ff6309a29979e1867bc3c9d4172755ca122:
-
-  rcu/nocb: Avoid unsequenced accesses to jiffies in show_rcu_nocb_state() (2026-11-15 18:52:04 -0500)
-
-----------------------------------------------------------------
-RCU fixes for v7.4
-
-Fix a build break with recent clang, which warns about unsequenced
-accesses to the volatile jiffies variable in show_rcu_nocb_state() and
-fails the build with CONFIG_WERROR=y / W=e.  Read jiffies once into a
-local variable instead.
-
-Also replace the rcupdate.rcu_task_collapse_debug module parameter, added
-in the v7.4 merge window, with pr_debug() for the RCU Tasks callback
-contend/collapse messages.  The messages stay off by default and can be
-enabled with dynamic debug, and no official kernel carries the extra
-parameter.
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEcoCIrlGe4gjE06JJqA4nf2o45hAFAmr6RvAACgkQqA4nf2o4
-5hCnfg/8DqHU2c4j5ZLgYK7oD99BNg4VTErwkBwwx8eCRb87agrdljsQo8keZBwB
-BSbN+gaasl3NvqKUh7lAopAvoZtfk3ymtw4oafDCHa5jJFZV1E2bGUbDBKBwuzlj
-6BBHEPFitd5q6z6nlyhSx7289NYoRhr9InMNv/L2kYKnn4bq79Ojf1Z5nQZRHPRz
-TUGIwDoVf0G+oh0z2TtrMSNAC4OBPP7Hsq2/m3xaeS2pWS8YziFM7rXcnJaWve4t
-D4VjZGWOTQCWOCeYBbyckXSa2zLBSlwCfarbkPfpo1FhdcwBmXdeNvt9MnZ2sRP0
-Ff/x+rd5LkzQ3niHYufuxflGv5XLoiaJgiU9rztlD9U2O9sheVaRcf7BaDs77C+f
-NmteR2H67svHfK93bOgTNvFVBX90Y4Qa4WPft6g9QbuGkIGD6hJRBbveTeCNsbPM
-vmvU/cPYwjcpGZiyPcglpAoIYK8e9F7hspXrpvJTjnoF0p1b2TefpHZS+ozZIcj8
-6uD28K2dp+CLAzuLkC5FzgITvWPdIEYiEq9WD0A/kOPO5fZ0+BmOiekb4iBnnHdK
-H6HujCvGYhwLGqlJ1aoc7VxoQp+zz9ZOwJzQ4pV9xO/WiHZroEiQvinsgs1+NYOb
-jATSr9YPap8CNRqjwMNXK1ppKKkfPdix+JYcx4/WGFzZhCiDM54=
-=tbXB
------END PGP SIGNATURE-----
-
-thanks,
-
-Joel Fernandes
-
-----------------------------------------------------------------
-Nathan Chancellor (1):
-      rcu/nocb: Avoid unsequenced accesses to jiffies in show_rcu_nocb_state()
-
-Song Liu (1):
-      rcu-tasks: Use pr_debug() for callback contend/collapse messages
-
- Documentation/admin-guide/kernel-parameters.txt |  7 -------
- kernel/rcu/tasks.h                              | 15 +++------------
- kernel/rcu/tree_nocb.h                          |  6 ++++--
- 3 files changed, 7 insertions(+), 21 deletions(-)
+> [1] https://lore.kernel.org/all/sashiko-outbox-213970@kernel.org/
+> 
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
+> index 5130bc84c435..fe37cfc8eadb 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
+> @@ -1,2 +1,3 @@
+>  rcupdate.rcu_self_test=1
+>  rcu_nocbs=all
+> +rcutorture.test_boost=0
+> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
+> index c212ae299b0b..3ea4f5c2a5ef 100644
+> --- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
+> +++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
+> @@ -1,3 +1,4 @@
+>  rcupdate.rcu_self_test=1
+>  rcu_nocbs=all
+>  rcu_nocb_poll
+> +rcutorture.test_boost=0
+> 
+> Thanks,
+> Joel
+> 
