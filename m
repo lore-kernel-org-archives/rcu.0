@@ -1,48 +1,48 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794790143;
-	b=s4dPj0wPIl02SogIkM2WNnwa0FCutpXSaCGWwb59JFRu4TfX4fTn6sj+V+q656cv26ZQ
-	 xihMcNPVtgM5M3AiELWtroSLsTkch0SLtkfWDKpWJUxhDNMZ2oRhk3wMycbkxLyRJVvaf
-	 VWlFBggYg4CSKlbpohQdB14U4PLnaLFA4uOyN7s5X9ab3ClW+3uHpoJEfIhivEUhz7vTO
-	 6CDEcpXIseWyZ+Y+km7MgICYLX4MSIYbIfim9BWPDNh2dVeZyjcH3ud7AQbUYIjefYoMP
-	 +NkEswk1JImzeRQxNvUIeAhIPBh8REwbZWUcM0DHBvU16L4gYrJnz0dqvYdI2T/3Yjg==
+	t=1794790174;
+	b=HA5RGdXXXpBK0kbZOzG/etsWnI/0R4QFFXi0IH4mRYJ0eStn5wmS8JRTeSgLNXRvW2sY
+	 82aX3RhHcB+3IGtGjKsgHfdf0mVWxs5aIQSvSVa26bNXMB8zm9OTzJiYiu1RinYDR/UWO
+	 h1uVarUJqkt2T+WUeuTZ1EpycxNa+NR9da36B0ISfhyQjvEM5Dz+cy4FJq3sHzd8FijwB
+	 T9HSvAGeDsbPAzj1ankGqlYIGr28VCf5+lry1DxbccdfqNhcHk5A5la4enELllhKhQsYT
+	 LeEfTnzxyOndIEGBHilwk7xzrepDvnQ0JSRGwxEE6wSc0iDxv196+gVHESwMULz0D9A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794790143;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794790174;
 	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
 	 Reply-To:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=7B4CD7AhexizOc7pFHBbwCQlAUUwVUZRIBZIAJ5e5uA=;
-	b=SZjoRTinIP+Tse+d3S3LX5RAN1mGvqcqshbHCi/B0zxP3Z8JBmA83+efjuPdv3af7yyR
-	 rf7L9ZI7sWAiq7X65F3RDDqtI8sXeF1o2jhNjfo/iwBdi4uSGXA60pxpuIYpe+5L/i1xU
-	 rYNaOBxkbqCSzOZB9nd925AKATI/L9N2TXOz9g2gElGUDj7XwiSqKZ1ddJlzFjQED2BTu
-	 /TJMpvGTMKpHYW4RWtcvNal5M/QPqAb7ezc1BFQ+wOLLZ6SDueH9oPWTeChZp+9epflIu
-	 Cs7iOqBXqbS4t9Cc7oIuCCCMWgT+WwQQgdLT39zy4sYc+t5A8vz5c86DNUskZGrtrig==
+	bh=E0D8N8G+zEmku/06qMS2sDSDN9cKW5ShnuCBC1SI0dw=;
+	b=qWDxGiuqEYBlqRFqL+NEiBHy9fDbYyf5xanLiiLxs3r15CXQLu25R90IrSMvtEU5XJ2e
+	 6+wb2jVT3Ducz3OKXBW1hy1wfcbLZt102VWt4iPqJsozqaFqsEFLIO82h0qHEEDNRUAhF
+	 FcaP2DGLOjeycH3leuy7UzYFxKqG9KaPDAKuk/eCDkf3hiIQa2zJsCpbMaC6QZpdcw8lU
+	 mvspI5Jc1CmbPrLIFMNS57HfhnAgBdL7QW2BRCHvG/KQn8uBpNpP3jyQqID5Zqc/jQMMy
+	 gUg6/iGe5UNX7gj/a/uBHbLquTFyKWrE5qg3y24FjVWno3E5wMDC5fTjfWeabKJAMnw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UVxlh2Ul;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZnC3Qo72;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2B2606A31F;
-	Mon, 16 Nov 2026 00:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10B9F606A32C;
+	Mon, 16 Nov 2026 00:49:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UVxlh2Ul
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DE921F000C5;
-	Mon, 16 Nov 2026 00:49:03 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZnC3Qo72
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBD481F000C4;
+	Mon, 16 Nov 2026 00:49:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794790143;
-	bh=7B4CD7AhexizOc7pFHBbwCQlAUUwVUZRIBZIAJ5e5uA=;
+	s=k20260515; t=1794790173;
+	bh=E0D8N8G+zEmku/06qMS2sDSDN9cKW5ShnuCBC1SI0dw=;
 	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To;
-	b=UVxlh2UlItQLZgi45jk6Dv5h7rZ1dXedkKzaPxSQSuOvpcI0x3SaeGLZxhMX1WGTq
-	 OfK6/n1BnXZpDumajPBg9fF2ESXudtGEZjWI4k2PttjlxtgNM2lYqd6yCWY1VA2uwH
-	 xlvOYUGrXMBgH45CubGFmfWCRgnANhi/jw0S9RzSRb6QYps2W19kKJEUV4THA19Yxq
-	 bIJZrjtAyYiPRmCBQOkuuW23HWFfrDuByb1CarHdzRT81+LXqyCUpEPQCh+fQ5uicG
-	 ncK9n0Ay2GvdMt7fAf/Tex9Ew043z1PyOtTtNhscZA0MdPIRZ7LWlgleVGY8wk8chM
-	 Qh/ssqAPXoSGw==
+	b=ZnC3Qo72C6TkP5AGe79E48HTpmvVbpXRkqSXmp92Ww4GMlTPQwLAQkMzo3Z/VywZd
+	 SEZRBNxjlaP/Ktg4pbbEQBCQATEXRKvnHFJfJ+4OwOB6x7PrgWKSapGyq4XFy5sjeX
+	 I1tcYKbuT/7BM8bazqsQtd/bprMAH8f6JLRb+V8qUfVtkqli/NiRi5o+35aDw746OW
+	 LoGfOAqoaNA5+taKR94ko9WeROPzcAQiDSU749B3QTNSe/Q1Ml5OGJj/Es7XoMtHjU
+	 cYIbM03bVOZxh8hj27IczOlKPhdk/hbcP51gi2GvJ227hpt/jtdkqvPmnrxD7XNWGK
+	 u/D+mSn1ZfOdQ==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id D92ADCE0C39; Sun, 15 Nov 2026 16:49:02 -0800 (PST)
-Date: Sun, 15 Nov 2026 16:49:02 -0800
+	id A5D97CE0C39; Sun, 15 Nov 2026 16:49:33 -0800 (PST)
+Date: Sun, 15 Nov 2026 16:49:33 -0800
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: Joel Fernandes <jfern@kernel.org>
 Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
@@ -53,13 +53,16 @@ Cc: linux-kernel@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Shuah Khan <shuah@kernel.org>,
-	rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH for-v7.5 13/14] rcutorture: Disable RCU priority boost
- testing on non-TREE03 scenarios
-Message-ID: <423dba4b-d7fd-4d43-913a-96ebdbe3a3be@paulmck-laptop>
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Clark Williams <clrkwllms@kernel.org>, rcu@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kselftest@vger.kernel.org, linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH for-v7.5 12/14] rcutorture: Enable RCU_BOOST where
+ supported
+Message-ID: <ea57ec3b-fcb0-4382-8327-3384b38e2747@paulmck-laptop>
 Reply-To: paulmck@kernel.org
-References: <20261113005747.2977123-14-jfern@kernel.org>
- <20261115233651.GB3906606@joelbox>
+References: <20261113005747.2977123-13-jfern@kernel.org>
+ <20261115233931.GC3906606@joelbox>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,40 +74,45 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261115233651.GB3906606@joelbox>
+In-Reply-To: <20261115233931.GC3906606@joelbox>
 
-On Sun, Nov 15, 2026 at 06:36:51PM -0500, Joel Fernandes wrote:
+On Sun, Nov 15, 2026 at 06:39:31PM -0500, Joel Fernandes wrote:
 > Hi Paul,
 > 
-> Can I fold in the below diff?  Sashiko found this issue in [1]: 12/14 removes
-> CONFIG_RCU_BOOST=n from NOCB01 and NOCB02, so boosting is now on there too and
-> rcu_torture_boost() would start, but this patch adds rcutorture.test_boost=0
-> only for TREE01, TREE02, TREE08 and TREE09.  The diff sets it for the two NOCB
-> scenarios as well.
+> Can I fold in the below diff?  Sashiko found this issue in [1]: with
+> RCU_BOOST now enabled without RCU_EXPERT, its dependent options
+> RCU_BOOST_DELAY and RCU_NOCB_CPU_CB_BOOST would prompt during "make oldconfig"
+> for non-expert configurations.  The diff shows those prompts only with
+> RCU_EXPERT; the defaults stay in effect.
+> 
+> [1] https://lore.kernel.org/all/sashiko-outbox-213970@kernel.org/
 
-Please do!
+Good catch, and again, please do!
 
 							Thanx, Paul
 
-> [1] https://lore.kernel.org/all/sashiko-outbox-213970@kernel.org/
-> 
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
-> index 5130bc84c435..fe37cfc8eadb 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB01.boot
-> @@ -1,2 +1,3 @@
->  rcupdate.rcu_self_test=1
->  rcu_nocbs=all
-> +rcutorture.test_boost=0
-> diff --git a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
-> index c212ae299b0b..3ea4f5c2a5ef 100644
-> --- a/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
-> +++ b/tools/testing/selftests/rcutorture/configs/rcu/NOCB02.boot
-> @@ -1,3 +1,4 @@
->  rcupdate.rcu_self_test=1
->  rcu_nocbs=all
->  rcu_nocb_poll
-> +rcutorture.test_boost=0
+> diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+> index 2d0132e0a90f..a0c10750b792 100644
+> --- a/kernel/rcu/Kconfig
+> +++ b/kernel/rcu/Kconfig
+> @@ -249,7 +249,7 @@ config RCU_BOOST
+>  
+>  
+>  config RCU_BOOST_DELAY
+> -	int "Milliseconds to delay boosting after RCU grace-period start"
+> +	int "Milliseconds to delay boosting after RCU grace-period start" if RCU_EXPERT
+>  	range 0 3000
+>  	depends on RCU_BOOST
+>  	default 500
+> @@ -325,7 +325,7 @@ config RCU_NOCB_CPU_DEFAULT_ALL
+>  	  Say N here if you are unsure.
+>  
+>  config RCU_NOCB_CPU_CB_BOOST
+> -	bool "Offload RCU callback from real-time kthread"
+> +	bool "Offload RCU callback from real-time kthread" if RCU_EXPERT
+>  	depends on RCU_NOCB_CPU && RCU_BOOST
+>  	default y if PREEMPT_RT
+>  	help
 > 
 > Thanks,
 > Joel
