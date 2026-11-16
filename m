@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794849992;
-	b=sHKqw4NCq2vWTjV9GgxXS3MsLoG2Jql0eP6OtbkrB614v1XVCK4HN1LFIuaoBZGkXrCF
-	 UpgcUjbO07t1EbDTroiyfgqxQ8f1UymrGUYKNSxXflgfvzBjMYKmvVMpQx/wi67DVd+Tv
-	 ykFWEq0/9NDNO8FzFs8XA7SI1eO5F+BlV2XeMCZ/9/OvIYQPmGPlWSR4Ps78bG77oJMO0
-	 y8gQrP1kaCj7h+MB/N758y8pwwMMyW1nhoDYOJyXk/kqEJuOErhNuAbxbPRu38qescpH5
-	 2vXvICUMGPo2nwEibmCHyCeZogYmB/ISfOdzyTnQc4ZlFj5kAEP9AtrAUZmzI7YrdPA==
+	b=PczWZeP6rsHKOmjelwdO/1ENxMPoYVoHwp+q7YDn0G/RRbACTPF9TBVkbBIKnk/mK0GT
+	 nLFlG2xJwt6wvC6GGFz7a5EkZ04JwnsAbjMOQLA7oXutzgWa3dY5RYFud1As/I6C/zrfF
+	 4Td9Np6JU8DYKaU+gocgfFtq25s/uiz+fM+OVL0pwkzOtycAXf5XjQll2rud6P9nW5hKw
+	 OAEjbGYZF5DYeqJMlK5YClOW/KUw2qZ186lJhSZwYg+R91+spXoIeFDemaO1Q7FB3u/HT
+	 vGaNwA1oMlGwE6fL73hHIZeIJYKcgWgm+Ifdcc/v8SZbzVUJhJwnhKjXXeS8+Mx5Fdw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794849992;
 	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=rIBBEzRt72FhXx3DW1CqFstT0cyrNv/BtocHWknVpdg=;
-	b=YOxRGJgHo7oJkwYwqXrok+ZptFCZagbabq09SLpEAD42QQSzGwrMu/gq5f+RhTeMMq6W
-	 lBMPJPPWqO3gH8OQYtYUrkg6a8Sve19MqWjLqURXOz9f+ioYwb4Z4cX51/dniasYVfJtf
-	 Q203rFutl8x/qZRG3xA9TdZmcfDX49bL/wYdjC1bpr1fn9gI88o7dR2/3NsZAoYqAM3BU
-	 M8Y9VdPJk6g4AGLyo0r5zBMIrNm/YpjrjVpjUylGh//iMjONTgQnj3h+UVz4ItEysIaxN
-	 +Rf/IXTWgXFXwfVZrJ9OYNQilwd1fctOzYgvzqBCtgD4sUVROCma/tqCp3+OWErCt5w==
+	bh=YUCKTRSSsAgWE/GL3hdaISXeQYPAwBu0PKw5Xlanm3s=;
+	b=vj/wJMPK/RILtgbpx96ZTewurquzirSDievoa2Kaz6nPY22YFmIUh4fwTYEZY5x8NIdG
+	 9sYvpwcDdxJQZ3FcmW3wfy/mQZZa4gvBwZFfEctFW30YvTH76sZ7PHswnZjti9tz/919+
+	 lbwaIXellWpJNLfRvNa8kKijj7i6eTVxHKw3ZqI7d9bal8f6f3FCSYQ4rYN59Nn4SDRP/
+	 1HJRFHxjL0NefPT4T6Tiq4JgjpYk1K6+WPmLPS8Y2MWWhD7thVv0tmoHrJM4HLlc+S6Ce
+	 MAHQ+QQQszMQ5Y8Cp+7DX2daVIRJ2Yrp86kqETIVMXBIBG0lQg2o4xQ5e3xgQ2cTQtA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=THE0jom8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Eizhsx6o;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA390606A32F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA43F606A330;
 	Mon, 16 Nov 2026 17:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=THE0jom8
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 706031F000C4;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Eizhsx6o
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99F171F000D1;
 	Mon, 16 Nov 2026 17:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1794849992;
-	bh=rIBBEzRt72FhXx3DW1CqFstT0cyrNv/BtocHWknVpdg=;
+	bh=YUCKTRSSsAgWE/GL3hdaISXeQYPAwBu0PKw5Xlanm3s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=THE0jom8KK0i/Cw/p/xoyb6LGeO8f048V5UFFsYm0993JgRH5JB489Vm61V4ly/0R
-	 bx878cfOrg1tHIkBwG5T6dFx+4gPgjBgyZyO0Klx6oOLSAivxlnKTEl+pv3AFLgKD/
-	 AR5pY+LbU1pl0LbWQlfk8mCi5Jzl+RsRt2Xu/N/dVNK1dJj6TsvQ6vCSC0JyB/MtbJ
-	 6uThizMSdKI0EyYDEdlrx3KmkLnKLPu8Ps4uEp8Z56kesQVV66/SpfXsPVPk2TYpZ4
-	 FMwKRrbWC/K0kxmFg84UTmIML7SViqVZXpSa8TWk3XgMDustJ8fAZh6e4gDBUNkM//
-	 OGjgGxHmDxqcA==
+	b=Eizhsx6onFmWOJl0ppQ8Rh33pBqdcFi/nwHoQQ0eNEb+iLecCcCO+mcHz/pjG+2+g
+	 bPQB4nLP/ZmEApCJoN+dcRI/vH4KLxHtQMyidvI3dy2e1hiuWCCqYRnlXKcUYZ7CYN
+	 mJdA4I+K7z4uODoTuPVwJFQ7f6VN0LyzPHiX0UGdTl1YbBiKho3xipuUto24L5VN7y
+	 zg7ke3x+ftudABn4UTOjiCPlrH0orgVKF2uAvsNS49UZ/FrkVBkUOVPDWs7tpvBVis
+	 On/iUYxM2fLOhaHkHWmrqLG9pFbBUft59KqhmWM+GER2zPiAeaVXDdUl37db9vikl0
+	 6zkPz7puDR1sA==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 426EDCE097D; Mon, 16 Nov 2026 09:26:32 -0800 (PST)
+	id 4AD6CCE1059; Mon, 16 Nov 2026 09:26:32 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Joel Fernandes <jfern@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Puranjay Mohan <puranjay@kernel.org>
-Subject: [PATCH 1/6] MAINTAINERS: Add Puranjay Mohan and RCU reviewer
-Date: Mon, 16 Nov 2026 09:26:25 -0800
-Message-Id: <20261116172630.3845508-1-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 4/6] rcutorture: Make torture.sh test NMIs for RCU on x86
+Date: Mon, 16 Nov 2026 09:26:28 -0800
+Message-Id: <20261116172630.3845508-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <bf761cab-7423-464b-ba8e-bd39ad0eb089@paulmck-laptop>
 References: <bf761cab-7423-464b-ba8e-bd39ad0eb089@paulmck-laptop>
@@ -67,27 +66,39 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Puranjay has made substantial contributions to RCU over the past year,
-so it is time to add him as reviewer.
+This commit adds '--qemu-args "-cpu host,pmu=on"' and kernel boot
+arguments "rcutorture.nmi_readers=1 rcutorture.nmi_calls=1" for
+--do-rcutorture runs of torture.sh.  This ensures regular testing of
+atomic RCU readers and call_rcu() updaters from NMI handlers, at least
+when running on x86 systems providing PMU support.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Puranjay Mohan <puranjay@kernel.org>
 ---
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 93abbb315065d..6ebe13dce75dd 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -23485,6 +23485,7 @@ R:	Steven Rostedt <rostedt@goodmis.org>
- R:	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
- R:	Lai Jiangshan <jiangshanlai@gmail.com>
- R:	Zqiang <qiang.zhang@linux.dev>
-+R:	Puranjay Mohan <puranjay@kernel.org>
- L:	rcu@vger.kernel.org
- S:	Supported
- W:	http://www.rdrop.com/users/paulmck/RCU/
+diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
+index 0be8bb08c5ca0..bc842c94c4379 100755
+--- a/tools/testing/selftests/rcutorture/bin/torture.sh
++++ b/tools/testing/selftests/rcutorture/bin/torture.sh
+@@ -513,8 +513,15 @@ fi
+ # --torture rcu
+ if test "$do_rcutorture" = "yes"
+ then
+-	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000"
+-	torture_set "rcutorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration "$duration_rcutorture" --configs "$configs_rcutorture" --trust-make
++	qemu_args=
++	if test "$ifnotaarch64" = yes
++	then
++		qemu_args="-cpu host,pmu=on"
++	fi
++	torture_bootargs="rcupdate.rcu_cpu_stall_suppress_at_boot=1 torture.disable_onoff_at_boot rcupdate.rcu_task_stall_timeout=30000 rcutorture.nmi_calls=1 rcutorture.nmi_readers=1"
++	torture_set "rcutorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus \
++		--duration "$duration_rcutorture" --configs "$configs_rcutorture" \
++		${qemu_args:+--qemu-args "$qemu_args"} --trust-make
+ fi
+ 
+ # Test atomic SRCU across Tree SRCU (SRCU-N and SRCU-P) and Tiny SRCU
 -- 
 2.40.1
 
