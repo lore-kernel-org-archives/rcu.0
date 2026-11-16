@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794849993;
-	b=VKOlqK/8L37sP7m6OWmmB7wmfzRDCq+fmP4nyrBdXQMP84R72qjgTJsiQg38EP2bxYXu
-	 OtYlmG1tca9alRYV/UZteTCMa4VqS+H094tl7RKodL5hC29JTJRSdNfHxQ4FXtIbA8VdL
-	 ii55zoIh+s6ndWPUTBZ8s7e9DqKHNUrDjMtFDdij2WAj4e2/nNUCL4iIN/8SRFLMl5TzD
-	 hmRnTLND6s8qYWZshTKFaDsIyfiMrV018n1egzrzgGlVwSy8g/IMjznOQXffVkWqyru6Y
-	 Uo7H3s5TwH6dqTdMdXz81dCKV2+tBkz021aECHrC6pd25q0wk1AxZiI04E6usY3LrzQ==
+	t=1794849992;
+	b=wfO5yl908ljHUE4hFPGmnG7lwJj3lsFmtP1MR5MVwVgrNHeKpsILgtFoMpq/bbYQbj56
+	 3xLJHETz3Z0hwnsGDZJD43djJgUc3aSqrMrfigpsQ8f+X8AMs632T4nmfVPPCHOCTN+i/
+	 ZRo9/uGqgiT6rv3Q6hSsL24vf2odVanzcFCdXnW6kAHYmJOOi201ySUJfgn725ayX5eXm
+	 u/UaayN9C4aHBuBC1oaAqpUnUzkXLFKVZ+EvQ9OkOIxYZZaWyUkkjK7duA0eZLiZvs+uZ
+	 NmZfQLqX00REV/7alzO7UuecEWCuAH+pZHZcnbKdqySi4+B28hCwGo8Iys5eEXpS2Ww==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794849993;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794849992;
 	h=Received:DKIM-Signature:Received:From:To:Cc:Subject:Date:Message-Id:
 	 X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=qBwEFnQEcVdAKwkWIQ7HQnR6gf0Ou49tC97b1GBRmpk=;
-	b=nQ2jt2MIxz4agA8y9f+Fg8bPcmZU8/VBTfkTteGgJjRyZxjLuBv5yJ5gsZexYksDgQkP
-	 MAianU+vlN+hl5lrVAjtp/w4visZnwRltuVUf1Ox2qzSlVX+xzS/q4hqSKc2/rFiP+gpn
-	 veGuufbPby9V1Ij6Wa3cut/MJiF2C4vCrMdCvojLqiNwZ33UuGJIEciEIsoETcrm2NHsf
-	 yf82svr45przc9IXgJYUz1NmSFUbVUsV3Eue4jfDDI0b5YvA4QBqk4Z3c6l7CGO/D3vfg
-	 M9nReOtFD7n1z4h8f1BAX9aCUWNNI/hHVxDvZZjFSizgWo01Q4EEFv5jOZayYIS2oBw==
+	bh=799pxbWu9pD5xdtludeThN+v10o3r7jfv10yL1+vqnQ=;
+	b=tqCLAqoDipVmt3lUZvaUp4D7MXN8ftX5/7DmaubacW85DoQvt7J1HkiWUF+eX9yt8zMe
+	 4IgWuOj01VArVs/8qqTO0nuZqCBZuvxNPaUNZvUdYPaoVpft8oY6qHBCwFeF0WO+ExYSC
+	 OPNtAg1fMxCwhk00UTn5p19Th2J95dugs7Q54Pgd+jN8CqiQtFhZhwWE01gLyPlw3+4qz
+	 AIXNCZjyeilCa5VGO0b1HrzwJkRXkjEEXlCFdTQHQAzsd+aCu6GYMByDu3K/sFxOcHgUE
+	 QEvTy35DSVukhmc+tvFrxGaKcOfuHx8J2fvd6PvPTZKVEDjudaD7JaohfQWAAApt7QQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="oRfbr52/";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KxTjhrCB;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13F8B606A33F;
-	Mon, 16 Nov 2026 17:26:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA5D9606A333;
+	Mon, 16 Nov 2026 17:26:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oRfbr52/
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA1A51F000D4;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KxTjhrCB
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80A7D1F000C9;
 	Mon, 16 Nov 2026 17:26:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1794849992;
-	bh=qBwEFnQEcVdAKwkWIQ7HQnR6gf0Ou49tC97b1GBRmpk=;
+	bh=799pxbWu9pD5xdtludeThN+v10o3r7jfv10yL1+vqnQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=oRfbr52/omWYeJAiebZOwovPaod4yhPr43I6Aly0vYBpbu4FFP2ONDFVAbze9VUXW
-	 QKm+IA20kxQvAxCLhFFvedxsfRx+eZRfAN5oxpPTZrQSz/oVJyNvC8vDjM9du0jQTN
-	 F0GzUj4Jn7gViaDIiiLGPTrPQa/m260Eo7XdfozJ4YoHtxYEytpO0mjNOeFsaSDzxj
-	 Kt9+z0GIzFcniq3/NhDiwSrYmN8IfPRhUS+wub1dWgNT86orOWUU/sH+6J902OHbNQ
-	 F8CDtt0LlcL6y1ZPvEu4WXhfla9Ca2wZc0LjiE4dOpeLU4k7KRjLCrD6xxA4bjL8RO
-	 13jPTQE8/5xYw==
+	b=KxTjhrCBtwhDFge9fZKYR986ABTPWVDDcHGGKFmvmjk0793/KGHsGHW1x2SLqj48M
+	 ToUmWr59SQ4tkxtyEwfo99B8O7OtLiY/UhXTS1WThGYfXO5urpKctuaooUAOXQ6rO7
+	 Cc4DVSd5ubi3ugn9PlD5nRk8umK7QewD5tN+Ir6AavfVEmk8vk64rCVgM8+Lm+f5Pv
+	 hvVe6dHI01YtZFVt0tY09jO1qF2hOfOOS/xQMqZuzJrQbF5pA7vesZA6/5camYLw31
+	 9a6PTQ7F8r6bWIs5kOwqUMpmodbwn70UULP716Tk5071TaE3hVxQ6kmU46PKl8Hs99
+	 6f2ovv73EhXgw==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5018BCE1207; Mon, 16 Nov 2026 09:26:32 -0800 (PST)
+	id 453D0CE0A01; Mon, 16 Nov 2026 09:26:32 -0800 (PST)
 From: "Paul E. McKenney" <paulmck@kernel.org>
 To: rcu@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	kernel-team@meta.com,
 	rostedt@goodmis.org,
 	Joel Fernandes <jfern@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Subject: [PATCH 6/6] torture: Use ${:+} to save a few lines in torture.sh's torture_one()
-Date: Mon, 16 Nov 2026 09:26:30 -0800
-Message-Id: <20261116172630.3845508-6-paulmck@kernel.org>
+	"Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH 2/6] rcutorture: Make torture.sh test NMIs for atomic SRCU on x86
+Date: Mon, 16 Nov 2026 09:26:26 -0800
+Message-Id: <20261116172630.3845508-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <bf761cab-7423-464b-ba8e-bd39ad0eb089@paulmck-laptop>
 References: <bf761cab-7423-464b-ba8e-bd39ad0eb089@paulmck-laptop>
@@ -67,37 +66,52 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This commit uses the ${:+} bash substitution pattern in the torture_one()
-function in torture.sh to save a few lines of code.
+This commit adds '--qemu-args "-cpu host,pmu=on"' and kernel boot
+arguments "rcutorture.nmi_readers=1 rcutorture.nmi_calls=1" for
+--do-atomic-srcu runs of torture.sh.  This ensures regular testing of
+atomic SRCU readers from NMI handlers, at least when running on x86
+systems providing PMU support.
 
-Suggested-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+[ paulmck: Apply Mathieu Desnoyers feedback. ]
+
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 10 +---------
- 1 file changed, 1 insertion(+), 9 deletions(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index bc842c94c4379..0498fce14ccd6 100755
+index ce6b7e9589fe5..cd023272137a0 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -354,16 +354,8 @@ touch $T/successes
- # Note that quoting is problematic.  So on the command line, pass multiple
- # values with multiple kvm.sh argument instances.
- function torture_one {
--	local cur_bootargs=
--	local boottag=
--
- 	echo " --- $curflavor:" Start `date` | tee -a $T/log
--	if test -n "$torture_bootargs"
--	then
--		boottag="--bootargs"
--		cur_bootargs="$torture_bootargs"
--	fi
--	"$@" $boottag "$cur_bootargs" --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
-+	"$@" ${torture_bootargs:+--bootargs "$torture_bootargs"} --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
- 	retcode=$?
- 	resdir="`grep '^Results directory: ' $T/$curflavor.out | tail -1 | sed -e 's/^Results directory: //'`"
- 	if test -z "$resdir"
+@@ -523,21 +523,24 @@ fi
+ # does not support.
+ if test "$do_atomic_srcu" = "yes"
+ then
+-	torture_bootargs="rcutorture.reader_flavor=0x10"
++	torture_bootargs="rcutorture.reader_flavor=0x10 rcutorture.atomic_irqsave=1 rcutorture.nmi_readers=1"
+ 	configs_atomic_srcu="SRCU-N SRCU-P"
+ 	if test "$ifnotaarch64" = yes
+ 	then
+ 		configs_atomic_srcu="$configs_atomic_srcu SRCU-T"
++		qemu_args="-cpu host,pmu=on"
++	else
++		qemu_args=
+ 	fi
+ 	torture_set "atomic-srcu" tools/testing/selftests/rcutorture/bin/kvm.sh \
+ 		--allcpus --duration "$duration_rcutorture" \
+-		--configs "$configs_atomic_srcu" --trust-make
++		--configs "$configs_atomic_srcu" ${qemu_args:+--qemu-args "$qemu_args"} --trust-make
+ 
+ 	# Half the readers then use srcu_read_lock_atomic_irqsave().
+-	torture_bootargs="rcutorture.reader_flavor=0x10 rcutorture.atomic_irqsave=1"
++	torture_bootargs="rcutorture.reader_flavor=0x10 rcutorture.atomic_irqsave=1 rcutorture.nmi_readers=1"
+ 	torture_set "atomic-srcu-irqsave" tools/testing/selftests/rcutorture/bin/kvm.sh \
+ 		--allcpus --duration "$duration_rcutorture" \
+-		--configs "SRCU-P" --trust-make
++		--configs "SRCU-P" ${qemu_args:+--qemu-args "$qemu_args"} --trust-make
+ fi
+ 
+ if test "$do_locktorture" = "yes"
 -- 
 2.40.1
 
