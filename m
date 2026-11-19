@@ -1,100 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795098232;
-	b=jpb7bzYeI4UAh4BQKVaGAcxXDInoSTL4Z+XcEwIkkszBkg8rQistT9DZjlR6RS8mmTwb
-	 RPTboXSMl6V98135WHaJUA+l6RUC7G4WC0g1Cmx11L358UwbWArb7oMPT81OkjtAHV2Qk
-	 C6HVz2uqTKdwurlaylKWw5nnuJdwb8iGbsoyY+hrq3iKiEkixX8KJVo6qldnPgtlDGduG
-	 Ws3DwGs4uDQ03XhsvOzHmaAIdEGg7UAez9LTprIMZf/OKfNuZpgThKeNFOjnZzJ5/2Y4i
-	 D0ErPKFRS9we+Pia+mGUDZCmbD0ilmGKEcC6BY00UnV2Uv5Nrwn9gNoIiMxpmBsOl9g==
+	t=1795109034;
+	b=qULUz3rxBh+55P56Uzz+1/ljtobklxJRXdUUFfmxac9iArKauIhuXaVqaeMlNcZofl5g
+	 PaxwgIjzFYri2TIL+SRFjFXsVLkRvF/yx5p1Zl48qsw/uvTBh/KDgyWY+9j5QfJEN5FJU
+	 oLmJvJA6n2KqxrmGSwIOHV0O2xqyvLDDz2B7tnY7K4bHn2Drve+hDqlmY+3CcXT1i8VWJ
+	 hrSuVD3I8+Ax7yMgVXnfJkV2OgfXXT6aekS9kXVgwLDrJjfRGZwDUEvJ4rb2x6GZltmFS
+	 KOKRbYYPTx7ksRDiN5Ym30AObAMacv+N+svXfHzXo0KrolfIP1RJALFX/L9GDchGBsA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795098232;
-	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	a=rsa-sha256; c=relaxed/relaxed; t=1795109034;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
 	 Content-Transfer-Encoding:In-Reply-To;
-	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
-	b=j39ezA1qU+qNWO7ML54TItLltjRaCSDNnJb+580kXdiM0k2A5fHV64TYFRCqOdoFzQKj
-	 b6yQ5ftozVg/w7v2sZ9R3dVZbGT6sp1ROf8HZ/yqeuCsVqU0m91AIIqwzwwI9pgfvlxW5
-	 rnqbGC6z2xboBcPGsReImxvKjF6KTdC3pnV3SvgCtEO2rmVr0mf1zV6BhGHjqf/1tLgW2
-	 t6REczHXtGQQNjwhtjf4HbKAM7xodPFxTVbNH3F5CCRYWd02CnCPWLn4Z3YqIh2Ff6HQe
-	 an04X02lHzPDHd9s4JV6X1kgZomT14xcOOc4OvqgZEJ6nEOHzqtkdlEdkX0IK1tjCBg==
+	bh=t5wo7xXbJcuw9tovTj7TawORnslxAC42P735QvA1/L0=;
+	b=gqeMFr6oJtf25EkwC4kywWQ7GqMt6DFYiH6eMIBuujSafCR5Utdck2+CXWMeTlAjNlYD
+	 5cbFH02fHZ1TrIUzPEeMmwFDBdcb0TvOSYgWLc3VRyux0QalE6CSo5cE7BJMNnRochyx+
+	 JyZwz9p6g2Yq2O8dz1PhBZWDfheYu20fnNW2j1xlM+XJoeBCVHDhVw10x33xzPy7NMJtU
+	 rRf/kn5CsoljyRfe+qR5kthVT/u8fG79kLo2Q8yUkWatvbFX41/Ktl0YtpKLEZsu6iG2Y
+	 JaxW/u5i4fewL54vB6Ok/gogZEplpl37nzNkrHWCqddFybtThIqnLX7uo5PmJ5CBdNA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linutronix.de;
-	spf=pass smtp.mailfrom=linutronix.de;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=T0xL47Vb;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hB3TSCjH;
-	arc=none smtp.remote-ip=193.142.43.55
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ImpXvFWL;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585E1606A331;
-	Thu, 19 Nov 2026 14:23:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 585E1606A331
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FF7606A320;
+	Thu, 19 Nov 2026 17:23:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=T0xL47Vb;
-	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hB3TSCjH
-Date: Thu, 19 Nov 2026 15:23:48 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1795098230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
-	b=T0xL47VbEsUbhj2RinyONMU2/ofHZXyc9bMcofgkQ2RiSxRzL9YUli0b3MjC3CRLdSjWw+
-	CdTbMmcisggITNMMGvaXS4U1Dg0QTcPO31+bqYELe6RpbrdSF53b9Ybrly8r8PWqUjZxQ3
-	BnRGIvZBg/kBFeFy5bCbMCdmblcEGCwyAmr4G2B0Oi/u6T4glU5b+0nyXUtAS+2kcfPaKE
-	a1kusWTLGmSwgCtcNcd42yv3sy7G0H8bZGiBm2oUDRlpE5yO3vNMeQbm/Kxe+ptTXdpiu6
-	UT1FlePKgJvTeweokPV2JjSGn8nn+SS4pj6iSD6YvPc8AHJBojMsHVs7ZJzdRQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1795098230;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
-	b=hB3TSCjHaJc0Tb+O4RfNg+PzzpZkdB6FNKDa3Y8i52g+wfjZ2gSZH3CSN9c8sBBjo/O0cw
-	5oEHHy4C+qexRpCA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: kernel test robot <yi1.lai@intel.com>
-Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
-	aubrey.li@linux.intel.com, yu.c.chen@intel.com, ltp@lists.linux.it,
-	cgroups@vger.kernel.org, rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	luca abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yurand2000@gmail.com>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ImpXvFWL
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD781F000C5;
+	Thu, 19 Nov 2026 17:23:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795109033;
+	bh=t5wo7xXbJcuw9tovTj7TawORnslxAC42P735QvA1/L0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=ImpXvFWLHFdaPZE2v0k1yuxko/IJcK+TfUIaNUDOCBb1abhtpt+LVF7XOb+RE+f2G
+	 ICFhtkw1PYGgFGsGleBlk8e2Xj4a4MGLnQMas8212QP2q+6OEzV2D8vbA9U1ROILK/
+	 /si9NJH0TNICuElKww7r+Jbw+8qEBqhRySu1aXZ0A79ECt9nAdUh4KRdlLc+59yxrv
+	 w7nuAr1OrkFb2BMGd5KAcS6upvOzbkzWUG2OQ4BelDBclbNNHYAPVTmyUQFG6vpTkf
+	 HabU/Ynl9fCsffEhxrrxFh/53CYYif1g4OM6PGbRgjtgq0x6HpqXO9TMZdncXROAwT
+	 SzHIcLi+nNSnw==
+Date: Thu, 19 Nov 2026 18:23:49 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Chris Wiseman <chriswiseman@google.com>
+Cc: "Paul E. McKenney" <paulmck@kernel.org>,
 	Joel Fernandes <joelagnelf@nvidia.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Tze-nan Wu <Tze-nan.Wu@mediatek.com>,
+	Cheng-jui Wang <cheng-jui.wang@mediatek.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
-	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	Qais Yousef <qyousef@layalina.io>,
-	John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH v3 6/8] sched: Limit sysctl sched_rt_{period|runtime}_us
- to RT_GROUP_SCHED
-Message-ID: <20261119142348.MkPQ2Fby@linutronix.de>
-References: <20261113-sched_dl-v3-6-a76ffa1cdeee@linutronix.de>
- <202611192004.cca8bf73-lkp@intel.com>
+	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Keep lazy timer intact on second lazy callback
+Message-ID: <av8wpfu6yU3QgJXN@localhost.localdomain>
+References: <18e815d3ba49a353.3137322e32332e3235332e313736.192c60.0000sendgmr@google.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -104,35 +68,70 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <202611192004.cca8bf73-lkp@intel.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <18e815d3ba49a353.3137322e32332e3235332e313736.192c60.0000sendgmr@google.com>
 
-On 2026-11-19 22:11:10 [+0800], kernel test robot wrote:
->  [1;31mBroken: [0m
->     =E2=80=A2 proc_sched_rt01
->=20
->  [1;31mFailures: [0m
->     =E2=80=A2 proc_sched_rt01
->=20
-> Session stopped
-> LTP test details
-> ----------------
-> starvation: starvation.c:115: TCONF: Skip test due to slow kernel configu=
-ration
-> proc_sched_rt01: proc_sched_rt01.c:45: TFAIL: echo 0 > /proc/sys/kernel/s=
-ched_rt_period_us expected EINVAL: EBADF (9)
-> proc_sched_rt01: proc_sched_rt01.c:47: TFAIL: echo -1 > /proc/sys/kernel/=
-sched_rt_period_us expected EINVAL: EBADF (9)
-> proc_sched_rt01: proc_sched_rt01.c:53: TFAIL: echo -2 > /proc/sys/kernel/=
-sched_rt_runtime_us expected EINVAL: EBADF (9)
-> proc_sched_rt01: proc_sched_rt01.c:62: TBROK: Failed to open FILE '/proc/=
-sys/kernel/sched_rt_period_us' for reading: ENOENT (2)
+Le Sun, Nov 15, 2026 at 02:07:29AM +0000, Chris Wiseman a écrit :
+> wake_nocb_gp_defer() checks waketype == RCU_NOCB_WAKE_LAZY and
+> rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT in one if-statement.
+> 
+> When the first lazy call_rcu() in a NOCB group arms rdp_gp->nocb_timer
+> for the 10-second lazy flush delay and sets rdp_gp->nocb_defer_wakeup to
+> RCU_NOCB_WAKE_LAZY, the next CPU in the group that queues its first lazy
+> callback calls wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY, ...). Because
+> rdp_gp->nocb_defer_wakeup is no longer RCU_NOCB_WAKE_NOT, it misses the
+> first branch and falls into the else block for RCU_NOCB_WAKE, calling
+> mod_timer(&rdp_gp->nocb_timer, jiffies + 1) and resetting the 10-second
+> lazy timer down to 1 jiffy. The same fallthrough also shortens a pending
+> 2-jiffy RCU_NOCB_WAKE_BYPASS timer to 1 jiffy.
+> 
+> Commit 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power") wrote
+> this check against rdp->nocb_defer_wakeup, and commit 463d46044f04
+> ("rcu: Fix delayed execution of hurry callbacks") switched it to
+> rdp_gp->nocb_defer_wakeup, which exposed the fallthrough across all CPUs
+> sharing rdp_gp.
+> 
+> Give waketype == RCU_NOCB_WAKE_LAZY its own branch and only arm
+> nocb_timer when rdp_gp->nocb_defer_wakeup is RCU_NOCB_WAKE_NOT.
+> 
+> Fixes: 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power")
+> Fixes: 463d46044f04 ("rcu: Fix delayed execution of hurry callbacks")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Chris Wiseman <chriswiseman@google.com>
 
-The test writes to those fies and now complains because the files don't
-exist. My intention was to remove those files because writing to them
-serves no purpose and people don't know this and _assume_ they disable
-RT throttling.
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
-Sebastian
+> ---
+>  kernel/rcu/tree_nocb.h | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
+> index b6cfee4e5039..347d718befd0 100644
+> --- a/kernel/rcu/tree_nocb.h
+> +++ b/kernel/rcu/tree_nocb.h
+> @@ -335,10 +335,12 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
+>  	 * Bypass wakeup overrides previous deferments. In case of
+>  	 * callback storms, no need to wake up too early.
+>  	 */
+> -	if (waketype == RCU_NOCB_WAKE_LAZY &&
+> -	    rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
+> -		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
+> -		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> +	if (waketype == RCU_NOCB_WAKE_LAZY) {
+> +		if (rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
+> +			mod_timer(&rdp_gp->nocb_timer,
+> +				  jiffies + rcu_get_jiffies_lazy_flush());
+> +			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> +		}
+>  	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
+>  		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
+>  		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
+> -- 
+> 2.52.0.rc1
+> 
+
+-- 
+Frederic Weisbecker
+SUSE Labs
