@@ -1,143 +1,82 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.62.33
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795038021;
-	b=Lm/kOx5IuCsfAu0qtpzZeLVYm+1gCViJxjr6lv8ss01XnCF65S9DHSUG7OO4rX5KSGtn
-	 JecmoOoATqVFLn1NzEVsbY6KngclImUbGHFtm8gG9bQZEdIOfVibGeF1bGRCz4vYtqHOK
-	 /wKUAEzpfx9vxDGBpy8WITrDWxAx71M5BFxUSaeB90fe1p3j190poY69yzfZ/o8Rew/l0
-	 dR7x9u2G2Vh2JsTwqexpCZ6SurUKJNQ++m9fe0RccVa7SdsrCOrK4tJjTe3VwboMUNWil
-	 dEAr4HFBDBgM3x5+OQSjN1Ic8HNjRkXoK0ovebq5bJnZnRNB4FSKE5IX9Z9lXnTIfkw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795038021;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:Content-Type:Content-Disposition:
-	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=ztrc0Yp2eDQ6TZtAfPMQ1bmjQn8htzBnLl23LuCPLh4=;
-	b=vGr2qMHoYAzrhNmDKqbFZqFxQHdQesyjBmn5C05wEYKErgPSNpPryX+FXZOd+QwFJR8u
-	 PVtvo/5/2HgqYJp0Ka7TFG4Z+IQzQXITj5kysQs5ynPpxdxND1o0761gzUCXvnwIaeC68
-	 bflIlN6VEdt5IFaOmYfkZXN1QCY66aObtPIwgnIk7KINSiAIs85nagLadIE7md2hA09b3
-	 ZvxDDO9TC2OXxVOKC3Vg5Fzq8x+3kJI13jHLqmqkF1eC1oL+h0aPf4fJfw96QhDiAVWKR
-	 L8SLRwvlZsbAKS8jCek7Qpxmj8nEQAPrF8azqRXhaTlOZWu6gwnshCkVTfL4Q4H1ETA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nvidia.com;
-	spf=fail smtp.mailfrom=nvidia.com;
-	dkim=pass header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=Gt+On+x7;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.62.33
-Received: from DM5PR21CU001.outbound.protection.outlook.com (mail-centralusazon11011033.outbound.protection.outlook.com [52.101.62.33])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795079691;
+	b=pYgJrGur/TrG0PbQBPtGpMaqDX+2DNhh+CaprsL2JlIIygBlx+tVTc8Yy14bWFdqGy4S
+	 6pU+zXxUnurOHmLlDiqu3WhxyhPdE5igqWWpI0KoW5MMb5Be9d8D/T+TdbQGeEGqk/+nf
+	 KkfpNew5X3/I3XZaXbZEtgabjNguxgUkiC7R9KiNT0LSSPQUz7Ek3em4RN6Ix75dhzGJI
+	 1jXWgM/pXC7bzXTDZilY4CPkI9s9NFm0lg9pDBFwGvhdHJIjwhzYhNjV11JXDnNy9O8NR
+	 86Tje2oZc/Zoo9+par1yP1YyBYDvCvhFp8BOG69NR/BrgwBv3ue3ktDH2ocp1sXvw+Q==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795079691;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=RCYCyxErggUfcOuYAaIWQu6Q2HbBr+qz7D8g/6lWPn0=;
+	b=il3lxirwI49VG1NQ7lWYwAK/q/XSdCVMsR4w10fg3UK8otnACtMZBFtXBlNqwMKJQxzg
+	 L4tNV18aajLPVx7g8yFqL5diwUfTsQv81wrkLdcw/3T6aDOdQbTfaKiwUt793rQj41PuQ
+	 es18KzlIUE8A2VN204Bfq5mo84o6CJT8hu3dP7nSUmwLOJ/nakEatb21bFeZwSnD+WRED
+	 ZhI5Mn+wGEoDbFrslEcz4XKS//lMKEXs69kcErc4JQIbFhquQUrr/R+42n1+Cz3OoaQku
+	 cRcnXx4ZvieECERDKMFIYsrPNsTom4DmvqHP8Js1bn7XuxQHjvVIdHXg2GqfN49zmPw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=H7Df6owR;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=lKDHs6nO;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ABCE606A325;
-	Wed, 18 Nov 2026 21:40:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3ABCE606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEE6606A320;
+	Thu, 19 Nov 2026 09:14:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CAEE6606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=Nvidia.com header.i=@Nvidia.com header.a=rsa-sha256 header.s=selector2 header.b=Gt+On+x7
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=sU/qXtJl9eMvdeVta6xtgiUqhc110KbAjiZf4J8ejEbLy0EtAip3BumfqrWchuwSlMSvVMonhKHAjS92ZDd6+z1sRA40xaIkZR+I3h7oDgATF+bEQXg2S59YqQT4Fe7DCtDCdQvY7uxoK6uihgPUnU3uFWgu3JyEXcJyKq8bouvfqqb3gpEzD02NozdLzQsZ6M2sRnFc3pUB2vh6pK0Gc4RhF/oYVJzd7enulwQxCBVs7TIoPDv3IuzigenbOxQfC1rUuMkuZTk4pJvhB7J72SKh1+IJpskqKwMAPIVCCNpVkgyD+QLXc/t9yIxPTaiAXAIY+8bXFaXI661iJ7vTog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ztrc0Yp2eDQ6TZtAfPMQ1bmjQn8htzBnLl23LuCPLh4=;
- b=ZT5/zo+Wp50hopyDBCJ6mdPHAZ7u1bhav0if0+PN4dDcusYCRiW3DcUQ2zJekuZqZ0jWckzsW+gc9d+GPPBNLYO70haRTxUsHskWso4UXJUyNviRxbd3QBOvBSkM/hsmbEQm/oRMnZF8OB2IclcNyTFBbJzAnYS/1/p+LdaT4SebcroeQTklXRL2dtK/5efa3j5HYOEVAq5/Ye1W6CEuTjQgu7ThdTeCzH1n3PMKrROnI2nRHXV7HW1mbgDBHoKUvIRegymiyBAXaEH0EZ1TcVHnPdrkCUVfklHmS6u2dh+ZwibNlnQ1yT8CsabZjELqGFKSEGdrwT8z++vjtk4YLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ztrc0Yp2eDQ6TZtAfPMQ1bmjQn8htzBnLl23LuCPLh4=;
- b=Gt+On+x7LN274xI0eFQJmxK97SaDZlc6dJgFqhxUAprJ++e9RSfhXZ0162Y+BC78sNPGDajNR6l400NKp/CtU5W36Ariq8GR6l8gU0BtUcgsEjNlaTGofwZo3bXCp0WY/pIEWTbEu2e48bSdbVh+56QkXY06zkR6RaImKKYTVTXw5SlHtjHBxgJ+gZBx+k9kYnvEVcLJz/cETPKO2PYmsvj5WCe17vJy2+Mluxzrgo65Hi6u/v2h0TqCWkp3MCo5iP7q4cLh+KFGQacXOZKeN0Wg/b2OUNqAB4bAdAPYF2H7IePOxWwp9C8pHoHBGW27ZvSDV+w0gEX/w6eqMUzDGQ==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV3PR12MB9356.namprd12.prod.outlook.com (2603:10b6:408:20c::21)
- by MN2PR12MB4287.namprd12.prod.outlook.com (2603:10b6:208:1dd::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.19; Wed, 18 Nov
- 2026 21:39:47 +0000
-Received: from LV3PR12MB9356.namprd12.prod.outlook.com
- ([fe80::1c36:31b4:c420:6286]) by LV3PR12MB9356.namprd12.prod.outlook.com
- ([fe80::1c36:31b4:c420:6286%4]) with mapi id 15.21.0615.012; Wed, 18 Nov 2026
- 21:39:46 +0000
-Date: Wed, 18 Nov 2026 16:39:45 -0500
-From: Yury Norov <ynorov@nvidia.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>,
-	Andrew Lunn <andrew+netdev@lunn.ch>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Boqun Feng <boqun@kernel.org>, Waiman Long <longman@redhat.com>,
-	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=H7Df6owR;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=lKDHs6nO
+Date: Thu, 19 Nov 2026 10:14:46 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1795079688;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCYCyxErggUfcOuYAaIWQu6Q2HbBr+qz7D8g/6lWPn0=;
+	b=H7Df6owRQ7tQfgAlprNzYgMcQDHXW0qr8LdxenIrqSPk+96QXbnY9oVz6IRif3T49103jD
+	CdwjNWWTB2FYqY16B0QNzeFLR0FWkXgj7NoO7AYhikSckbDo0Qi3D1UaHq9vv2n19TCYH9
+	Z7s/ejCVDjjHekAEeyO6AKz82qKlgq1vnKiS4AgKDVXqNDa5KEprBjIBaeC0HmdBA7SAi/
+	nTRCVSxnb/G7rK84M6KTFr22qV0UZe7B/yV5t2ggeEPYYXvH95Nf8hBYjya8vMzk28dRMZ
+	+B7oAe31TZmhE32Z9McnoCu8J77mMrZa0sJq7T/6QnwTBTlPcs6+6zyWcPkybg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1795079688;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RCYCyxErggUfcOuYAaIWQu6Q2HbBr+qz7D8g/6lWPn0=;
+	b=lKDHs6nOLG8iGJrZHH5pJiQZhx6BW6wjowbbW5BZIFEy/jXSl8Herr/Bo4m5XZFYVOSn74
+	WCEkgNTRtyT8kDAg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Joel Fernandes <jfern@kernel.org>
+Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Frederic Weisbecker <frederic@kernel.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
+	Boqun Feng <boqun@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
 	Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Onur =?iso-8859-1?Q?=D6zkan?= <work@onurozkan.dev>,
-	Kees Cook <kees@kernel.org>,
-	Joel Granados <joel.granados@kernel.org>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Thomas Gleixner <tglx@kernel.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Mike Rapoport <rppt@kernel.org>,
-	"Liam R. Howlett" <liam@infradead.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Vlastimil Babka <vbabka@kernel.org>, Jann Horn <jannh@google.com>,
-	Pedro Falcato <pfalcato@suse.de>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Jason Wang <jasowangio@gmail.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Eugenio =?iso-8859-1?Q?P=E9rez?= <eperezma@redhat.com>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-	wireguard@lists.zx2c4.com, netdev@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	rcu@vger.kernel.org, virtualization@lists.linux.dev,
-	linux-rt-devel@lists.linux.dev, llvm@lists.linux.dev,
-	Yury Norov <yury.norov@gmail.com>
-Subject: Re: [PATCH 00/17] Treewide: enforce static storage for object
- initializers
-Message-ID: <av4bISGVaQNwRUmG@yury>
-References: <20260915030336.1192299-1-ynorov@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260915030336.1192299-1-ynorov@nvidia.com>
-X-ClientProxiedBy: BL1P222CA0010.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:208:2c7::15) To LV3PR12MB9356.namprd12.prod.outlook.com
- (2603:10b6:408:20c::21)
+	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/7] rcutorture: Rewrite RCU priority-boost test
+ around a CPU-hungry reader
+Message-ID: <20261119091446.PPYLd9B1@linutronix.de>
+References: <20261116194438.306618-1-jfern@kernel.org>
+ <20261116194438.306618-2-jfern@kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -147,148 +86,27 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV3PR12MB9356:EE_|MN2PR12MB4287:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb494a5b-8334-4ab8-733c-08df45bc7728
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|366016|7416014|23010399003|1800799024|10070799003|376014|261022075727099003|261021121427099003|56012099006|10067099003|261028144727099003|261022105027099003|261021123027099003|261009223027099003|261102123227099003|18002099003|6133799003|11063799006|261026140227099003|22082099003;
-X-Microsoft-Antispam-Message-Info:
-	KsTh2qJIbrnqyR5HtwOmanaUdt5Qxxb0Im9OtFhIeiEe+fAV5dx14R9WUXxDwAeD1gYw7tt4duL5Lb3HqKq0bCpWsAGxE0N2WlsjxCTd5sTMWI2CV+vNp3VuHbOv8xzSrzDsgRhf3WfRg1m6sZZM9CFdWz/SORtddSzqHiVzb3lTIi276b1kjKeMTTokQnlDo/9jZsy6bMSHKjrphvp575wwP1wWDIbIiZfs7iDW+sGzD8gLfuj8ccFaD1akAHU/4FMgR67SH32yB0iyp5ltWf4afz+buam2aadgcYYP6BOkcqi/CP19OL1q7xUPJSFqJ87EFveWV26f4Sk55bjAXIRla8wJ6rPfSZNiH+88dz+GMMhUwErb8C+xxLpQjHhvUrUbtMMYqhg50943kuk03OdxP61zIwrbJ0h9tcEWbxEz9TOwZDbCg31y7/TqeZEl50p+yM4CjueVpwHnGYuCYUroH/c09s9ZVt5zcbHl6dlaJ9ZfNizAv+KfTgPVwDhqpZ8Fz0A96UsCyeonNx3jFXaC7U/5qrQz+VnsYGLJLPDsSYGVSmrqu3CiZyrcQMVwFS2vLZKC6cRW5iz67kHxv4AC224VhXIMTDuM/HBEHKl8jNSUUoLR+Cl8vtDSgcPDnhxSgB7mWnqMXtbz1RFdW/7jEmPbzenlvvl1h49kgHk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV3PR12MB9356.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(23010399003)(1800799024)(10070799003)(376014)(261022075727099003)(261021121427099003)(56012099006)(10067099003)(261028144727099003)(261022105027099003)(261021123027099003)(261009223027099003)(261102123227099003)(18002099003)(6133799003)(11063799006)(261026140227099003)(22082099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?+HZXWlztPnrA5ZFzmksOZgMH5WgHrJnQHSH7tRwGXb0ozDMYBnJf5U/1EwFg?=
- =?us-ascii?Q?qS+wmI/og7Dafmf9Sk5wgckkmX3GkCIwpIg9KS1L5znF8mQz747hSjCrpXgq?=
- =?us-ascii?Q?vjNEosmbbvUruz8McHeUW1yDnhyFGuW+Z2d5U96WPKBeb9L6+ZwmP7TIWF4Y?=
- =?us-ascii?Q?QcNuWMahBfJXbGU0Ry/CUIybNWxbSEe/cGAQju67gU2WSZ+52V+/17WqMO/y?=
- =?us-ascii?Q?j2UBmd/KiQermdrZ8gf/DUkZ88xrF9fC+NAlH05dUPrfiHFDQO6E1/wJW5C8?=
- =?us-ascii?Q?2RIgCU/fd3IKrKOUvd1pGtae2wOgIy0NqxAqsqk7dB66hDct8cXpYQlgb4VU?=
- =?us-ascii?Q?dXRwSspuqu6KY3Z/yp4kgDj/EsKsn1u5nv4aJNEo6xaqSMjeqpQLqvW4hwdQ?=
- =?us-ascii?Q?lzxw7MM2FFutMP1IYMlKHseHzD9C5IjSRWF0xy9YZZwotE/uYy1gvfjHrREP?=
- =?us-ascii?Q?IF65bS+QPxzLXjzwFU72P773cesKRKykaxTD96etoa14C2/XyN7IwSmGxw5j?=
- =?us-ascii?Q?tll2PTRlEXAC10z6h9l1u/8lrtGNv9NTNo0sV4weyHlVfs5ly+CCT3RmJLEO?=
- =?us-ascii?Q?nP/kpk8+X6nSPoI5hVDEonxvV/ZY8pz8tWNTmvXCiv/HU9Dfi0iA4CLTOwHI?=
- =?us-ascii?Q?0jw/0zdDpFdklt2BgLUHzuDOhY+RP9jkXXlPgu1v5q04xlO+GyCVfOGsB49j?=
- =?us-ascii?Q?vZUe1o0Pi3eJ0LlLnlJIfAo1g00uEQor8J3w896qarzG1A+K0Rp4wMfM6wuo?=
- =?us-ascii?Q?fJUGLOe0Bf0U1zosf8uf3uXWb/WtGCJp4PgkJXeHaKIJup+R0N8AbdAo38Zo?=
- =?us-ascii?Q?fs8gQ6jcwPIH56slC4KO6jhY3wIiS2kQNOf6bPtewdF8FchrTJRbrxT/90oi?=
- =?us-ascii?Q?Eithaw2D8et910vIUBFlUSpUQg6G8BBtKGDGGxtJPbB3dkAAdt6Iu6um0PP0?=
- =?us-ascii?Q?u0hhAPLYaQ8P7m+G1hJugl3uhC+dUYquFQ10IRoaPn0N7mZ7LSHNHtDvuHKj?=
- =?us-ascii?Q?JupTeqcreoSsSvq/Qhz6CPzdDFZKObzUaaje2Ok+O7K7xT1jUWD0Fg/KsRZX?=
- =?us-ascii?Q?5oRw+Kog2p0q1Q98i87eOit3D89hB0atSxmWFt5vTFSAlwLQEVUhsJA6DEDS?=
- =?us-ascii?Q?+GKU8xdx0yj9grgfRN8Aw6vHsk+CB0cC+8er9YEFW5HvJ86a6i8fYW4WxQgB?=
- =?us-ascii?Q?zuttoOrGunjzgcDyTx+ki2UdGX0Spie22ZkldM44n2QpcrfB2eGE1ryZ/8JT?=
- =?us-ascii?Q?KQdvzAmM9VGshgUqqQSlB0h2I3RQP38WZzup/UfuUz0ZOMtw50UV3ZiOqe9S?=
- =?us-ascii?Q?b3ubPqL0Qq2WxgtnZJpibdnW4Ogp/3Fd0NoyZ/ibn6qHlqwz8wpXsuhBKe9j?=
- =?us-ascii?Q?0VMjcGJuyu92kqQwqHL4DeuSYwBLN47n+ZDrbn0aoi2VhSlyjzH5l0obumhL?=
- =?us-ascii?Q?QB8NvLaJ4/98rw6rdqjmDeJXka2I69poxAzUFwzPOX78tu59gu2eIIUmDTZ2?=
- =?us-ascii?Q?Emfg4EMS18l+TMRrDTiTdce5+cGkKX59mjrFNZIw3Th+eifVvJ/fi/LICXvV?=
- =?us-ascii?Q?wFkOICJknVoTe0SY16SSqrTwpNkbhalN4IAQk1//t3YP3k1iNCZQjMng9evN?=
- =?us-ascii?Q?yj5nUuUMdaaBXB81NUGBagQ54Eu/tToNc8NkqdqNJJI9jPk37kqebLpaOYC5?=
- =?us-ascii?Q?Ss9bRUIQT5k6NDr1aChYpRP0dvgaDrRftnUZhpq9oZXxoQXiMIy6DaKo3ze5?=
- =?us-ascii?Q?ZfVxfY6cf4W3L2SJdnUgxl9skE2wQAj+OmRvFqZjGAoa/cGjF1y7?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb494a5b-8334-4ab8-733c-08df45bc7728
-X-MS-Exchange-CrossTenant-AuthSource: LV3PR12MB9356.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Nov 2026 21:39:46.8409
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VuIOe8u6/T8hb9ONElnQ3MlOXvUx5QSohWUO+1liFdy0CLRjlqwlOMsPzcNRnRUreEXQwc120y+3217IuxxY7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4287
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20261116194438.306618-2-jfern@kernel.org>
 
-So, any progress on this? Should I rebase and resend, or we can merge
-it as is? Andrew?
+On 2026-11-16 14:44:32 [-0500], Joel Fernandes wrote:
+> The old boost test relies on RT throttling being disabled and on grace
+> periods taking too long, which is fragile.  Instead, each interval one
+> CPU runs a normal-priority reader that spins inside an RCU read-side
+> critical section until it has consumed test_boost_reader_ms of CPU time
+> (measured via sum_exec_runtime, so time spent preempted does not count),
+> while a SCHED_FIFO hog on the same CPU tries to starve it.  With RT
+> throttling enabled, an unboosted reader gets only about 5% of the CPU,
+> far less than it needs within test_boost_duration.  If the reader
+> finishes, boosting worked, otherwise it failed.
+=E2=80=A6
+> Signed-off-by: Joel Fernandes <jfern@kernel.org>
 
-Thanks,
-Yury
+This is doing what I though it is doing in the first place :)
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-On Mon, Sep 14, 2026 at 11:03:18PM -0400, Yury Norov wrote:
-> On top of [1].
-> 
-> Declaration macros that statically initialize embedded locks require static
-> storage when lockdep is enabled. Automatic objects must use runtime
-> initialization so lockdep receives a persistent class key.
-> 
-> For automatic local objects, lockdep cannot use the lock address as a persistent
-> class key and reports "INFO: trying to register non-static key" before disabling
-> itself.
-> 
-> Series [1] introduces an ASSERT_STATIC_STORAGE() macro to enforce static
-> duration of an object, and applies it for DEFINE_IDA() and DEFINE_MTREE().
-> 
-> This series applies the same mechanism for the other structures of that
-> sort found by Codex.
-> 
-> Link: https://lore.kernel.org/all/20260911221444.1523311-1-ynorov@nvidia.com/ [1]
-> 
-> --
-> 
-> [1] also describes the preferred route(s) for the material. According to
-> Andrew's (and mine) preferences, sending everything together in the hope
-> that the relevant maintainers would ack the corresponding patches or
-> simply take them in their trees.
-> 
-> Yury Norov (17):
->   locking/mutex: assert static storage for DEFINE_MUTEX()
->   locking/rtmutex: assert static storage for DEFINE_RT_MUTEX()
->   locking/rwsem: assert static storage for semaphore definitions
->   locking/semaphore: assert static storage for DEFINE_SEMAPHORE()
->   locking/seqlock: assert static storage for DEFINE_SEQLOCK()
->   sched: assert static storage for wait queue and completion
->     declarations
->   xarray: assert static storage for DEFINE_XARRAY_FLAGS()
->   idr: enforce the static-storage contract of DEFINE_IDR()
->   radix-tree: require static storage for RADIX_TREE()
->   klist: assert static storage for DEFINE_KLIST()
->   workqueue: assert static storage for work declarations
->   timers: assert static storage for DEFINE_TIMER()
->   kthread: assert static storage for delayed work declarations
->   ratelimit: assert static storage for DEFINE_RATELIMIT_STATE()
->   notifier: assert static storage for locking notifier heads
->   rcu: assert static storage for RCU sync and SRCU definitions
->   sysctl: assert static storage for DEFINE_CTL_TABLE_POLL()
-> 
->  drivers/macintosh/ams/ams-pmu.c              |  4 +--
->  drivers/net/wireguard/selftest/allowedips.c  |  4 +--
->  include/linux/completion.h                   | 10 +++++--
->  include/linux/idr.h                          |  4 ++-
->  include/linux/klist.h                        |  4 ++-
->  include/linux/kthread.h                      |  4 ++-
->  include/linux/mutex.h                        |  7 +++--
->  include/linux/notifier.h                     | 13 ++++++---
->  include/linux/percpu-rwsem.h                 |  4 ++-
->  include/linux/radix-tree.h                   |  4 ++-
->  include/linux/ratelimit_types.h              |  4 ++-
->  include/linux/rcu_sync.h                     |  4 ++-
->  include/linux/rtmutex.h                      |  3 +-
->  include/linux/rwsem.h                        |  7 +++--
->  include/linux/semaphore.h                    |  4 ++-
->  include/linux/seqlock.h                      |  3 +-
->  include/linux/srcutiny.h                     |  4 ++-
->  include/linux/srcutree.h                     |  7 +++--
->  include/linux/swait.h                        |  6 ++--
->  include/linux/sysctl.h                       |  4 ++-
->  include/linux/timer.h                        |  4 ++-
->  include/linux/wait.h                         |  7 +++--
->  include/linux/workqueue.h                    | 10 +++++--
->  include/linux/xarray.h                       |  3 +-
->  tools/testing/memblock/linux/mutex.h         |  8 ++++--
->  tools/testing/radix-tree/benchmark.c         |  4 ++-
->  tools/testing/radix-tree/idr-test.c          | 29 ++++++++++++++------
->  tools/testing/radix-tree/iteration_check_2.c |  4 ++-
->  tools/testing/radix-tree/main.c              | 16 ++++++++---
->  tools/testing/radix-tree/regression3.c       |  4 ++-
->  tools/testing/radix-tree/tag_check.c         | 28 ++++++++++++++-----
->  tools/testing/vma/include/dup.h              |  5 +++-
->  tools/virtio/linux/compiler.h                |  9 ++++++
->  tools/virtio/linux/ratelimit.h               |  6 +++-
->  34 files changed, 176 insertions(+), 65 deletions(-)
-> 
-> -- 
-> 2.53.0
+I didn't run all the tests for it but did test it initially in my setup.
+
+Sebastian
