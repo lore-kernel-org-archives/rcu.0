@@ -1,75 +1,68 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=193.142.43.55
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795097483;
-	b=aw5Fm3ej+tFpU8wCvSuV8gdvYmgg27CM4t9M8iDKcg8BpjJmyrzI3irqxXOiqaZopNt3
-	 sjcVZD1WQbpVz4Wa4BdfLUmbKb3vP4INDUa6hEIhLrKoL1fGA4n/bFjZfboHiAYAPF88M
-	 BXduIHI9B9JoxnRzw6fYpSMmW1KTHQWv1D/Ez+/0hvpdzrbeHSXjr/A3j3ySIWGj67gqh
-	 /t5pkC6rnSqTQtF8U31OqOZjhWtHE/zhpmhNNMkP/NSuA28kZtO+9xObJSooHgMckqVYD
-	 mF8+p2jY1R95ex3d1KZXzaj9J+MivGQOf5tjonzvDrW3W/cWk+bcX9pEcudJ6q3rvUQ==
+	t=1795098232;
+	b=jpb7bzYeI4UAh4BQKVaGAcxXDInoSTL4Z+XcEwIkkszBkg8rQistT9DZjlR6RS8mmTwb
+	 RPTboXSMl6V98135WHaJUA+l6RUC7G4WC0g1Cmx11L358UwbWArb7oMPT81OkjtAHV2Qk
+	 C6HVz2uqTKdwurlaylKWw5nnuJdwb8iGbsoyY+hrq3iKiEkixX8KJVo6qldnPgtlDGduG
+	 Ws3DwGs4uDQ03XhsvOzHmaAIdEGg7UAez9LTprIMZf/OKfNuZpgThKeNFOjnZzJ5/2Y4i
+	 D0ErPKFRS9we+Pia+mGUDZCmbD0ilmGKEcC6BY00UnV2Uv5Nrwn9gNoIiMxpmBsOl9g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795097483;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:X-IronPort-AV:Received:X-CSE-ConnectionGUID:
-	 X-CSE-MsgGUID:X-ExtLoop1:X-IronPort-AV:Received:Date:From:To:Cc:
-	 Subject:Message-ID:MIME-Version:Content-Type:Content-Disposition:
+	a=rsa-sha256; c=relaxed/relaxed; t=1795098232;
+	h=DMARC-Filter:Date:DKIM-Signature:DKIM-Signature:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
 	 Content-Transfer-Encoding:In-Reply-To;
-	bh=28OwL7LMN9BNWrZxvtunkM472yJRAdMErQfbeGnmfC8=;
-	b=bVxakQrrj3OXTqngbq+M8AMjLeQyf2PHfT3YA9z73iPmubHOLf9xpO0SdIfDNfjnmRYT
-	 DXnOZsYTNeokU3jivdXn2uzxprTM61Jck3mchTAspt5g49w9RE5aJieff44FTIA0A65Vg
-	 VPXXJLMpgvQW60uGx6E3xfgYvlv7Q9VQfg/ojJNfljW+4eP38od23jX03DgTlYSelB3kX
-	 TPJx9ohOGU+rFZIVznvxWdsl46RP4HaRq1QiI6o8rxslZmCvjQlfypu46MUrTiLx8Ec6w
-	 owkdpldJLXDj4CJzs5cCCwsryjG0zhqKhM5mPhWwoAHTB8zoQvJg/g2/51KITqVFpBg==
+	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
+	b=j39ezA1qU+qNWO7ML54TItLltjRaCSDNnJb+580kXdiM0k2A5fHV64TYFRCqOdoFzQKj
+	 b6yQ5ftozVg/w7v2sZ9R3dVZbGT6sp1ROf8HZ/yqeuCsVqU0m91AIIqwzwwI9pgfvlxW5
+	 rnqbGC6z2xboBcPGsReImxvKjF6KTdC3pnV3SvgCtEO2rmVr0mf1zV6BhGHjqf/1tLgW2
+	 t6REczHXtGQQNjwhtjf4HbKAM7xodPFxTVbNH3F5CCRYWd02CnCPWLn4Z3YqIh2Ff6HQe
+	 an04X02lHzPDHd9s4JV6X1kgZomT14xcOOc4OvqgZEJ6nEOHzqtkdlEdkX0IK1tjCBg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=intel.com;
-	spf=pass smtp.mailfrom=intel.com;
-	dkim=pass header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Vjp9KtHD;
-	arc=none smtp.remote-ip=192.198.163.15
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=linutronix.de;
+	spf=pass smtp.mailfrom=linutronix.de;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=T0xL47Vb;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hB3TSCjH;
+	arc=none smtp.remote-ip=193.142.43.55
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06C9606A320;
-	Thu, 19 Nov 2026 14:11:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F06C9606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 585E1606A331;
+	Thu, 19 Nov 2026 14:23:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 585E1606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.a=rsa-sha256 header.s=Intel header.b=Vjp9KtHD
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1795097484; x=1826633484;
-  h=date:from:to:cc:subject:message-id:mime-version:
-   content-transfer-encoding:in-reply-to;
-  bh=nw7rQPipSkhtV/UQgw2LJ0rMDn1dGG0TaB4g5lNPeio=;
-  b=Vjp9KtHDrVhrYhO4VOxiY310vKfZD9wSWCSV/BWWmHQC97zeos0+qUHX
-   vLKH7MOy3qIccIEGyh0lnbk7tHaXaTXosTmWsEgLzXIEg4yJ82qYzLiLt
-   UCXL5+YCriXyKtXMHwrDoIw0X65B47VR/Hyl3pTgiQLireNng2coy8WPi
-   MWginHp/5Ppty0fC4KlNnQMhmxNm13g/nOnxQG7iQGPNwZN3hbnP366e7
-   mVSXal12vrkpELzueMTT9+wiXvIvzsyB8Bj9CWGhIUePFYn8koM3ZTaEE
-   p8g7VJtxvMQYWaCY0FJT5r7/Ar5iQnKqdNrUXfqI8ggMgsurNreXymUOa
-   w==;
-X-CSE-ConnectionGUID: FnLcogvvSf+h19prakT1CQ==
-X-CSE-MsgGUID: j1lgUwQcQ3ycfEB4EzUpbQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11971"; a="3954949"
-X-IronPort-AV: E=Sophos;i="6.27,221,1787036400"; 
-   d="scan'208";a="3954949"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2026 06:11:23 -0800
-X-CSE-ConnectionGUID: Y7htxKcIQZqpqFq6wYNJhw==
-X-CSE-MsgGUID: FDK0PtvFRbC2gRpIiTQ4jw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.27,221,1787036400"; 
-   d="scan'208";a="10573856"
-Received: from ly-workstation.sh.intel.com (HELO ly-workstation) ([10.239.182.64])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2026 06:11:13 -0800
-Date: Thu, 19 Nov 2026 22:11:10 +0800
-From: kernel test robot <yi1.lai@intel.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.a=rsa-sha256 header.s=2020 header.b=T0xL47Vb;
+	dkim=pass header.d=linutronix.de header.i=@linutronix.de header.a=ed25519-sha256 header.s=2020e header.b=hB3TSCjH
+Date: Thu, 19 Nov 2026 15:23:48 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1795098230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
+	b=T0xL47VbEsUbhj2RinyONMU2/ofHZXyc9bMcofgkQ2RiSxRzL9YUli0b3MjC3CRLdSjWw+
+	CdTbMmcisggITNMMGvaXS4U1Dg0QTcPO31+bqYELe6RpbrdSF53b9Ybrly8r8PWqUjZxQ3
+	BnRGIvZBg/kBFeFy5bCbMCdmblcEGCwyAmr4G2B0Oi/u6T4glU5b+0nyXUtAS+2kcfPaKE
+	a1kusWTLGmSwgCtcNcd42yv3sy7G0H8bZGiBm2oUDRlpE5yO3vNMeQbm/Kxe+ptTXdpiu6
+	UT1FlePKgJvTeweokPV2JjSGn8nn+SS4pj6iSD6YvPc8AHJBojMsHVs7ZJzdRQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1795098230;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sFju/1HR8D4dGfEsV9o9IsWma24lYxtJ3WMUExZI3CM=;
+	b=hB3TSCjHaJc0Tb+O4RfNg+PzzpZkdB6FNKDa3Y8i52g+wfjZ2gSZH3CSN9c8sBBjo/O0cw
+	5oEHHy4C+qexRpCA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: kernel test robot <yi1.lai@intel.com>
 Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
 	aubrey.li@linux.intel.com, yu.c.chen@intel.com, ltp@lists.linux.it,
 	cgroups@vger.kernel.org, rcu@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Jonathan Corbet <corbet@lwn.net>,
+	linux-doc@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
 	Shuah Khan <skhan@linuxfoundation.org>,
 	Randy Dunlap <rdunlap@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
@@ -94,12 +87,14 @@ Cc: oe-lkp@lists.linux.dev, lkp@intel.com, linux-kernel@vger.kernel.org,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
 	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
 	Qais Yousef <qyousef@layalina.io>,
-	John Ogness <john.ogness@linutronix.de>, yi1.lai@intel.com
+	John Ogness <john.ogness@linutronix.de>
 Subject: Re: [PATCH v3 6/8] sched: Limit sysctl sched_rt_{period|runtime}_us
  to RT_GROUP_SCHED
-Message-ID: <202611192004.cca8bf73-lkp@intel.com>
+Message-ID: <20261119142348.MkPQ2Fby@linutronix.de>
+References: <20261113-sched_dl-v3-6-a76ffa1cdeee@linutronix.de>
+ <202611192004.cca8bf73-lkp@intel.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -111,150 +106,33 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261113-sched_dl-v3-6-a76ffa1cdeee@linutronix.de>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <202611192004.cca8bf73-lkp@intel.com>
 
+On 2026-11-19 22:11:10 [+0800], kernel test robot wrote:
+>  [1;31mBroken: [0m
+>     =E2=80=A2 proc_sched_rt01
+>=20
+>  [1;31mFailures: [0m
+>     =E2=80=A2 proc_sched_rt01
+>=20
+> Session stopped
+> LTP test details
+> ----------------
+> starvation: starvation.c:115: TCONF: Skip test due to slow kernel configu=
+ration
+> proc_sched_rt01: proc_sched_rt01.c:45: TFAIL: echo 0 > /proc/sys/kernel/s=
+ched_rt_period_us expected EINVAL: EBADF (9)
+> proc_sched_rt01: proc_sched_rt01.c:47: TFAIL: echo -1 > /proc/sys/kernel/=
+sched_rt_period_us expected EINVAL: EBADF (9)
+> proc_sched_rt01: proc_sched_rt01.c:53: TFAIL: echo -2 > /proc/sys/kernel/=
+sched_rt_runtime_us expected EINVAL: EBADF (9)
+> proc_sched_rt01: proc_sched_rt01.c:62: TBROK: Failed to open FILE '/proc/=
+sys/kernel/sched_rt_period_us' for reading: ENOENT (2)
 
-Hello,
+The test writes to those fies and now complains because the files don't
+exist. My intention was to remove those files because writing to them
+serves no purpose and people don't know this and _assume_ they disable
+RT throttling.
 
-kernel test robot noticed "ltp.proc_sched_rt01.fail" on:
-
-commit: 4f1021f29368df79a6e79ec87cafa29d99a4601a ("[PATCH v3 6/8] sched: Limit sysctl sched_rt_{period|runtime}_us to RT_GROUP_SCHED")
-url: https://github.com/intel-lab-lkp/linux/commits/Sebastian-Andrzej-Siewior/sched-deadline-Reject-debugfs-dl_server-writes-for-not-active-CPUs/20261113-115022
-patch link: https://lore.kernel.org/all/20261113-sched_dl-v3-6-a76ffa1cdeee@linutronix.de/
-patch subject: [PATCH v3 6/8] sched: Limit sysctl sched_rt_{period|runtime}_us to RT_GROUP_SCHED
-
-in testcase: ltp
-version: ltp-x86_64-686a331b6-1_20261114 with following parameters:
-
-	test: sched
-
-config: x86_64-rhel-9.4-ltp
-compiler: gcc-14
-test machine: 8 threads 1 sockets Intel(R) Core(TM) i7-4790T CPU @ 2.70GHz (Haswell) with 16G memory
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <yi1.lai@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202611192004.cca8bf73-lkp@intel.com
-
-
-PATH=/lkp/benchmarks/ltp:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/lkp/lkp/src/bin
-2026-11-19 03:55:21 cd /lkp/benchmarks/ltp
-2026-11-19 03:55:21 export LTP_RUNTIME_MUL=2
-2026-11-19 03:55:21 export LTPROOT=/lkp/benchmarks/ltp
-2026-11-19 03:55:21 kirk -f sched
-Host information
-	Hostname:   lkp-hsw-d05
-	Python:     3.13.5 (main, Jun 13 2026, 14:18:01) [GCC 14.2.0]
-	Directory:  /tmp/kirk.root/tmpmzwqb43l
-
-Connecting to SUT: default
-
-Suite: sched
-────────────
- [1;37mpth_str01:  [0m [1;32mpass [0m  (0.016s)
- [1;37mpth_str02:  [0m [1;32mpass [0m  (0.151s)
- [1;37mpth_str03:  [0m [1;32mpass [0m  (0.017s)
- [1;37mtime-schedule01:  [0m [1;32mpass [0m  (0.250s)
- [1;37mtrace_sched01:  [0m [1;32mpass [0m  (0.021s)
- [1;37mcfs_bandwidth01:  [0m [1;32mpass [0m  (15.085s)
- [1;37mhackbench01:  [0m [1;32mpass [0m  (49.279s)
- [1;37mhackbench02:  [0m [1;32mpass [0m  (19.554s)
- [1;37mstarvation:  [0m [1;36mskip [0m  (0.076s)
- [1;37mproc_sched_rt01:  [0m [1;31mfail [0m  (0.015s)
- [1;37msched_cli_serv:  [0m [1;32mpass [0m  (5.043s)
- [1;37msched_stress:  [0m [1;32mpass [0m  (1m 12s)
- [1;37mautogroup01:  [0m [1;32mpass [0m  (0.075s)
- [1;37msched_football:  [0m [1;32mpass [0m  (5.469s)
-
-Execution time: 2m 47s
-
-Disconnecting from SUT: default
-
-Target information
-──────────────────
-Kernel:   Linux 7.4.0-rc2+ #1 SMP PREEMPT Thu Nov 19 11:18:29 CST 2026
-Cmdline:  ip=::::lkp-hsw-d05::dhcp
-          root=/dev/ram0
-          RESULT_ROOT=/result/ltp/sched/lkp-hsw-d05/debian-13-x86_64-20250902.cgz/x86_64-rhel-9.4-ltp/gcc-14/4f1021f29368df79a6e79ec87cafa29d99a4601a/0
-          BOOT_IMAGE=/pkg/linux/x86_64-rhel-9.4-ltp/gcc-14/4f1021f29368df79a6e79ec87cafa29d99a4601a/vmlinuz-7.4.0-rc2+
-          branch=internal-devel/devel-hourly-20261117-024418
-          job=/lkp/jobs/scheduled/lkp-hsw-d05/ltp-sched-debian-13-x86_64-20250902.cgz-4f1021f29368-20261119-35324-11d62tm-0.yaml
-          user=lkp
-          ARCH=x86_64
-          kconfig=x86_64-rhel-9.4-ltp
-          commit=4f1021f29368df79a6e79ec87cafa29d99a4601a
-          intremap=posted_msi
-          max_uptime=7200
-          LKP_SERVER=internal-lkp-server
-          nokaslr
-          selinux=0
-          debug
-          apic=debug
-          sysrq_always_enabled
-          rcupdate.rcu_cpu_stall_timeout=100
-          net.ifnames=0
-          printk.devkmsg=on
-          panic=-1
-          softlockup_panic=1
-          nmi_watchdog=panic
-          oops=panic
-          load_ramdisk=2
-          prompt_ramdisk=0
-          drbd.minor_count=8
-          systemd.log_level=err
-          ignore_loglevel
-          console=tty0
-          earlyprintk=ttyS0,115200
-          console=ttyS0,115200
-          vga=normal
-          rw
-          keep_initrds=/osimage/pkg/debian-13-x86_64-20250902.cgz/ltp-x86_64-686a331b6-1_20261114.cgz
-          acpi_rsdp=0x000f0490
-Machine:  unknown
-Arch:     x86_64
-RAM:      14033756 kB
-Swap:     0 kB
-Distro:   debian 13
-
-────────────────────────
-      TEST SUMMARY
-────────────────────────
-Suite:   sched
-Runtime: 2m 47s
-Runs:    14
-
-Results:
-    Passed:   22
-    Failed:   3
-    Broken:   1
-    Skipped:  1
-    Warnings: 0
-
- [1;31mBroken: [0m
-    • proc_sched_rt01
-
- [1;31mFailures: [0m
-    • proc_sched_rt01
-
-Session stopped
-LTP test details
-----------------
-starvation: starvation.c:115: TCONF: Skip test due to slow kernel configuration
-proc_sched_rt01: proc_sched_rt01.c:45: TFAIL: echo 0 > /proc/sys/kernel/sched_rt_period_us expected EINVAL: EBADF (9)
-proc_sched_rt01: proc_sched_rt01.c:47: TFAIL: echo -1 > /proc/sys/kernel/sched_rt_period_us expected EINVAL: EBADF (9)
-proc_sched_rt01: proc_sched_rt01.c:53: TFAIL: echo -2 > /proc/sys/kernel/sched_rt_runtime_us expected EINVAL: EBADF (9)
-proc_sched_rt01: proc_sched_rt01.c:62: TBROK: Failed to open FILE '/proc/sys/kernel/sched_rt_period_us' for reading: ENOENT (2)
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20261119/202611192004.cca8bf73-lkp@intel.com
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
-
+Sebastian
