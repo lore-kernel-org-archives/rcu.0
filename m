@@ -1,64 +1,64 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795109034;
-	b=qULUz3rxBh+55P56Uzz+1/ljtobklxJRXdUUFfmxac9iArKauIhuXaVqaeMlNcZofl5g
-	 PaxwgIjzFYri2TIL+SRFjFXsVLkRvF/yx5p1Zl48qsw/uvTBh/KDgyWY+9j5QfJEN5FJU
-	 oLmJvJA6n2KqxrmGSwIOHV0O2xqyvLDDz2B7tnY7K4bHn2Drve+hDqlmY+3CcXT1i8VWJ
-	 hrSuVD3I8+Ax7yMgVXnfJkV2OgfXXT6aekS9kXVgwLDrJjfRGZwDUEvJ4rb2x6GZltmFS
-	 KOKRbYYPTx7ksRDiN5Ym30AObAMacv+N+svXfHzXo0KrolfIP1RJALFX/L9GDchGBsA==
+	t=1795109549;
+	b=v5CpCUwthkBZW91oKhvCuV/XkTLWEucuRH5Q5uXHMrfaiO9MifJg9O1E+m9PBsBmlE/6
+	 0dh5X2Utc6ohnGwOxb/D2k18507LUSKB4IlNMkXz9an3jVLWR5XdKN6L3hCe42fYzVqtS
+	 5UItsJr5/JNjCBpFjlsdaApabnfODVsVZVy2EPxdIZgvGyzaDmahVmi74nGP9xpxQNeDn
+	 FfeXW08azPH+lj2dGbvYkhaO4bx54Gl+CngQEhFqnLKtC7APh216n0BhcXyMHWB/VeklX
+	 RF0F5sIz85xGf+OAYDzirRffs6dzo9JZ+YLr5z7tZybTBqx/50+p3O6lLGykqxqgAUg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795109034;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795109549;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
 	 Content-Transfer-Encoding:In-Reply-To;
-	bh=t5wo7xXbJcuw9tovTj7TawORnslxAC42P735QvA1/L0=;
-	b=gqeMFr6oJtf25EkwC4kywWQ7GqMt6DFYiH6eMIBuujSafCR5Utdck2+CXWMeTlAjNlYD
-	 5cbFH02fHZ1TrIUzPEeMmwFDBdcb0TvOSYgWLc3VRyux0QalE6CSo5cE7BJMNnRochyx+
-	 JyZwz9p6g2Yq2O8dz1PhBZWDfheYu20fnNW2j1xlM+XJoeBCVHDhVw10x33xzPy7NMJtU
-	 rRf/kn5CsoljyRfe+qR5kthVT/u8fG79kLo2Q8yUkWatvbFX41/Ktl0YtpKLEZsu6iG2Y
-	 JaxW/u5i4fewL54vB6Ok/gogZEplpl37nzNkrHWCqddFybtThIqnLX7uo5PmJ5CBdNA==
+	bh=8evx/OnDv2YPWD6aIwDbgZ+0tUSDkhKzy6/0pfCa9R4=;
+	b=EHZfwqs4IHx+XhOe7Jp8z5UAt0xF96CxhO7qZdLSiZXe3/Y+BLTP88OouRc8s2GkyExJ
+	 jwJFAonTcLFIg/K97hzvlUQWeltzXmhjFkae/kDFN5qgoMZqCcVVOZW/jVTbukHHWvt09
+	 rmqXafluXchukL2gF2gniWRYTeCfd/cr7lzmUsZwsUhZCoAsA4NYJNIInZhlC2tlR9CsI
+	 1LDzRMVEIh+Z+AzqlZY28nllSPeTolGKPTwpmCMwEl2GpyUHXQWzKpft+a0P7SeEMrDfS
+	 z0CTQ7NXWo3t/OVPMBldx9JQNYJcooRBD41LFJAJ7nz0v55gvkJE3s3exPbmB87VccA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ImpXvFWL;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QFWfkF5M;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20FF7606A320;
-	Thu, 19 Nov 2026 17:23:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B59606A324;
+	Thu, 19 Nov 2026 17:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ImpXvFWL
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2AD781F000C5;
-	Thu, 19 Nov 2026 17:23:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QFWfkF5M
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25F231F000C5;
+	Thu, 19 Nov 2026 17:32:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795109033;
-	bh=t5wo7xXbJcuw9tovTj7TawORnslxAC42P735QvA1/L0=;
+	s=k20260515; t=1795109548;
+	bh=8evx/OnDv2YPWD6aIwDbgZ+0tUSDkhKzy6/0pfCa9R4=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=ImpXvFWLHFdaPZE2v0k1yuxko/IJcK+TfUIaNUDOCBb1abhtpt+LVF7XOb+RE+f2G
-	 ICFhtkw1PYGgFGsGleBlk8e2Xj4a4MGLnQMas8212QP2q+6OEzV2D8vbA9U1ROILK/
-	 /si9NJH0TNICuElKww7r+Jbw+8qEBqhRySu1aXZ0A79ECt9nAdUh4KRdlLc+59yxrv
-	 w7nuAr1OrkFb2BMGd5KAcS6upvOzbkzWUG2OQ4BelDBclbNNHYAPVTmyUQFG6vpTkf
-	 HabU/Ynl9fCsffEhxrrxFh/53CYYif1g4OM6PGbRgjtgq0x6HpqXO9TMZdncXROAwT
-	 SzHIcLi+nNSnw==
-Date: Thu, 19 Nov 2026 18:23:49 +0100
+	b=QFWfkF5MFqECFm/ONqh0GfMItM4A93vTc/TBcvj6O/vqZO/X1Q6n88h3KFQc836tZ
+	 RLqwoitUZ3cpgCoLNL2G1mtKOWPtVnrJgED/cgpPGmBorDmjhJMxZWHct138p9bRQN
+	 edUNTLD9OSwX+jWfEbFAAyAbu9UBXKG1A73c8V4h5qPKQbcRSMP7y8c82qYFoG3iCf
+	 qxaWnT+xXRMrmmDts42W+XOoTKqo1IjDfmrfMA2ZZad6h0YOGY2lhH9IlTH3b07wQl
+	 xV01+40vanE3Ha1necrLGocmmsEolUYlf4yhFTxmusUfloSAkneP2MeOflIhvJ/lVU
+	 GIBulwDEPtQTw==
+Date: Thu, 19 Nov 2026 18:32:25 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Chris Wiseman <chriswiseman@google.com>
+To: Nathan Chancellor <nathan@kernel.org>
 Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Joel Fernandes <joelagnelf@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
 	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Uladzislau Rezki <urezki@gmail.com>, Boqun Feng <boqun@kernel.org>,
+	Joel Fernandes <jfern@kernel.org>,
 	Josh Triplett <josh@joshtriplett.org>,
-	Tze-nan Wu <Tze-nan.Wu@mediatek.com>,
-	Cheng-jui Wang <cheng-jui.wang@mediatek.com>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Keep lazy timer intact on second lazy callback
-Message-ID: <av8wpfu6yU3QgJXN@localhost.localdomain>
-References: <18e815d3ba49a353.3137322e32332e3235332e313736.192c60.0000sendgmr@google.com>
+	Zqiang <qiang.zhang@linux.dev>,
+	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	stable@vger.kernel.org
+Subject: Re: [PATCH] rcu/nocb: Avoid unsequenced accesses to jiffies in
+ show_rcu_nocb_state()
+Message-ID: <av8yqfimCeSkQrq0@localhost.localdomain>
+References: <20261114-rcu-tree_nocb-wunsequenced-v1-1-057996a86f0e@kernel.org>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,65 +71,85 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <18e815d3ba49a353.3137322e32332e3235332e313736.192c60.0000sendgmr@google.com>
+In-Reply-To: <20261114-rcu-tree_nocb-wunsequenced-v1-1-057996a86f0e@kernel.org>
 
-Le Sun, Nov 15, 2026 at 02:07:29AM +0000, Chris Wiseman a écrit :
-> wake_nocb_gp_defer() checks waketype == RCU_NOCB_WAKE_LAZY and
-> rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT in one if-statement.
+Le Sat, Nov 14, 2026 at 09:26:10PM -0700, Nathan Chancellor a écrit :
+> After a recent improvement in clang to warn on unsequenced accesses to
+> volatile variables [1], an instance appears in show_rcu_nocb_state(),
+> which can break the build with CONFIG_WERROR=y / W=e:
 > 
-> When the first lazy call_rcu() in a NOCB group arms rdp_gp->nocb_timer
-> for the 10-second lazy flush delay and sets rdp_gp->nocb_defer_wakeup to
-> RCU_NOCB_WAKE_LAZY, the next CPU in the group that queues its first lazy
-> callback calls wake_nocb_gp_defer(rdp, RCU_NOCB_WAKE_LAZY, ...). Because
-> rdp_gp->nocb_defer_wakeup is no longer RCU_NOCB_WAKE_NOT, it misses the
-> first branch and falls into the else block for RCU_NOCB_WAKE, calling
-> mod_timer(&rdp_gp->nocb_timer, jiffies + 1) and resetting the 10-second
-> lazy timer down to 1 jiffy. The same fallthrough also shortens a pending
-> 2-jiffy RCU_NOCB_WAKE_BYPASS timer to 1 jiffy.
+>   In file included from kernel/rcu/tree.c:5123:
+>   kernel/rcu/tree_nocb.h:1651:3: error: unsequenced accesses to volatile qualified 'jiffies' [-Werror,-Wunsequenced]
+>    1650 |                 jiffies - rdp->nocb_bypass_first,
+>         |                 ~~~~~~~
+>    1651 |                 jiffies - rdp->nocb_nobypass_last,
+>         |                 ^
 > 
-> Commit 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power") wrote
-> this check against rdp->nocb_defer_wakeup, and commit 463d46044f04
-> ("rcu: Fix delayed execution of hurry callbacks") switched it to
-> rdp_gp->nocb_defer_wakeup, which exposed the fallthrough across all CPUs
-> sharing rdp_gp.
+> Per C11 5.1.2.3.2, accessing a volatile object is a side effect. Per C11
+> 6.5.2, unsequenced side effects on the same scalar object are undefined
+> behavior. Per C11 6.5.2.2.10/12, the evaluation of arguments in a
+> function call is indeterminately sequenced, meaning any side effects in
+> the arguments are unsequenced.
 > 
-> Give waketype == RCU_NOCB_WAKE_LAZY its own branch and only arm
-> nocb_timer when rdp_gp->nocb_defer_wakeup is RCU_NOCB_WAKE_NOT.
+> Add a local variable to hold the value of jiffies before the function
+> call so that there are no unsequenced side effects, clearing up the
+> warning.
 > 
-> Fixes: 3cb278e73be5 ("rcu: Make call_rcu() lazy to save power")
-> Fixes: 463d46044f04 ("rcu: Fix delayed execution of hurry callbacks")
 > Cc: stable@vger.kernel.org
-> Signed-off-by: Chris Wiseman <chriswiseman@google.com>
+> Fixes: f7a81b12d6af ("rcu/nocb: Print no-CBs diagnostics when rcutorture writer unduly delayed")
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/2192
+> Link: https://github.com/llvm/llvm-project/commit/955715460eaf9188c241c74750637fc82dfcc423 [1]
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+We indeed want a coherent snapshot for debugging.
 
 Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
 
+
 > ---
->  kernel/rcu/tree_nocb.h | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
+>  kernel/rcu/tree_nocb.h | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
 > diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index b6cfee4e5039..347d718befd0 100644
+> index b6cfee4e5039..8448a7c578e8 100644
 > --- a/kernel/rcu/tree_nocb.h
 > +++ b/kernel/rcu/tree_nocb.h
-> @@ -335,10 +335,12 @@ static void wake_nocb_gp_defer(struct rcu_data *rdp, int waketype,
->  	 * Bypass wakeup overrides previous deferments. In case of
->  	 * callback storms, no need to wake up too early.
->  	 */
-> -	if (waketype == RCU_NOCB_WAKE_LAZY &&
-> -	    rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
-> -		mod_timer(&rdp_gp->nocb_timer, jiffies + rcu_get_jiffies_lazy_flush());
-> -		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
-> +	if (waketype == RCU_NOCB_WAKE_LAZY) {
-> +		if (rdp_gp->nocb_defer_wakeup == RCU_NOCB_WAKE_NOT) {
-> +			mod_timer(&rdp_gp->nocb_timer,
-> +				  jiffies + rcu_get_jiffies_lazy_flush());
-> +			WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
-> +		}
->  	} else if (waketype == RCU_NOCB_WAKE_BYPASS) {
->  		mod_timer(&rdp_gp->nocb_timer, jiffies + 2);
->  		WRITE_ONCE(rdp_gp->nocb_defer_wakeup, waketype);
-> -- 
-> 2.52.0.rc1
+> @@ -1618,6 +1618,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+>  	struct rcu_segcblist *rsclp = &rdp->cblist;
+>  	bool waslocked;
+>  	bool wassleep;
+> +	unsigned long j;
+>  
+>  	if (rdp->nocb_gp_rdp == rdp)
+>  		show_rcu_nocb_gp_state(rdp);
+> @@ -1639,6 +1640,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+>  		rsclp->gp_seq[RCU_NEXT_READY_TAIL].exp);
+>  	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
+>  	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
+> +	j = jiffies;
+>  	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
+>  		rdp->cpu, rdp->nocb_gp_rdp->cpu,
+>  		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
+> @@ -1647,8 +1649,8 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
+>  		"lL"[raw_spin_is_locked(&rdp->nocb_lock)],
+>  		"sS"[!!rdp->nocb_cb_sleep],
+>  		".W"[swait_active(&rdp->nocb_cb_wq)],
+> -		jiffies - rdp->nocb_bypass_first,
+> -		jiffies - rdp->nocb_nobypass_last,
+> +		j - rdp->nocb_bypass_first,
+> +		j - rdp->nocb_nobypass_last,
+>  		rdp->nocb_nobypass_count,
+>  		".D"[rcu_segcblist_ready_cbs(rsclp)],
+>  		rcu_segcblist_segempty(rsclp, RCU_DONE_TAIL) ? "" : bufd,
+> 
+> ---
+> base-commit: 18b332441bbf59fa537929fe390238e137a6caff
+> change-id: 20261114-rcu-tree_nocb-wunsequenced-02d11678cf42
+> 
+> Best regards,
+> --  
+> Cheers,
+> Nathan
 > 
 
 -- 
