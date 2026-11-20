@@ -1,64 +1,102 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.180
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795109549;
-	b=v5CpCUwthkBZW91oKhvCuV/XkTLWEucuRH5Q5uXHMrfaiO9MifJg9O1E+m9PBsBmlE/6
-	 0dh5X2Utc6ohnGwOxb/D2k18507LUSKB4IlNMkXz9an3jVLWR5XdKN6L3hCe42fYzVqtS
-	 5UItsJr5/JNjCBpFjlsdaApabnfODVsVZVy2EPxdIZgvGyzaDmahVmi74nGP9xpxQNeDn
-	 FfeXW08azPH+lj2dGbvYkhaO4bx54Gl+CngQEhFqnLKtC7APh216n0BhcXyMHWB/VeklX
-	 RF0F5sIz85xGf+OAYDzirRffs6dzo9JZ+YLr5z7tZybTBqx/50+p3O6lLGykqxqgAUg==
+	t=1795163835;
+	b=ZoZZbVO32ehQNvrMwyQBy3ywPKZPlTbfo8F6oMpo4FtaXW1A2YOADXL0yuhSw3wEE7JR
+	 Yav1bJ9x/KT21ntw7yyvWMqsd1+bj5fyrTj0iJO/eDlQPrUkxKyOwlkzKKRm6vcSXfLF9
+	 ZTX5gs41OUXpaxh7S7HjSNAR8cvCuV4kccReNCMujov64wPpJ9RTr4HNYjLFMDc01K8JI
+	 Ey2Ev3OBYMTuitNGX+ZfM0hpdpD6lQxFu8x4DCmWOB+4ayP9vc37V9bYp212GWuBLkNTy
+	 EjWIY6zNEE1zhtQdjPkdZu85IsRarD/1mwecen8b8gTzEweMo11xF+ya9H7KlKjklSg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795109549;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 Content-Transfer-Encoding:In-Reply-To;
-	bh=8evx/OnDv2YPWD6aIwDbgZ+0tUSDkhKzy6/0pfCa9R4=;
-	b=EHZfwqs4IHx+XhOe7Jp8z5UAt0xF96CxhO7qZdLSiZXe3/Y+BLTP88OouRc8s2GkyExJ
-	 jwJFAonTcLFIg/K97hzvlUQWeltzXmhjFkae/kDFN5qgoMZqCcVVOZW/jVTbukHHWvt09
-	 rmqXafluXchukL2gF2gniWRYTeCfd/cr7lzmUsZwsUhZCoAsA4NYJNIInZhlC2tlR9CsI
-	 1LDzRMVEIh+Z+AzqlZY28nllSPeTolGKPTwpmCMwEl2GpyUHXQWzKpft+a0P7SeEMrDfS
-	 z0CTQ7NXWo3t/OVPMBldx9JQNYJcooRBD41LFJAJ7nz0v55gvkJE3s3exPbmB87VccA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795163835;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=ZCyEGFLuMrF8ud7Iy/GAi36dvb9TvTE7pQNBco9ToNs=;
+	b=BRRFjEaWK9YAjP2e3GAo2BYrY1zuY7yMu0IwF/MSaCZMZgUqfWLk8FuWG+2PUqPf98Fy
+	 udbAgKU2RS3jEo2SRzRUQbOYyypmo0GogmXtzAx10q9w79/wmwVK423/9rKZtCXl1QyVW
+	 UOS0sEs/zPKtojpNzcrscI9Kc6pR0ZKUdPwIXK+94m9/o7lanjFtaHQtvST9/BZJNLK0k
+	 hqXOZC0ECmFT5Kpb/D/8Ha5lkL6no3DxPaF2V6keRWqU+bBDHCjRgB7/J279j+y/Zg+PH
+	 UNzkoYRTrIK2HJ5GhYtsfgToD6ShqdI/1z3obBZdu0KG5/cXep8O3bD+4FjgO6vYwTA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QFWfkF5M;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tPGgjm8d;
+	arc=none smtp.remote-ip=209.85.215.180
+Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20B59606A324;
-	Thu, 19 Nov 2026 17:32:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ED68606A326
+	for <rcu@vger.kernel.org>; Fri, 20 Nov 2026 08:37:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1ED68606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QFWfkF5M
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25F231F000C5;
-	Thu, 19 Nov 2026 17:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795109548;
-	bh=8evx/OnDv2YPWD6aIwDbgZ+0tUSDkhKzy6/0pfCa9R4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=QFWfkF5MFqECFm/ONqh0GfMItM4A93vTc/TBcvj6O/vqZO/X1Q6n88h3KFQc836tZ
-	 RLqwoitUZ3cpgCoLNL2G1mtKOWPtVnrJgED/cgpPGmBorDmjhJMxZWHct138p9bRQN
-	 edUNTLD9OSwX+jWfEbFAAyAbu9UBXKG1A73c8V4h5qPKQbcRSMP7y8c82qYFoG3iCf
-	 qxaWnT+xXRMrmmDts42W+XOoTKqo1IjDfmrfMA2ZZad6h0YOGY2lhH9IlTH3b07wQl
-	 xV01+40vanE3Ha1necrLGocmmsEolUYlf4yhFTxmusUfloSAkneP2MeOflIhvJ/lVU
-	 GIBulwDEPtQTw==
-Date: Thu, 19 Nov 2026 18:32:25 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Joel Fernandes <jfern@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>,
-	Puranjay Mohan <puranjay@kernel.org>, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=tPGgjm8d
+Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-cdb9f760337so997772a12.0
+        for <rcu@vger.kernel.org>; Fri, 20 Nov 2026 00:37:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1795163834; x=1795768634; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ZCyEGFLuMrF8ud7Iy/GAi36dvb9TvTE7pQNBco9ToNs=;
+        b=tPGgjm8dHvqkhvM6qaWX27QGfhfch+yhwN+RmPTN25HBRzCfLyqMVAQWFxpyoa4mtJ
+         bSfnf0bo7bGgXmOVnaXbm6JbJLCd2G/RgTMtPCBO71hgU8rQ3a4sGT0p9cTIPVQmEyGa
+         SA1TWTAAZ6YAbzS8RDhjPmfDnSd3BG2Y+Pw/oMGUa+4k73ZnQqXgYYYfAVEENUa3rwEy
+         pqPSDGPlcOceSwKE0cTtVhJdxsPQX47V4vbKH4BJUHf8UJBa1QmRmljkZrTlJHFTxyw8
+         g7YsmMnuthmIvMKgBLuW8yMludgCDcLLXbeUNnIY/cje4YvgaW4oMhSDm+/DSxn9pA7D
+         pp7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795163834; x=1795768634;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ZCyEGFLuMrF8ud7Iy/GAi36dvb9TvTE7pQNBco9ToNs=;
+        b=GtwHLw6nGo84KIoK45MTt+2ntoETSzaim+IX7xFWMUrnnZEJtTvqqlLQOWLNjtfvXt
+         6kOyiiV9XB9vWHl8MkyAA2qwvZf/k2jNeG+hcWv9Pois726wAwqZFYXBg/IxtHZONLwB
+         5L3S2K4cN/1AtZF/kGhFxoJCIp9Y9S8HedZw5qre7f+npBg4GmJAoXxu8o0IUAr7x5e7
+         Q2naoSrwPuZt36UciKXJwn4/T/jjLpHhjJFgoMfdGn6hxk0KdeYanEwhXcxkDD0ZLsCO
+         CL4XXTPtZnZocFAPidsvp2Zxbui9GVeB6ZRhUoQDg3k4HQWlYl3/sSLOU6viHvW59Ns2
+         ATnw==
+X-Forwarded-Encrypted: i=1; AL+hErFsjF6tssxtbPhafYWnX5g9cZAjN61zEVbD8Ghkj/Q388M0wcfUwNG33G38SX4zt95SnMU=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+rmSAhwOjnvErDG4kT9DAfYX+/TufVx7ln8um2QCVjsqaSbISS
+	CyqAHEZYnEg3JLTwQpPoSckegVdcdcprRbYFhf1hG5NTL8in/h56zd+S
+X-Gm-Gg: AZFdTZeBriRGYqIyBGLIKdm9Vtn/xRfNsFMEX49uBUv3Jnd8t4rWfaRpu4e/RTvhWaV
+	Al2eiDeymzHByrvepOq3sCUlIy9WuCNi4szY93mNeL6nHDW2SIRcsjYdAGvC3nkGu4PUlGrIO0Z
+	NrcVx/zS3VqppUhyh5/WaZZoVRftmyz+Z19V3tmcTes2o6ooWghZL2m6EQOxIUxVMjLL9lL3boT
+	/mFGOvwqUomrPJMUMiYKyMV0IxknQNcBNfYss0foD14w6xh1XnhCTG2zMyatWLpMptU4SAhjKkD
+	L4aqB5bYejhJLo5oDfJovZ740Ha9kt2wWuK9sreodroP188G97Ig41A2y0eOFIkg134yT6MSHoM
+	6/iPlmCm4J2CBZNTctOGRJyOYrZjTviqUyx22TPheimoC6P2OxTw75/dNybL3NdLw1cTPACtJyP
+	NBfDiIw9xbaEdmQbjnOarbjse5a69/uo+dE1lwjtcJtjPTIb7Uipa5nx8feYgCBuaXYJZ7Jd7QZ
+	wbekEbS8BsWmsB49OpV4OWFgtrXGjd4eqf8jgr+9ljIpuWmJlBZi8jeQlMXaqxmZNpepC22o1mE
+	Q/pZe2gr69Nt+SqAEftTZ7eKi+q4nnjK9TmVXCjvfGtvjQ==
+X-Received: by 2002:a17:90b:2f8c:b0:3ac:9ed8:f301 with SMTP id 98e67ed59e1d1-3b41c93fac6mr1453272a91.30.1795163834405;
+        Fri, 20 Nov 2026 00:37:14 -0800 (PST)
+Received: from osman.mioffice.cn ([43.224.245.178])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b41ad0b52dsm3590057a91.5.2026.11.20.00.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Nov 2026 00:37:13 -0800 (PST)
+From: Zhan Xusheng <zhanxusheng1024@gmail.com>
+To: vbabka@kernel.org,
+	harry@kernel.org
+Cc: urezki@gmail.com,
+	paulmck@kernel.org,
+	qiang.zhang@linux.dev,
+	akpm@linux-foundation.org,
+	hao.li@linux.dev,
+	cl@gentwo.org,
+	rientjes@google.com,
+	roman.gushchin@linux.dev,
+	linux-mm@kvack.org,
+	rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhanxusheng@xiaomi.com,
 	stable@vger.kernel.org
-Subject: Re: [PATCH] rcu/nocb: Avoid unsequenced accesses to jiffies in
- show_rcu_nocb_state()
-Message-ID: <av8yqfimCeSkQrq0@localhost.localdomain>
-References: <20261114-rcu-tree_nocb-wunsequenced-v1-1-057996a86f0e@kernel.org>
+Subject: [PATCH v2 1/2] mm/slab: restore the rcutree. prefix of the kvfree_rcu parameters
+Date: Fri, 20 Nov 2026 16:37:06 +0800
+Message-ID: <20261120083707.296481-1-zhanxusheng1024@gmail.com>
+X-Mailer: git-send-email 2.43.0
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -68,90 +106,45 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20261114-rcu-tree_nocb-wunsequenced-v1-1-057996a86f0e@kernel.org>
 
-Le Sat, Nov 14, 2026 at 09:26:10PM -0700, Nathan Chancellor a écrit :
-> After a recent improvement in clang to warn on unsequenced accesses to
-> volatile variables [1], an instance appears in show_rcu_nocb_state(),
-> which can break the build with CONFIG_WERROR=y / W=e:
-> 
->   In file included from kernel/rcu/tree.c:5123:
->   kernel/rcu/tree_nocb.h:1651:3: error: unsequenced accesses to volatile qualified 'jiffies' [-Werror,-Wunsequenced]
->    1650 |                 jiffies - rdp->nocb_bypass_first,
->         |                 ~~~~~~~
->    1651 |                 jiffies - rdp->nocb_nobypass_last,
->         |                 ^
-> 
-> Per C11 5.1.2.3.2, accessing a volatile object is a side effect. Per C11
-> 6.5.2, unsequenced side effects on the same scalar object are undefined
-> behavior. Per C11 6.5.2.2.10/12, the evaluation of arguments in a
-> function call is indeterminately sequenced, meaning any side effects in
-> the arguments are unsequenced.
-> 
-> Add a local variable to hold the value of jiffies before the function
-> call so that there are no unsequenced side effects, clearing up the
-> warning.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: f7a81b12d6af ("rcu/nocb: Print no-CBs diagnostics when rcutorture writer unduly delayed")
-> Closes: https://github.com/ClangBuiltLinux/linux/issues/2192
-> Link: https://github.com/llvm/llvm-project/commit/955715460eaf9188c241c74750637fc82dfcc423 [1]
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+From: Zhan Xusheng <zhanxusheng@xiaomi.com>
 
-We indeed want a coherent snapshot for debugging.
+The move of kvfree_rcu() to mm/slab_common.c dropped the "rcutree."
+MODULE_PARAM_PREFIX, so rcu_min_cached_objs and
+rcu_delay_page_cache_fill_msec became slab_common.* and the documented
+rcutree.* names are silently ignored.  Restore the prefix; the
+slab_common.* names, never documented, stop working.
 
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+Fixes: bbe658d65802 ("mm/slab: Move kvfree_rcu() into SLAB")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhan Xusheng <zhanxusheng@xiaomi.com>
+Reviewed-by: Harry Yoo (Meta) <harry@kernel.org>
+Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+Reviewed-by: Hao Li <hao.li@linux.dev>
+---
+v2: as in slab/for-next-fixes.
 
+ mm/slab_common.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> ---
->  kernel/rcu/tree_nocb.h | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree_nocb.h b/kernel/rcu/tree_nocb.h
-> index b6cfee4e5039..8448a7c578e8 100644
-> --- a/kernel/rcu/tree_nocb.h
-> +++ b/kernel/rcu/tree_nocb.h
-> @@ -1618,6 +1618,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
->  	struct rcu_segcblist *rsclp = &rdp->cblist;
->  	bool waslocked;
->  	bool wassleep;
-> +	unsigned long j;
->  
->  	if (rdp->nocb_gp_rdp == rdp)
->  		show_rcu_nocb_gp_state(rdp);
-> @@ -1639,6 +1640,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
->  		rsclp->gp_seq[RCU_NEXT_READY_TAIL].exp);
->  	sprintf(bufn, "%ld", rsclp->seglen[RCU_NEXT_TAIL]);
->  	sprintf(bufb, "%ld", rcu_cblist_n_cbs(&rdp->nocb_bypass));
-> +	j = jiffies;
->  	pr_info("   CB %d^%d->%d %c%c%c%c%c F%ld L%ld C%d %c%s%c%s%c%s%c%s%c%s q%ld %c CPU %d%s\n",
->  		rdp->cpu, rdp->nocb_gp_rdp->cpu,
->  		nocb_next_rdp ? nocb_next_rdp->cpu : -1,
-> @@ -1647,8 +1649,8 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
->  		"lL"[raw_spin_is_locked(&rdp->nocb_lock)],
->  		"sS"[!!rdp->nocb_cb_sleep],
->  		".W"[swait_active(&rdp->nocb_cb_wq)],
-> -		jiffies - rdp->nocb_bypass_first,
-> -		jiffies - rdp->nocb_nobypass_last,
-> +		j - rdp->nocb_bypass_first,
-> +		j - rdp->nocb_nobypass_last,
->  		rdp->nocb_nobypass_count,
->  		".D"[rcu_segcblist_ready_cbs(rsclp)],
->  		rcu_segcblist_segempty(rsclp, RCU_DONE_TAIL) ? "" : bufd,
-> 
-> ---
-> base-commit: 18b332441bbf59fa537929fe390238e137a6caff
-> change-id: 20261114-rcu-tree_nocb-wunsequenced-02d11678cf42
-> 
-> Best regards,
-> --  
-> Cheers,
-> Nathan
-> 
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 01c64ef661e7..41dea01a8c1f 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1367,6 +1367,10 @@ void __init kvfree_rcu_init(void)
+ 
+ #else /* CONFIG_KVFREE_RCU_BATCHED */
+ 
++/* Keep the prefix inherited from RCU */
++#undef MODULE_PARAM_PREFIX
++#define MODULE_PARAM_PREFIX "rcutree."
++
+ /*
+  * This rcu parameter is runtime-read-only. It reflects
+  * a minimum allowed number of objects which can be cached
 
+base-commit: 6628e7d4c6b25c8d18f1345e3a20d21829aae7e4
 -- 
-Frederic Weisbecker
-SUSE Labs
+2.43.0
+
