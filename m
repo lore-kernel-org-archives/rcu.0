@@ -1,45 +1,45 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795274290;
-	b=jBW374bHB5BaYIp3wG0TtxbxI7pEmeG1HixbKert8SnnUBzzPKcmlqfGIRMHW3zuWmbM
-	 RSvLiCYf2xS3VvOzxnc0X4MDnqJ06hVIp3bUjRkFRV56V8wPQNS1k2vmodZ6fKgVdxxm0
-	 rwUTPDNpknY+VV7v39aYa7QgJmqpBzMTdykHLoCSGR1gYN2nn7CcdU3jzlly5saEQ1+DK
-	 tQSlPollDcNHqLscVZe/eoXaM+ZFNkfeaDHTYSxh3GeHCc94zQNOAIs4N4LawckaMmqgx
-	 gugTSgjrw9yb8Cn5Arn6qaMX0bGjNjVqNV72MFpvujQsUlygzdpDtKx3eZL+tW0W5Yw==
+	t=1795274372;
+	b=XuJzXNDQipAYAj+2xhlVlimEvOGhnfowB74tkCJdpXonwU5wOE8ljqV9h5x6lmD2S1WC
+	 U4ZlJXP13t8GHtmXnW2Q7/DrVBZYaiBqB4cXT7GDOLz8dASezPZi509W3mLgZH2tlhZEi
+	 Ti7Ee8LR3fp1nwWmbgMQXJoo9h9nSIGBEvaMs+EaUiipXy0YG6UJXtzQ8oBw3LTQJvH8E
+	 zWPAPOKnfClLPSzSkUS4SVjznkAqxVvohQ+53z1bn3VFzEdg9eDuOiKW739ZADcSkmeQk
+	 VT5bi3KEctR+nUibaLeoET3TLqN5G146moHfmsnrmbSR8kmoU+4cR1erdt2HZsLCzCw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795274290;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795274372;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=lpyBJkRJiIJr205Bfkql98a8CRWhfrzMz+lDyWGqmaw=;
-	b=s5UwmaslFOtyOLMAsgjL4Fu21JMAOzRHuDeeXXWo4WTYMzr6AZKlZMWP+Z5mdSrDCVgi
-	 ozaxK6/CusEHaUQpxKjj1SC0h1u0/N5uXWFthTCbmRpkrTyYnIvzwyq3zrdzDO4ZOSDCI
-	 Z0PvkmZlTDqrrYuGsOamTzHaZ+a1j/l4H7hMcClgISfIlH8SKnyBFgBpQi0UF+C+CgX+W
-	 uFivhKoupgstIqR3o7KJjqIxOYyGuN1vwUgM6sJHyHO61PuuFJGDsDyjmkRQiYnc5O950
-	 AgvVp5gBj0uzsHBnl9MMdw12kSXOCSKizctmi+NDrV3UYzo1M4reQ/KuSV5ZokfB3vw==
+	bh=+Hgp1B6fD9zzppPldEIpxLhJwS4sYIDRauCENQnGnnQ=;
+	b=CeSFSNQhTGvHP1M9vadlUspasElz5NrCw0R9d5z9UGfUO7u+lF6W4lysVhfXAKDuRFgK
+	 +m6d/bNeNV0H0RZOjlM6daJBwz+4BwWHoVBqyqUtKpmQYn4M/l2XzMzPyWHGK/q7OVTXT
+	 WdnvGajrm0tqxIL1XNKGnBn8lf6WZDYHSp3htxVEPLnZNH+STr/efqtIREifnj3KyD/PO
+	 I89I45FdrJUAU7nuqK/laMvzReT6QDAS3hyTuIlA0yTIYekSSl6Y55zyYWNf4oA3q1jQZ
+	 x5SJaOeaqIondXPSdEhUcE9yIi14/frXhfGo+I1EsrD0BIGzVq3cJTZZG0gQVfwBgRw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SN9Dut1M;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mFK1muRW;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id A2272606A320;
-	Sat, 21 Nov 2026 15:18:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 92DD0606A320;
+	Sat, 21 Nov 2026 15:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SN9Dut1M
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id AAF631F000C0;
-	Sat, 21 Nov 2026 15:18:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mFK1muRW
+Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 0D5851F000C4;
+	Sat, 21 Nov 2026 15:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795274290;
-	bh=lpyBJkRJiIJr205Bfkql98a8CRWhfrzMz+lDyWGqmaw=;
+	s=k20260515; t=1795274372;
+	bh=+Hgp1B6fD9zzppPldEIpxLhJwS4sYIDRauCENQnGnnQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=SN9Dut1MoV1fQKwGsUUx+XwAvln+8ptxGALPfOO1oKemkr19moP1TTOJo+2dyCMXB
-	 gL3WDFEfoRKOqexU74KafxyuF9GJXqYaJgYJj9U4Hdo0WSNPFictjCiDB9M3NGSwWM
-	 zov6shixwiXBrqYJmHO2iWVOakrGtJGK/UDbN3GHxOVhUk59I/VcoXpkMLz/6kBD8N
-	 OQfM8SuUtLCfx5jfYOpvFrmfdLTUSWM68kixxZxZ/IoGxsD9OH3YQZSvRSFxUBlAQe
-	 6cvH0F0Ax3zWVBwWMtdbvViZj0KW42cwrWhF5qKw9jURSqnGCjbc8hE+hzBawd7Hcs
-	 7T4TssCfIBjpA==
-Date: Sat, 21 Nov 2026 10:18:08 -0500
+	b=mFK1muRWhfcZzkfZJte2Um4BVK0FOduikHND1SFLRCqn0GGmdlpYLOQBVo1JUEyHV
+	 bn+aZYPqiTqgFAWWH3TiX3a2aOj1cBaqZ9bgJWMsWA8fWPDV4XlSkB2ePG/7fegl+k
+	 N2UH4ljOD5CcTDAs6m1AG2cDTVMHAFF4fbqNKZ4KWzPwnxsAzeL85dwH9Ua9+8D7IF
+	 U0VwsaLOJW7Idl3ocs4CnPQAlSWTbaCPhpSIdt9lfv+Uo+NZianm1OcMleE4Y0RAh3
+	 NQ+HUntxXZocjYoYmBiJgqdBFrucAhZWHJKnKT6mFQsYZcDxJY0xMPnsbH5mcNb6j+
+	 Jx8T4wXHZ4laA==
+Date: Sat, 21 Nov 2026 10:19:31 -0500
 From: Joel Fernandes <jfern@kernel.org>
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -55,11 +55,11 @@ Cc: paulmck@kernel.org, rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Jonathan Corbet <corbet@lwn.net>,
 	Shuah Khan <skhan@linuxfoundation.org>, linux-doc@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 6/7] doc: Document rcutree.boost_disable
-Message-ID: <20261121151808.GE946893@joelbox>
+Subject: Re: [PATCH v2 4/7] doc: Document rcutorture.test_boost_reader_ms
+Message-ID: <20261121151931.GF946893@joelbox>
 References: <20261116194438.306618-1-jfern@kernel.org>
- <20261116194438.306618-7-jfern@kernel.org>
- <20261119094802.qh6UUaw8@linutronix.de>
+ <20261116194438.306618-5-jfern@kernel.org>
+ <20261119093901.Gtf9Mom6@linutronix.de>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -71,23 +71,11 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261119094802.qh6UUaw8@linutronix.de>
+In-Reply-To: <20261119093901.Gtf9Mom6@linutronix.de>
 
 On Thu, 19 Nov 2026, Sebastian Andrzej Siewior wrote:
 
-> If you intend that both changes (adding boost_disable and its
-> documentation) are merged via one tree, why do you split it in two
-> patches?
+> Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-There is no good reason, both go through the RCU tree. I will fold the
-documentation into the code patch in v3.
-
-> If so, why not limit it to the test-module?
-
-And yes, I will limit it to rcutorture, as described in my reply to 5/7. Thanks!
-
-
-thanks,
-
-Joel Fernandes
+Thanks a lot for the review. I will carry your Reviewed-by into v3.
 
