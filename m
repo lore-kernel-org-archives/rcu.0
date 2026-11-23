@@ -1,84 +1,84 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.45
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795441928;
-	b=R3zGAH/9M6rPS2PeKei7tVv3aLu+f13RjsUvvxFwKlOML6DnadIGq4+v7B4gOsdqOja5
-	 UJL+4DVEX/inMdiQbp6TSd0niHIrwecupSH9TqNeUsDDflcyqbo07X9urkOBntWmzDbkK
-	 zvTt98utSVG+OiUBIquhJUflX2c8FpPNVy4ZwAiW6o4UqQAT/qxfBUhRuRYpsa5h3Jp+6
-	 uv6b9F6ue4jiKQw9TOVQ9MlxmWCYY2Hh/NoTr/Ihq6oZCPPLfaS4Kn6aY6sUGYk5FOtiB
-	 /Qnr4xvTZT2JEexnu2WKmX8SkWGTddtxdpd6FZafKtg+L/5e3lSZ2YtfSCKrtQoSUfQ==
+	t=1795441929;
+	b=B+8/0FeweV0eiY55q12UuX+stzyaygRiYkF70XbjsKl2fs2weuk+tdJr7xx0vMm8G5rl
+	 xvlep2YR0TAAfxxnn0oSVpfc7xMdKvizl4L0iDnA4rLhaAGQjieEm5suZ3kV8i+ORCfWi
+	 mbzQseDyoTuijIUtM1E2GZ2fMDvCgoaultbcEatvQTKn8aoio8f/sGVET+PZJurOVsjwM
+	 r8spTWj8UWqDyC6vreBSTdTgNeAlnTr79Vea/Ah/WTGlbN2qLy7DGQcKtpcJvn5m9Rfct
+	 gXc5W3EQU8duCySMTHlHgvh4FFMumDg4fEpSRqeGGyLyaTBDrTHeM+PmTKqXUJYXk0Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795441928;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795441929;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=hN4yemycesflqKXqm8D59iST16TmA2LaImFy+AHGkgk=;
-	b=5fQ1p2QYlsOqZPEKldnxXSlrp0giebqjm7tV1pi+iuA9WN0FgDB1K7NBkxcNw+28CQFU
-	 mOqOgaB22zSVvcvAgvpiDFNxu1DLB9P6Wd0ExotnoTc7pO66D2OraSBjZnbAlNgZ57NYV
-	 8lOukKqdcs8wTAIGT75H/min2oAQvMHCyAAgd5DuHmKFP5aUhwZdJfIHY+0cFBww48sUX
-	 OUOY0Vr3e5sxgm+RRKKf4fJ2p0d+88AiOvrHQGMDOKe2UEHRV4D7M/+BrE2MtjaG5kICf
-	 FWxrQ0ls7tNGe9ddWaPEfJhdeVaEoiDzq6y7mEuePgsErDNevdOAw/tz+R2pOuq/5fQ==
+	bh=YerUGZZjqZVHCBmjQM6BOEpwknjYpbKDzKBkgZmInLA=;
+	b=CzaTOtPyqnozhyhlXPpqpcn7StqAKBBcheILffAIMl+PCgafkxh1IylPAhYf/LX3bC+x
+	 5Wf2Q/KTgz+6SHMpRHMwQMTBtcI9gpMlYsrb40TC7/xmnxohf/kX5C8OGagb0YoXAJkzc
+	 1sm6on6dKW74iah7TYAigoH61tBqNAu7tsNsCX99MBCbfR97S1bCXkNA999yVwjVsyAnk
+	 11Moo2N00kkQtv7+23h58fa9nReXI1xmMsXL1i+rp01wuQXAetc3m1ha2uAZT7fzDmZ2s
+	 DlOYEBEtpLlZC22W3Qz5c4rJn5pBbR6uIKEh1XWFHSMfUI1t3tikMjTyAPoO0qtnwoA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=ionos.com;
 	spf=pass smtp.mailfrom=ionos.com;
-	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=MsJZrLgr;
+	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=T81WJwhw;
 	arc=none smtp.remote-ip=209.85.128.45
 Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AA96606A33A
-	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:52:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1AA96606A33A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65ED3606A689
+	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:52:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 65ED3606A689
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=MsJZrLgr
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4a207b02a2cso23691395e9.1
-        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:52:07 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=T81WJwhw
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4bb666304fdso38365525e9.0
+        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:52:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1795441926; x=1796046726; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1795441928; x=1796046728; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=hN4yemycesflqKXqm8D59iST16TmA2LaImFy+AHGkgk=;
-        b=MsJZrLgriwHBvCUgyx/HgJGaeMlf7GUlavPKqYfxDvpMwi5T4KdqIzXwTIkjN8luX4
-         nPhNKfG7dGMCWtVwGpncivYKnt/64emIqSqMyIGpPxpGHGp5KqyC8uO32Vwyfk4+BAHO
-         UXKN9yEeCggTFxDf7593gsu9s35kDeLm6g6JkaTyFEKKYRxkHGp88q5M/DdVy/R3mkil
-         AiEmeUZOEss/TnEe3CtdobJF9Nm875lsGObmhuQj/Q5aMFHDtWbAd2+EoUCTpHlFYCie
-         IVj/860Askd9FFi0wcg8DkBmnd4xLIvPqPwk45SV/Owyo0uzRepFR4TdGTtqD+2dgeVi
-         gCiA==
+        bh=YerUGZZjqZVHCBmjQM6BOEpwknjYpbKDzKBkgZmInLA=;
+        b=T81WJwhwDvlGjmYEnO3aa1uYNz/fV+gZH2xj3UIFHkaA7mMkGm1hY0HfG2cANLTyyp
+         Xv8bQMoVeFPMdv1SQCQ5dd3Z2ecnT+K1e6DtUkUTtUGXpwJ6eZRxW1koMQWuZkZH/i8m
+         wC01m2rHnxzYNNLIZy3BJ0jXnYwQ19SMkkJse6f0rfwagH+2Lmo+3sD9VSEI2+dU3BOJ
+         8SHMoMpbONZEEIN3A22hGJ23+ULInVbliXpgA75+dIOe10vmzJ6P62T+tRUv5iTKmaH7
+         0mhoxvgS1u9KFWQIVgzWFO1W5+H85Zs96Qu1qWg04Yi1xsMPpVMpyDkDuNp4xCIul1Y0
+         THVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795441926; x=1796046726;
+        d=1e100.net; s=20260707; t=1795441928; x=1796046728;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=hN4yemycesflqKXqm8D59iST16TmA2LaImFy+AHGkgk=;
-        b=m+WN9mUc2XR330pC/1AHAdtT5D6jkSaC7pI9ywJ/5+rBu94fhExScKyTxizo56WqZV
-         uxuVNWNCna3+IBF+RdhvNLDOflGOVVniYMx/lJeMqBAbpOo4m+hxn+qsdHE9XzboC6e+
-         JhEuF2C26gaqS5MKgIxepepF2rTZ4DvzQ3v7fo7DArdT6KsdhurkBOTzsjlp/sxMiekP
-         qeOfGvwiKjUtr+yNC4ZiXRVLXJyO0h+Eu0pEBznGvzkHMdQ9rKZreEiLU1kvcQiUptVZ
-         xhGOicQjWwNL8z/ugVMy0kjLN1HWcN1o0NdgSHYBIkledJBJkTN6YiSSMrpGkAABeQaq
-         Q9nw==
-X-Forwarded-Encrypted: i=1; AL+hErEGtHm4WtVFs5+YcH0klpnGbxC19Ja2QT3SgN3Q3bLziufp9rSbliQHVb2DxVtc6eC48Nw=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/+SXVjc0Oj0BLsFpPVhpZWHcPIqP6xqt17M9rlwUv8wUpgcnXZ
-	ID7Qo2iOjFEe0gc4yKVb2iZuSZ2zqNt1Lr+FcKlHxF3I4PYzpu5VTuJpLxJ71JvdiA8=
-X-Gm-Gg: AZFdTZf9SY/Zrz+vb2ZP0iqs0csASRyop/AottaAVQVQuQhPrzuQgrFfwN/60gzaBa8
-	MQWoGy8WnONfYk2LdcMo30QGH8T9zSR/tOakHYA3i6nZkuBLxTL/DVCvhavk9+USaZsKYVzBSjT
-	1DvUiKgy68WdjYvsl3p5zZzMIX5750DYx/zI46GzC7LWLB4zQv8otsPkI1R0u/q045bD93rFMRW
-	cxD+/XAxrENghQxnYMtQnPbrFbU3Ze78dyOaqq1RZgrt4JM8VDL9ccpaNpp0EwXcv5sP9EQ/Bhz
-	duJE+5LEpDg/+geVql2PEK6BZvZKktuzzle+CFN4+A4LzBrtFbMMPyAqjONHhMDFmTViDI8VRr3
-	tmjh+2QwJAIjevSBLFtIewU5Cf82mPneq+o9JPS6Y4QHgs2GPpXwi1q8mzgslfXC+2xYkHvDp1b
-	4jpWFdtx24brYSf/JKJ2dztQHK0gGFXQoR78Fw03rd2W4CKWSDAWOyKzg2JMwlcCEDE8KYWUg6i
-	F7/cVhWCCsnWY9+TC4kZkOsPVglCX3WPp2szck0uOh/zJc6gLd0q0EXWUw7rxCz/KYj6TmJXvQn
-	S3QNsJTbagx306RfjoiG7+nTBr8gbM6yfvzPywMN3noUN8j1kZPBGSOgC2B3I+fEq+H1fcPjaQC
-	Yi2G/tSTy7toPcj3ktoE1/D1Ma9VBXbQ=
-X-Received: by 2002:a05:600c:3b9e:b0:4a1:cf60:dcc3 with SMTP id 5b1f17b1804b1-4bb88820687mr277263185e9.29.1795441926279;
-        Mon, 23 Nov 2026 05:52:06 -0800 (PST)
+        bh=YerUGZZjqZVHCBmjQM6BOEpwknjYpbKDzKBkgZmInLA=;
+        b=Fo8ELzRW7fR5P1JcD9Z/wZkkaZ2R/A74GHaf6+Ky1TAbhQ4Mj5x4K8NjeYgO91yl3W
+         aPhMGhdfpa1TM+rQ/OaM0tMfI8iONAYBRENNLYtIt2Fv/mdoWxCISX/+gKG88gcliaaC
+         OG4sccG87GPmQJRvOyqhFbYdZsAd00b/eAoCgBvSnZCU/+qfVnLSv9T85V0gfuqw5dGf
+         mMdnDqGi0SnOJz/Uk/KYyZTImNoEFVFonMgeMVhpQEHWTh2EsSUyNCOIL0VSe2/dZODy
+         BFXTASCtGi5AxrUZ7C3nzp7gj40kTvPpyMOi9wM/d6jVhoIqpZD4MztUzMxeJS7//7vz
+         sRtQ==
+X-Forwarded-Encrypted: i=1; AL+hErHbsE5VR39nhok/XDjvcs8CeGjRsLY1XTtoq16iAMR05uLT+ft/wSOdCYF07mODbq0NCHo=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8eAYe8XuHKPsbX9Aw8N6M00gzJ9XyhEUEpNHgg4s1NfppO4keI
+	A/Pl1Gug8SloyE2x/arabeunYGQ4/xfjIz7xrOq0jaa78zksz/1aGyTlk6mDatTxNns=
+X-Gm-Gg: AZFdTZd1UfkEgVXpzWbsAaGSoPYZNf0IlmIGFbrQYQePRbVDO6MtSwdzw/fvGUi/3o0
+	dkft0sIKA3KveyimQMMQIKKxn/bjT1hZgHy6R6YMRr5tvhyeEuHyubqscdnZf1eqcGt0BaerGyP
+	VY3pgMeJAsNHd6Akv0WnqQMpTEwna6yVDxdlVKaIcryFzBLzNrjDX+Fq4VvPEP7KB+I/BEDmPPK
+	/mlYeJjHGgcx0zEh+2+qhu9IPRKsaCHoL8WLMXlD4nh6/LZ3hY467+JQIro8cIUn2K1Rvy23C1J
+	fe+E3lgy8XMUT8k/vHDGuSZZt2+EAbMX6bmHIMbV9AKWNrjMKTzD9z8XngmB6eKOvwmc77xzeAm
+	RUuuVB9kup4ujfbUO8gJn4cHW8MXQaJTrVrYUyz840q9w1qnu4gX4Pg55cMiwPbqJmAaDBIFzH2
+	jzb2ZtaR2c5vb8IeP7BRLLRE0hWvbhWr6aBHYWVqsYMyCIx4STDTem0ITRjVNa458KE8shhIQd3
+	aNdOsgpzL8l2w2l8w6Thv87nR3xp8zaycbXUIlP2eKYG+wAGebEnIKr0K6bP2rBXPnJXTK3k4D0
+	MqZ974YZwijX3xc6trilI6tCSg5kUGYX2UhUPd1DbnBQ5X86u0XZSsw/xj99uH6IgIjjbp3FfnD
+	BRrDvpMiqBeqo+bVqkHHhkhmpPDB4pZggZ0gsX7GvJ6TgOEDl/wo=
+X-Received: by 2002:a05:600c:1d09:b0:4bb:66fd:ad68 with SMTP id 5b1f17b1804b1-4bb888160cdmr251315095e9.14.1795441927506;
+        Mon, 23 Nov 2026 05:52:07 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f1b7800023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f1b:7800:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb906817ccsm169279215e9.5.2026.11.23.05.52.05
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb906817ccsm169279215e9.5.2026.11.23.05.52.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2026 05:52:06 -0800 (PST)
+        Mon, 23 Nov 2026 05:52:07 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: akpm@linux-foundation.org,
 	kasong@tencent.com,
@@ -102,9 +102,9 @@ To: akpm@linux-foundation.org,
 	linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v4 2/5] mm/vmscan: move code to lru_gen_{add,del}_memcg()
-Date: Mon, 23 Nov 2026 14:51:57 +0100
-Message-ID: <20261123135200.4086519-3-max.kellermann@ionos.com>
+Subject: [PATCH v4 3/5] mm/mglru: cache the last memcg node, make tail insertion constant time
+Date: Mon, 23 Nov 2026 14:51:58 +0100
+Message-ID: <20261123135200.4086519-4-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261123135200.4086519-1-max.kellermann@ionos.com>
 References: <20261123135200.4086519-1-max.kellermann@ionos.com>
@@ -119,78 +119,111 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Preparation for the following patch that adds tail caching.
+Rotating or onlining a memcg currently uses hlist_nulls_add_tail_rcu()
+which walks the destination bin to find its tail while holding
+`memcg_lru.lock` with interrupts disabled.  With thousands of cgroups,
+this takes a long time and causes severe lock contention.
 
-For simplicity, hlist_nulls_del_init_rcu() is now always used, which
-is also valid during rotation, because the entry is immediately
-reinserted under `memcg_lru.lock`.
+Cache a pointer to each bin's last node, making tail insertion O(1).
+This requires remembering the bin number (but the new struct field
+occupies a hole, so it does not grow).
 
+In a micro benchmark that creates 1500 cgroups and repeatedly writes
+`1024M swappiness=0` to `memory.reclaim` in 8 threads, the request
+rate increases by a factor of 9.5 and the average duration of each
+write request is reduced by 89%.
+
+All writes return EAGAIN in both runs; the benchmark measures the cost
+of reclaim attempts that cannot meet their requested target, not
+reclaimed throughput.
+
+Fixes: e4dde56cd208 ("mm: multi-gen LRU: per-node lru_gen_folio lists")
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Reviewed-by: Barry Song <baohua@kernel.org>
 Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- mm/vmscan.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ include/linux/mmzone.h |  4 ++++
+ mm/vmscan.c            | 26 ++++++++++++++++++++++++--
+ 2 files changed, 28 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index 6a2ad0cff795..b2ded8f97eaf 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -570,6 +570,8 @@ struct lru_gen_folio {
+ 	u8 gen;
+ 	/* the list segment this lru_gen_folio belongs to */
+ 	u8 seg;
++	/* the memcg bin, protected by memcg_lru.lock */
++	u8 bin;
+ 	/* per-node lru_gen_folio list for global reclaim */
+ 	struct hlist_nulls_node list;
+ };
+@@ -661,6 +663,8 @@ struct lru_gen_memcg {
+ 	unsigned long nr_memcgs[MEMCG_NR_GENS];
+ 	/* per-node lru_gen_folio list for global reclaim */
+ 	struct hlist_nulls_head	fifo[MEMCG_NR_GENS][MEMCG_NR_BINS];
++	/* last entry in each bin, or NULL if empty */
++	struct hlist_nulls_node *tail[MEMCG_NR_GENS][MEMCG_NR_BINS];
+ 	/* protects the above */
+ 	spinlock_t lock;
+ };
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index bc7579d47f9b..1d63647e3710 100644
+index 1d63647e3710..91f31b65f9f6 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -4429,6 +4429,26 @@ enum {
- 	MEMCG_LRU_YOUNG,
- };
+@@ -4434,18 +4434,38 @@ static void lru_gen_add_memcg(struct lru_gen_memcg *memcg_lru,
+ 			      int gen, int bin)
+ {
+ 	struct hlist_nulls_head *head = &memcg_lru->fifo[gen][bin];
++	struct hlist_nulls_node *last = memcg_lru->tail[gen][bin];
  
-+static void lru_gen_add_memcg(struct lru_gen_memcg *memcg_lru,
-+			      struct lru_gen_folio *lrugen,
-+			      int gen, int bin)
-+{
+ 	lockdep_assert_held(&memcg_lru->lock);
+ 
+-	hlist_nulls_add_tail_rcu(&lrugen->list, head);
++	VM_WARN_ON_ONCE((!last) != hlist_nulls_empty(head));
++
++	lrugen->bin = bin;
++
++	if (!last)
++		hlist_nulls_add_head_rcu(&lrugen->list, head);
++	else
++		hlist_nulls_add_behind_last_rcu(&lrugen->list, last);
++
++	memcg_lru->tail[gen][bin] = &lrugen->list;
+ }
+ 
+ static void lru_gen_del_memcg(struct lru_gen_memcg *memcg_lru,
+ 			      struct lru_gen_folio *lrugen,
+ 			      int gen)
+ {
++	const int bin = lrugen->bin;
 +	struct hlist_nulls_head *head = &memcg_lru->fifo[gen][bin];
 +
-+	lockdep_assert_held(&memcg_lru->lock);
+ 	lockdep_assert_held(&memcg_lru->lock);
+ 
++	/* pprev points to head->first for the only entry, otherwise prev->next. */
++	if (memcg_lru->tail[gen][bin] == &lrugen->list)
++		memcg_lru->tail[gen][bin] = lrugen->list.pprev == &head->first
++			? NULL
++			: container_of(lrugen->list.pprev, struct hlist_nulls_node, next);
 +
-+	hlist_nulls_add_tail_rcu(&lrugen->list, head);
-+}
-+
-+static void lru_gen_del_memcg(struct lru_gen_memcg *memcg_lru,
-+			      struct lru_gen_folio *lrugen,
-+			      int gen)
-+{
-+	lockdep_assert_held(&memcg_lru->lock);
-+
-+	hlist_nulls_del_init_rcu(&lrugen->list);
-+}
-+
- static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
- {
- 	int seg;
-@@ -4455,8 +4475,8 @@ static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
- 	WRITE_ONCE(lruvec->lrugen.seg, seg);
- 	WRITE_ONCE(lruvec->lrugen.gen, new);
++	/* Keep next intact for readers that still hold this entry. */
+ 	hlist_nulls_del_init_rcu(&lrugen->list);
+ }
  
--	hlist_nulls_del_rcu(&lruvec->lrugen.list);
--	hlist_nulls_add_tail_rcu(&lruvec->lrugen.list, &pgdat->memcg_lru.fifo[new][bin]);
-+	lru_gen_del_memcg(&pgdat->memcg_lru, &lruvec->lrugen, old);
-+	lru_gen_add_memcg(&pgdat->memcg_lru, &lruvec->lrugen, new, bin);
+@@ -6106,8 +6126,10 @@ void lru_gen_init_pgdat(struct pglist_data *pgdat)
+ 	spin_lock_init(&pgdat->memcg_lru.lock);
  
- 	pgdat->memcg_lru.nr_memcgs[old]--;
- 	pgdat->memcg_lru.nr_memcgs[new]++;
-@@ -4487,7 +4507,7 @@ void lru_gen_online_memcg(struct mem_cgroup *memcg)
+ 	for (i = 0; i < MEMCG_NR_GENS; i++) {
+-		for (j = 0; j < MEMCG_NR_BINS; j++)
++		for (j = 0; j < MEMCG_NR_BINS; j++) {
+ 			INIT_HLIST_NULLS_HEAD(&pgdat->memcg_lru.fifo[i][j], i);
++			pgdat->memcg_lru.tail[i][j] = NULL;
++		}
+ 	}
+ }
  
- 		lruvec->lrugen.gen = gen;
- 
--		hlist_nulls_add_tail_rcu(&lruvec->lrugen.list, &pgdat->memcg_lru.fifo[gen][bin]);
-+		lru_gen_add_memcg(&pgdat->memcg_lru, &lruvec->lrugen, gen, bin);
- 		pgdat->memcg_lru.nr_memcgs[gen]++;
- 
- 		spin_unlock_irq(&pgdat->memcg_lru.lock);
-@@ -4510,7 +4530,7 @@ void lru_gen_release_memcg(struct mem_cgroup *memcg)
- 
- 		gen = lruvec->lrugen.gen;
- 
--		hlist_nulls_del_init_rcu(&lruvec->lrugen.list);
-+		lru_gen_del_memcg(&pgdat->memcg_lru, &lruvec->lrugen, gen);
- 		pgdat->memcg_lru.nr_memcgs[gen]--;
- 
- 		if (!pgdat->memcg_lru.nr_memcgs[gen] && gen == get_memcg_gen(pgdat->memcg_lru.seq))
 -- 
 2.53.0
 
