@@ -1,55 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795440441;
-	b=yyclAhbZCJwE2+NBhdjLwY7qLLdiYWLJlnC95MZs4emVxfmN8GIQgmWC4Fq8oMZC0dm5
-	 zxNKeMik9+ZKaftbyM0d0vjeCEthX9x+vHaYrsgIRdbQMhItb4bTu3gzcwnv6PLj13Qf8
-	 YrGPRTZKyZn9ZbS2QpwCZox9r81KMefea3LrN3Vl+iwk0iM/VV98hQBzuqt7iO+99mTYo
-	 DVmIT4AVZLZM2GXr5ljUEycTCoPtGnnbQT/L0Y/fAsitwp6HWxiHAHQmrWqvpNkzzzcSt
-	 74gV/FffszdM0x/aac9IG4GR/LHQDlHO+SfMjyjpzdA5YbKrvHeKhT/pDDLC+zp3JjA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795440441;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=HJWW3lAYD4SS32dHbc78BmhWsFKqKKOPG4WVSgqL+ZE=;
-	b=QHUq26UXfltlYfcwsECCOMzhx1KmQX4EGVxiehtgpf74m+thvOe25EYcih9wFodOy2rr
-	 EQDpxPbtF75gSG1PGKXTUAzLEGHlu1Xpp58FBM+5XWp3hBqC6tK1DA3+Rg0TCOjG4eh6j
-	 jAC/RQh/lzEQw+2Ngy0HfbGchqrtI0fJi7ml6lkG/CzNg9qS08rMsFfTUXA2rQsYNJMNP
-	 tAuq4rBqxQOOBynBqhPUWvupAMFRT/Gb/t1h7Ws5zouvMj5pEKdI+YxTdjn14pC6enl7r
-	 E9RWuM3Cmo5R2UeJF4iepMf4bXd6WVMTKoxEHUGVTsvRb+cJ2v0zgX0bYbCMmt4oy2A==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="VhAuS/1v";
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.218.46
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795440733;
+	b=GRPV8Qjyav+nNvHeWsQzbhRI/V2XK0ymPZtq+XJj+T4a4XXz/5xle5tCvsWbHBGeZc91
+	 9eLSYqVXwRPBIopRvphzCG43WIHq8Hj/fD0dz07MHZRg0U34G3nccIk1rz9tb90aC6pQw
+	 v1mJ3yVs6fFXejnKy8QOjOyiUJ02mAG2/QgxxI/t4YhiG2mw+C5u4PBRejeHws5iS663k
+	 OLfVKEsAf289lyPxWOkcvk7b5DQxjLe55w7Gut2u4NW3YOG+nEdhZzo3Lk3POul8/QITK
+	 dNhQRCEkYygEB770Gakg+sOk3/dNndsNdr6jyjspEk+tznZIhJjREObjnqpVQDT8Cpw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795440733;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
+	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
+	bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
+	b=w/2py4gUk/WYQcaV8A5g44axquOWCmMmp9+uLuR5DEW56ElU3NE4st8q1uEDVQNiY68c
+	 rgbzxCkfmzM0lfu977dbLRLmNn2klwpd17BtJKe/Tl5OIhg5dPN6ZxmS8a0+gZSiYo2pk
+	 St7tNe+uAP/vGtZd5TuI+Q7EjhHtpZxqBxTySJF/zvft+3DtfPKWwv95AXyBAslyyqqw3
+	 hvOEWLRfzQOaD9E3iR3cnJUJGQU4xDzjylDAG+QH9xXsPWMcleTkIEEqD/j80f5Mdz9NY
+	 sARYwocDt1vQ22Ngf9Tq3lcUUtASBl0aaS4hfrRuGNMx0BSXKLAQbxv34wb5Ap9ItLA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=ionos.com;
+	spf=pass smtp.mailfrom=ionos.com;
+	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b="iFO/EmQO";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.218.46
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5911A606A321
-	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDF7606A31E
+	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:32:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EFDF7606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=VhAuS/1v
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E79EA1F00A00
-	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:27:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795440440;
-	bh=HJWW3lAYD4SS32dHbc78BmhWsFKqKKOPG4WVSgqL+ZE=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=VhAuS/1vfW959+qJtrgNkgsp9BQcjJ89ZYVRqF9lApBNYmRhuL1jCe/hQIJS5a0A9
-	 GUvRbCFV5jCYPWhITNYsRb0hDaVRh2HI/zspmCyG0VPj7XNguNNlfJTvH0XzOH7UEG
-	 BF82WauajIjmSlowZTIpfzv/tq1fCIdVNMavzRR7Yvsnku/5pj1grRKShsY944tZqX
-	 nzLvcA2wtkrxzNc5BhUyE4BaWOHGybHQdoD9QO0gC4PuWkFoAHBhXxhuKwd9c9BKwh
-	 Xfx0AA9pcn0cvfhU1SEo5z4KHHNUEa6S0eR3NGJPLo8oTih+RDbYCUqVMIl7LRNU1x
-	 i4C6uVAqqWqWA==
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-94961bfe1a0so220518485a.3
-        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:27:20 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErHjkoHftgv4cC/neb2DR8/JDLRL3Q0Ms0Oo7xwFrE17kejrQz9KplCoz3NiC/zilgNef2U=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/BPxZTGVl0oc3yDYgkvD0uxyMblQUz56l03xLiTeCFASFHGuXb
-	VuXft17bHhrNLvIIfN5irSyBFfIf2hCXPG0hAqPNiHmChjgqzjQqUoqHfDe1DQyRmtlxdXjjd+0
-	jVKC+wYxlXV849qWurcCU6Ppe/fXvV14=
-X-Received: by 2002:a05:620a:31aa:b0:949:3066:5551 with SMTP id
- af79cd13be357-949bac80948mr1952036985a.79.1795440439933; Mon, 23 Nov 2026
- 05:27:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=iFO/EmQO
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-c511cdd5a82so367224666b.3
+        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:32:12 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1795440731; cv=none;
+        d=google.com; s=arc-20260327;
+        b=aWJRQqLC89i593r98thxPVb32fU7CWs+uNKm7xVg4FP4UtVVdsHTEP+4J50GSIl/3s
+         gF7e4kSqUhcqKkspkOwC8xY2HfTCBqToZEYq3I8U6xoCoJ6o+gOIOSkcsWEzWS7HvpkR
+         5JW5neiYz7XY+icfoLii3CyI9h83oygdfzSZbt6ThtRKGJMAPjvWB15AIrl7DCMp19re
+         bs5pmGfeNz5ww0Jhi965HvMzRF4pk6MpuIaKmk/SwX0wdny2wDZ0weGdg2+xDokg4xwa
+         PeSzz5DVf5umxSGGz02TljJhtMgfq0qHF4SwTGCieTxoL5AAh085ahX14ZNlEuq2+ROo
+         PJQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
+        fh=tKQOB2AfmgpIVEKAfeKR3KjQ27gw+DdnQrb+SYkqlco=;
+        b=oCCvjr/Ys6+t7erHbBidhnNGRGV6YgSFXCtRry4k/rLeE1Lw+oEKTG1u9NEAm+4Owu
+         wIS4iNZFaGG3wl03uMJZjsgveEHJySt/eWF+apDdoMECWKyWHNB7kMIZwVWj0OH+jKe/
+         HnBg/9Cf2hP/bk84vPppiHWMxjMMoleK+BF/d0kGRdFd7bM7vX5PrK3WuM0hYVnq2vL3
+         NtiMhrQJJmkPqX+05CSSGV1X1WhUY6m9qHrpb7EczKmFn55dCnAe5Vjp4giYT37KdNaO
+         kQAOUv9UF2DbFn2sb42Gsd2AHS5NkPHZxDgIgQNva0l385gJS9u6yZHsbgIWeLLkkJ8r
+         GIgw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1795440731; x=1796045531; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
+        b=iFO/EmQOcIGaPYtHOkDTqzdZT1Pa5L0tJ96qApHbhpaovnKIi3E47tWLG4E3f44rzW
+         xZqou/M4/dTRWtseRME16zqssDwxBpjL0q3Eh1QF20gD+vjeOBb/z1TuGDuST+r+YsvA
+         uJSI7uJ/TRRB7ezlmRzJG5X1dnOHM60JSU42QReRmrqDxtT+3JFW7ZdV0Z+dXXGnk08D
+         OJRGDQhGleTjuiwhwg+v0uy/bnbfO86nfOr81PLd4hMemK4D7I/snRJa1/XfxMOTCZNJ
+         4PexSQPsrMiU/eJWJzofUX4VC6HI0V2pgk317ONElrIqFAc3x1iLthXIAAM5m1NDw4jg
+         x+Qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795440731; x=1796045531;
+        h=content-transfer-encoding:content-type:cc:to:subject:message-id
+         :date:from:in-reply-to:references:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
+        b=x6+GSgdFP3ivj4FsVYewBilSbwL80PokZ4p28U0bhzxpbgBgbjrkOKVT4a8wKqeLYL
+         lV3XJ9+++CZ15TEbqGXAd6VmH6tg3XZ/Ff+/iLVKpRK6sWrDGUzrqeM+fSKgoM+ATCed
+         jD5svzASxqj9Iw+/wNk427CjUsL6QPILhIH8opCtjajBPuiTjiAsH4aOrKYbpgb+lc90
+         DRI+D9SM2Pnj3JHz2SX1gDIIHVcxZpKmFfYol7r7GagJuDt/jBTGdbg95qZ1VI5gWbXN
+         xqA/IW+QdfFCVu9v7ZwqIF/WXyX7GRDZyaKD7Qy0HaWX3+E06KMHtPF/SylkHcACIA2+
+         XNTw==
+X-Forwarded-Encrypted: i=1; AL+hErFffCugEg8S6H1rTDAI0E/dU8J9l+O61QsPczO/jRZ95rNAS64olTC7JDfHWpNmKHgoGwk=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8wUpFa2/3AlsFVvGnJOjGcSuv8eB52mS/ghcg5ZSOs4sdLGTcL
+	NK9VVhgu1+NGhiKwRU0VDXbBSCZITEPkFn9HBJmQWAlU05x2LsBXqPpqaCQ9UK9TxEh+W9Nfe/L
+	f61S8o6buYz2fnkVn4eDwmk8el7XjLVHyi9RQp5N/qQ==
+X-Gm-Gg: AZFdTZfPk98Dk+5SibNzdYsWzwHpzOn6LCwJuOnZjtntQUjluQ4aPG1EsvkDgRja4mh
+	e5zj1PcTtNC8/u/fwKMXnNzDeQdP42lFv/exQe961wlS/C0sSuElnex9e1o8HuYwK3KxXboz5Du
+	4ocr7F1v6ug0AXXTxPL7sREEokKMkfEZezuIyXYYMNJxo+ePxbsnxfSnlT8VgITJFy3xdEPoyAt
+	MDijwPMAfPQ6er7CT6ai6plxW/mn4D7p61hSaoze2yZOzJTCxrXuJ5o71GJDiCETVBdQKGcG5wJ
+	7udFFwlByhnUqTU621k4+syNIXTJGc6gP9vkGnT13+W7tnzvb2ggNnDvXhNeDJScGJkdM6wCqtr
+	tg++t2HD2gkcqb8G6daXAJL25c2ylEefp1Mz5RMYHOtRNIRgPo/+CMw6kOVcDLx14Cg==
+X-Received: by 2002:a17:906:694f:b0:c50:ff1c:22be with SMTP id
+ a640c23a62f3a-c513aace676mr685329866b.16.1795440731316; Mon, 23 Nov 2026
+ 05:32:11 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -60,79 +105,41 @@ List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 References: <20261116081403.216452-1-max.kellermann@ionos.com>
- <20261116081403.216452-5-max.kellermann@ionos.com> <CAGsJ_4w3cP+tgCGhTFu5p27Wi-9AFCneQgwLUAUg7X-gvX=e4Q@mail.gmail.com>
- <CAKPOu+-Pzp-ovWNq394yBD0Qa5zCLZjx=sE3ixLs+WLf4EgZBw@mail.gmail.com>
-In-Reply-To: <CAKPOu+-Pzp-ovWNq394yBD0Qa5zCLZjx=sE3ixLs+WLf4EgZBw@mail.gmail.com>
-From: Barry Song <baohua@kernel.org>
-Date: Mon, 23 Nov 2026 21:27:07 +0800
-X-Gmail-Original-Message-ID: <CAGsJ_4yV=RvOMqpmaxFJGeBorPm-mz1VGoTb7_dLs-4pvrD56A@mail.gmail.com>
-X-Gm-Features: Aa3M54pg3_5VxI8d6rS-DICxqkbqp2A05_T4kaagAVAVzN0pAmcXIWNuJR8gCys
-Message-ID: <CAGsJ_4yV=RvOMqpmaxFJGeBorPm-mz1VGoTb7_dLs-4pvrD56A@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] mm/mglru: avoid redundant rotations of young memcgs
-To: Max Kellermann <max.kellermann@ionos.com>
+ <20261116081403.216452-4-max.kellermann@ionos.com> <92bc11db-ef40-48e3-8768-9af36bfb5a7e@linux.alibaba.com>
+In-Reply-To: <92bc11db-ef40-48e3-8768-9af36bfb5a7e@linux.alibaba.com>
+From: Max Kellermann <max.kellermann@ionos.com>
+Date: Mon, 23 Nov 2026 14:31:59 +0100
+X-Gm-Features: Aa3M54rFMydpSO212ScIFwe64mMnhlUhUt1F_GHwaP5Pid0tLkWi9Npl8x_Do2s
+Message-ID: <CAKPOu+8vso58=3Z8ijpg+91q=BSmJ-M01KyNY=NwUH-9HV_ikA@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm/mglru: cache the last memcg node, make tail
+ insertion constant time
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
 Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
-	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
+	shakeel.butt@linux.dev, baohua@kernel.org, axelrasmussen@google.com, 
+	yuanchu@google.com, weixugc@google.com, baoquan.he@linux.dev, 
 	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
 	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 23, 2026 at 9:13=E2=80=AFPM Max Kellermann <max.kellermann@iono=
-s.com> wrote:
+On Mon, Nov 23, 2026 at 11:00=E2=80=AFAM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+> > Fixes: e4dde56cd208 ("mm: multi-gen LRU: per-node lru_gen_folio lists")
 >
-> On Mon, Nov 23, 2026 at 3:01=E2=80=AFAM Barry Song <baohua@kernel.org> wr=
-ote:
-> > I know it was my suggestion to avoid unnecessary calls to
-> > get_random_u32_below() unless we actually need them.
-> >
-> > You then pointed out that this would move get_random_u32_below()
-> > inside the spinlock, which I had overlooked. Sorry about that.
-> >
-> > Have you tested whether calling get_random_u32_below() under the
-> > spinlock increases lock contention?
->
-> Yes, indeed it makes a big difference.
->
-> My initial version which always called get_random_u32_below() at the
-> beginning of lru_gen_rotate_memcg(), prior to locking
-> pgdat->memcg_lru.lock (but some of these "bin" values would never be
-> used with this patch):
->
->                   &pgdat->memcg_lru.lock:     103487653      103501074
->           0.06         301.90   195317628.84           1.89
-> 113777275      116290184           0.04         339.54    30052760.20
->          0.26
->
->  Completed: 681 (success: 1, EAGAIN: 680, errors: 0)
->  Elapsed: 61.23 s; requests/s: 11.12
->  Latency: mean 713.05 ms; max 7470.24 ms
->
-> With the get_random_u32_below() call moved inside the lock, however
-> only called when it's really needed:
->
->                   &pgdat->memcg_lru.lock:      99442644       99458122
->           0.05         342.95   243043664.06           2.44
-> 102985677      104642320           0.05         231.58    34095676.89
->          0.33
->
->  Completed: 548 (success: 0, EAGAIN: 548, errors: 0)
->  Elapsed: 60.66 s; requests/s: 9.03
->  Latency: mean 880.18 ms; max 3847.24 ms
->
-> I did a few runs, and while there was a lot of noise, but the
-> difference is real and reproducible.  Surprises me, I wouldn't have
-> thought this would be measurable.
->
-> I guess I'll move the call back out of the lock section?
->
+> I don't think this fixes anything, right?
 
-Thanks for testing, Max!
+Right.  It fixes a performance problem that leads to RCU stalls and
+soft lockups, but it's not a bug.  I added the "Fixes" tag for the
+commit that added the code responsible for the performance problem,
+because I thought that might be helpful and appropriate - is it not?
 
-Yes, I agree. Let's move it back outside the lock, even if that
-means doing some redundant work. The cost of increased lock
-contention is much higher.
+--=20
+Max Kellermann
+Principal Architect
+Hosting Technology
 
-Thanks,
-Barry
+cm4all | Im Mediapark 6a | 50670 K=C3=B6ln | Germany
+General information about the company can be found here:
+https://www.cm4all.com/impressum
+A member of the IONOS Group
