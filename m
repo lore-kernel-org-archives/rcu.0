@@ -1,49 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.83
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795428553;
-	b=Uzyi02jUo4LIhNqL/eqWgAbPj/NVeWfmd4ZzS3CJLlxaKeLn4+4YDA0pPjOiZvfXzuA0
-	 x56/QtDV7jY7qVx0tGRk12ggDyliT3q2Y52Eo21DQkSpZDXY2NzcQ0YE99aeTZ38Ybj+r
-	 I+at3IQ0FgayTkJ5CnEzcCKcHL0mNJtJ+BjCUk0+4yvXLCUJwNH3EoF7Aquc1uSzOZh2P
-	 daGdH+PybzfYaRonuPml1o1Nt/dc87ebiMLvClC2rj6Ubhs7cy/DFjZFmQjEHkgG+uQPk
-	 LTLVuqKazwvuXt+eupvC1eSxjVm9S1o1KC64mA2I515NL2Bhf+nxxtySGX6V4yQQZJQ==
+	t=1795439382;
+	b=va89Bagrx6KJNpyW5Pe8PQ9qhODW+CvbsclXoHcS8nvZDL2duQp2Sk++m3blLqjKx38S
+	 ZWEDZJXCLcY48KPpDcTBb1At8xxBim1VA/xuV40DOMqO4nlteXUv2apXmaGDuf6QFwMF2
+	 tqx8pWMR2lU/Bqkv6Xus9F/UTXn/A6i6siEY0+upQid14fJo/0EUwAlJmPdzWxp51eRmS
+	 J1EjQAYFnDFanVjDc+96//ln/xNLJIp/e4Z931j9fZlPKEZrPQtgbPJnns7I2YteAkXRj
+	 1TkLVM0T2H/OgIayx7eKVA4IcrJVANtYxTWGAmkzaor5uGTFSvnQMdDamLhsb7h3pqg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795428553;
-	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:Message-ID:
-	 Date:MIME-Version:User-Agent:Subject:To:References:From:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=pryCjk4CWyRrgAZYc/zoRA3NaYdrmsP+3BUItR4T6Yg=;
-	b=OfrvG3ljcCgQzwvU1M/HE6J7wRKOTgkSnxT8yyP62giVGI3ApJQwbvUiUk4NW4S1CWi1
-	 twz5Dfy2/yz3N6qNm98xX2kQZrf0cAKlGx4rc9x3imb+iSfe6pl1T0IluGzCNhz7D5N08
-	 Dvt5ssux3IJ+hW6vMMr4lSrHrHrGDHypkOGHC2Iv2QQX5D42JSUrPHN3v9wy6J9oJ9HET
-	 LTtOICaokhzXgqF+VvMH/hss+Rm+ZOGKyyUFthWi2vjq+cPubwIZ7CkCrQRenhIzAXTUl
-	 e060csThpF7jnIGr+aLC4EczYUkkwjEXRuv5DolE/R86CQUfFWv6wfmLgFExmUKLuwA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795439382;
+	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
+	 X-Mizu-Trace-ID:X-Migadu-Flow:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=Nd5CZyfgwE7sFhk6acA7AVJ7d2R8SkDrM35xdBcCb20=;
+	b=kY6rrwMDcYK0/wZXIRLW+F1tXkO9ZVIPhqQhBNPlLKFpXyGx7uy1xHd/ofZ5J8lVnS14
+	 9m9DlJG6e+/bnEvPMQ9ORInYRkONCAyllT+la0Or3u0IjtvX+DaD/bCNc0Jaa8V+Uih4V
+	 Wo6QwnhZN+4K+FLAcGQf/0esQhEQj68x5ApmXb4pp+JW6hueY7ABv6CWWsgVFger5mOIC
+	 eyCOYvqbhWNkA7/r/uyVPUW9Ynv3mfblZQ2gyctiYzuMn+VnX1Zxbsp5jBV5S10Q4jO2m
+	 mKiKyyTLq8a1RRWBAWacEzO+QK512kYkc0q5XOquBBVFNJ7fqD8oQ44FvkSJQ1dyntw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.alibaba.com;
-	spf=pass smtp.mailfrom=linux.alibaba.com;
-	dkim=pass header.d=linux.alibaba.com header.i=@linux.alibaba.com header.a=rsa-sha256 header.s=default header.b=HkvqPXMt;
-	arc=none smtp.remote-ip=115.124.30.113
-Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=linux.dev;
+	spf=pass smtp.mailfrom=linux.dev;
+	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=BvURa1Xl;
+	arc=none smtp.remote-ip=95.215.58.83
+Received: from mta1.migadu.com (out-83.mta1.migadu.com [95.215.58.83])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63C88606A31A;
-	Mon, 23 Nov 2026 10:09:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 63C88606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EB3606A31A
+	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:09:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 13EB3606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.a=rsa-sha256 header.s=default header.b=HkvqPXMt
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1795428550; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=pryCjk4CWyRrgAZYc/zoRA3NaYdrmsP+3BUItR4T6Yg=;
-	b=HkvqPXMt/TcWxgnm42naX/hug0BCFXDRpnQLfggBZuYf/tTmaAsbOnw+8sAOHLTFfv60t+Obr2lEKOlXqWpl1Qo2BOmeCjMIgCx9wrwrkU8EyZkgtZ0EtG7jqq7x6Q/isO0pbWOU3Tm93U08nb+0W7aN3EKuw0A5F9ls0LUbyCI=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam011083073210;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0XFH23DP_1795428547;
-Received: from 30.74.144.153(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0XFH23DP_1795428547 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 23 Nov 2026 18:09:08 +0800
-Message-ID: <cc47e669-a662-4d80-950e-d44bb4c311a3@linux.alibaba.com>
-Date: Mon, 23 Nov 2026 18:09:07 +0800
+	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=BvURa1Xl
+X-Envelope-To: rcu@vger.kernel.org
+DKIM-Signature: a=rsa-sha256; bh=Kv6rN9MEKoiRHQDVdRKHKD/KMDKdWjoWG0A+b+UDD8s=;
+ c=simple/simple; d=linux.dev;
+ h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
+ t=1795439378; v=1; x=1796044178;
+ b=BvURa1XlwXBtVXOp1GHIZSfHVZ3wHaEiX25ev9cxSkZqV4En8XnmSSar1zKHxO14eiTk3i2D
+ 5LHf2uES0dI7e9krR4YNZpMGTRziJk9s1VUNa/cFUsaADqUim8D4b8qN3BMY47TPxEpCToxZj1G
+ kZzixOeX2dGdr2S7hdFRiAEk=
+X-Envelope-To: rcu@vger.kernel.org
+Received: by smtp.migadu.com with ESMTPS id 9a2a31f03a0d30f3;
+	Mon, 23 Nov 2026 13:09:37 +0000
+X-Mizu-Trace-ID: 9a2a31f03a0d30f3
+X-Migadu-Flow: FLOW_OUT
+Message-ID: <86f3466a-c1a8-4673-98db-4c9a95277ab7@linux.dev>
+Date: Mon, 23 Nov 2026 21:09:30 +0800
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -54,37 +59,50 @@ List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] mm/mglru: reschedule between memcg reclaim
- attempts
-To: Max Kellermann <max.kellermann@ionos.com>, akpm@linux-foundation.org,
- kasong@tencent.com, qi.zheng@linux.dev, shakeel.butt@linux.dev,
- baohua@kernel.org, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, baoquan.he@linux.dev, david@kernel.org, ljs@kernel.org,
- liam@infradead.org, vbabka@kernel.org, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-References: <20261116081403.216452-1-max.kellermann@ionos.com>
- <20261116081403.216452-6-max.kellermann@ionos.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20261116081403.216452-6-max.kellermann@ionos.com>
+Subject: Re: [PATCH v2 0/2] Add RCU docs Chinese translation
+To: alexs@kernel.org, si.yanteng@linux.dev, dzm91@hust.edu.cn
+Cc: corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
+ paulmck@kernel.org, linux-doc@vger.kernel.org, rcu@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20261118131636.5131-1-xiongwei.song@linux.dev>
+From: Bruce Song <xiongwei.song@linux.dev>
+In-Reply-To: <20261118131636.5131-1-xiongwei.song@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+Hi Experts,
 
+Could you please take some time to review the series?
 
-On 11/16/26 4:14 PM, Max Kellermann wrote:
-> shrink_one() can return immediately for empty or protected memcgs, and
-> try_to_shrink_lruvec() can break out before reaching its
-> cond_resched().  A scan through many memcgs can repeatedly rotate
-> entries without giving other runnable tasks a scheduling opportunity.
+Regards,
+Xiongwei
+
+On 11/18/2026 9:16 PM, xiongwei.song@linux.dev wrote:
+> From: Xiongwei Song <xiongwei.song@linux.dev>
 > 
-> Call cond_resched_tasks_rcu_qs() (as the existing shrink_lruvec() loop
-> does) after shrink_one(), while the memcg reference still pins the
-> cursor and before reacquiring the RCU read lock.  Also call it between
-> bins and nulls-marker retries, covering scans that skip every entry.
+> Changes for v2:
+> 	Fixed build warnings and errors for both RCU/index.rst and RCU/whatisRCU.rst.
 > 
-> Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> ---
+> v1:
+> 	https://lore.kernel.org/linux-doc/20261113013054.5662-1-xiongwei.song@linux.dev/
+> 
+> The following 2 patches are adding RCU docs Chinese translation for the first
+> time.
+> 
+> Currently, RCU is not listed in TODOList in subsystem-apis.rst. I propose
+> adding it.
+> 
+> Thank you
+> 
+> Xiongwei Song (2):
+>    docs/zh_CN: Add RCU/index.rst translation
+>    docs/zh_CN: Add RCU/whatisRCU.rst Chinese translation
+> 
+>   .../translations/zh_CN/RCU/index.rst          |   50 +
+>   .../translations/zh_CN/RCU/whatisRCU.rst      | 1220 +++++++++++++++++
+>   .../translations/zh_CN/subsystem-apis.rst     |    1 +
+>   3 files changed, 1271 insertions(+)
+>   create mode 100644 Documentation/translations/zh_CN/RCU/index.rst
+>   create mode 100644 Documentation/translations/zh_CN/RCU/whatisRCU.rst
+> 
 
-LGTM.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
