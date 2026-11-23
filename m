@@ -1,100 +1,100 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.218.46
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795440733;
-	b=GRPV8Qjyav+nNvHeWsQzbhRI/V2XK0ymPZtq+XJj+T4a4XXz/5xle5tCvsWbHBGeZc91
-	 9eLSYqVXwRPBIopRvphzCG43WIHq8Hj/fD0dz07MHZRg0U34G3nccIk1rz9tb90aC6pQw
-	 v1mJ3yVs6fFXejnKy8QOjOyiUJ02mAG2/QgxxI/t4YhiG2mw+C5u4PBRejeHws5iS663k
-	 OLfVKEsAf289lyPxWOkcvk7b5DQxjLe55w7Gut2u4NW3YOG+nEdhZzo3Lk3POul8/QITK
-	 dNhQRCEkYygEB770Gakg+sOk3/dNndsNdr6jyjspEk+tznZIhJjREObjnqpVQDT8Cpw==
+	t=1795441240;
+	b=uT8N44WdQzyXJqiA9qGsGbH2JIxADD2J/YazAfTs2EeKl7JCnOwVX1BuALKuNq/H5q1G
+	 0NQ4VZskU9O77tPXAeFV0xUvrbd3S2MFIPNeXNPZxOV1avQ9QW4TnSQUCAG/9J7s5FDaC
+	 A1ylv90oda+laton8vgTXkRA8xNAvFGUAnZ15IqguVPLn6d+Y7FvWMeLhQOxRPzYKR6LR
+	 QvL8lxbYdr5ybDeWARUX9UX6Qi/TLs09EvqwlYZrzqwm/CmUFACYTYvVqoIov93avitVh
+	 282lRFh08B1QlErY0FRkUn4kXhPno7sICknqpC9Kyh8RXMpEv7tPHqtb8ahXTi80rCA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795440733;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795441240;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
 	 MIME-Version:References:In-Reply-To:From:Date:X-Gm-Features:
 	 Message-ID:Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
-	b=w/2py4gUk/WYQcaV8A5g44axquOWCmMmp9+uLuR5DEW56ElU3NE4st8q1uEDVQNiY68c
-	 rgbzxCkfmzM0lfu977dbLRLmNn2klwpd17BtJKe/Tl5OIhg5dPN6ZxmS8a0+gZSiYo2pk
-	 St7tNe+uAP/vGtZd5TuI+Q7EjhHtpZxqBxTySJF/zvft+3DtfPKWwv95AXyBAslyyqqw3
-	 hvOEWLRfzQOaD9E3iR3cnJUJGQU4xDzjylDAG+QH9xXsPWMcleTkIEEqD/j80f5Mdz9NY
-	 sARYwocDt1vQ22Ngf9Tq3lcUUtASBl0aaS4hfrRuGNMx0BSXKLAQbxv34wb5Ap9ItLA==
+	bh=s8GkoF4Y0/ft7koVRoDNSDYckCyyov087UPkNw1u++8=;
+	b=zMZAgaSK7gOTSKifuL/I2EOx1lSBDdthlwc1Y9Cu0AFX39fJVElFYwQ0Vcqpu2C8iCGk
+	 1SrvUigKAhnR2T/AkkwkKM3brbrfhEnew40aAwCQkG7AyAmwkdiYY38e5lL/Moher4jqw
+	 VfA0hCIHV2G6QBaN8QVEUYJQWWFiP9px/zdFBbJOTnOJhirPyI9I9lLF9O75Z7C+lcqMl
+	 kfZQGJKis3VpnPFzcibgeO8suFL8FfJb5Zgv+In6bXqMtucEm+p8OFSYgkYectP0kQO5D
+	 nQeNw5yujlim9igJGFzJTWmpj8wFARa+sEvcoNiY6SsI3f3r6oFycLS5OuJSheflgiQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=ionos.com;
 	spf=pass smtp.mailfrom=ionos.com;
-	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b="iFO/EmQO";
+	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=YEPEIhrS;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.218.46
 Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDF7606A31E
-	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:32:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EFDF7606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4E2606A31F
+	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:40:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF4E2606A31F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=iFO/EmQO
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-c511cdd5a82so367224666b.3
-        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:32:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1795440731; cv=none;
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=YEPEIhrS
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-c506a231b88so458960266b.3
+        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:40:39 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1795441238; cv=none;
         d=google.com; s=arc-20260327;
-        b=aWJRQqLC89i593r98thxPVb32fU7CWs+uNKm7xVg4FP4UtVVdsHTEP+4J50GSIl/3s
-         gF7e4kSqUhcqKkspkOwC8xY2HfTCBqToZEYq3I8U6xoCoJ6o+gOIOSkcsWEzWS7HvpkR
-         5JW5neiYz7XY+icfoLii3CyI9h83oygdfzSZbt6ThtRKGJMAPjvWB15AIrl7DCMp19re
-         bs5pmGfeNz5ww0Jhi965HvMzRF4pk6MpuIaKmk/SwX0wdny2wDZ0weGdg2+xDokg4xwa
-         PeSzz5DVf5umxSGGz02TljJhtMgfq0qHF4SwTGCieTxoL5AAh085ahX14ZNlEuq2+ROo
-         PJQw==
+        b=SellYfVeWaexhi6xQDKf2E3rqnGzRYPcCF1y41TVa3qX1L1lwb9KYpoLYL4UF89QQ7
+         9i78AFa8VEbmoCYE+CAM9uPeOkkrA2zYYdZ1J4XXv7hRgcCZnmb9al8sV9Y/IPGabShV
+         a+YzUn924DEp7Al0ufgIt3kAqCqzgnoFlLVD02mjPcfQ5YpfrPP0dqeQo2O6Zzzffm6t
+         2081cxzPnmFqZLP1GHcEiyCPXT9DcImReG8BfYp1LtxX5eI0dv2KD9iVMm2U4No9/gw8
+         HICh+Nqh0hWebhhhtcxh6+3JE3QMzKyDpThqIOAOFLET9IotSIbLunJ5vl37eKwObAYz
+         Srvw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
-        fh=tKQOB2AfmgpIVEKAfeKR3KjQ27gw+DdnQrb+SYkqlco=;
-        b=oCCvjr/Ys6+t7erHbBidhnNGRGV6YgSFXCtRry4k/rLeE1Lw+oEKTG1u9NEAm+4Owu
-         wIS4iNZFaGG3wl03uMJZjsgveEHJySt/eWF+apDdoMECWKyWHNB7kMIZwVWj0OH+jKe/
-         HnBg/9Cf2hP/bk84vPppiHWMxjMMoleK+BF/d0kGRdFd7bM7vX5PrK3WuM0hYVnq2vL3
-         NtiMhrQJJmkPqX+05CSSGV1X1WhUY6m9qHrpb7EczKmFn55dCnAe5Vjp4giYT37KdNaO
-         kQAOUv9UF2DbFn2sb42Gsd2AHS5NkPHZxDgIgQNva0l385gJS9u6yZHsbgIWeLLkkJ8r
-         GIgw==;
+        bh=s8GkoF4Y0/ft7koVRoDNSDYckCyyov087UPkNw1u++8=;
+        fh=G9D3iz5rsofVtdB7/g9jAsHGdlUW7I9MsgSxexgocz8=;
+        b=DmgW8t/2hynhAebPFl0XlelVRZmU19+CzbCIuOgWPmBpZk0X2NNRg0KxpZHvTM806K
+         KK/+8KNuvd9v/sgr5BTQMpl98IhO8cn92TMFGHQSWi7gbHp0qe12BsuvKEu/ObDy7/EE
+         CskVFHXHcqDPTlBqg3VG0yc8wLflFA7m5IEroydvNQyX/1mPLw/YLDxqmpVuSN3MeNU6
+         nqxnC/YsppCxXLhHAf5Vt+R2O7Ajv2e+93fngqUFkKwXzChsRHB3MCrpG3rWbMAkhRBu
+         BLb9SHB794rxMz7ZFphaZut23BekEmcSgPV8MaYjQ4nME4tYbJrrPPV8G7eZOhky/hRU
+         eOFg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1795440731; x=1796045531; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1795441238; x=1796046038; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
-        b=iFO/EmQOcIGaPYtHOkDTqzdZT1Pa5L0tJ96qApHbhpaovnKIi3E47tWLG4E3f44rzW
-         xZqou/M4/dTRWtseRME16zqssDwxBpjL0q3Eh1QF20gD+vjeOBb/z1TuGDuST+r+YsvA
-         uJSI7uJ/TRRB7ezlmRzJG5X1dnOHM60JSU42QReRmrqDxtT+3JFW7ZdV0Z+dXXGnk08D
-         OJRGDQhGleTjuiwhwg+v0uy/bnbfO86nfOr81PLd4hMemK4D7I/snRJa1/XfxMOTCZNJ
-         4PexSQPsrMiU/eJWJzofUX4VC6HI0V2pgk317ONElrIqFAc3x1iLthXIAAM5m1NDw4jg
-         x+Qg==
+        bh=s8GkoF4Y0/ft7koVRoDNSDYckCyyov087UPkNw1u++8=;
+        b=YEPEIhrSw7Mo/1snAwEWtXXrwoWPKFfdzvZXjWa2s7ycoCqNoVkAFjWYVjj/1t57U/
+         08j0B+j4a1dMnjaQJMUgWiqZc12Z9yJ1q9ZZBRdJzTRX9Rqg45mmNmI1kIcecfz9zEvG
+         qB4aR4jxLinVh1d9X6NmfH0seZSowoCWzTcQPi4pd1SqnT4NS7295Ng4WrhJvUiXLBy0
+         EeutDbcep87nGJ9UUKg1uTq5Z+a8LtEh45YPDnWVrqhmztqQGvvg5Sj5TvZ/GgQEbQ3O
+         IrsliL+x51DnZO4fweV1Xz1h7Tc6Pal+z0982pYGWSCLdzGS51FBHv5YWQSaX5+WyBM/
+         6abw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795440731; x=1796045531;
+        d=1e100.net; s=20260707; t=1795441238; x=1796046038;
         h=content-transfer-encoding:content-type:cc:to:subject:message-id
          :date:from:in-reply-to:references:mime-version:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=/ptu9eKd6CbNmjxebzPMpiJtVszjbsUASR3ibR5T8kw=;
-        b=x6+GSgdFP3ivj4FsVYewBilSbwL80PokZ4p28U0bhzxpbgBgbjrkOKVT4a8wKqeLYL
-         lV3XJ9+++CZ15TEbqGXAd6VmH6tg3XZ/Ff+/iLVKpRK6sWrDGUzrqeM+fSKgoM+ATCed
-         jD5svzASxqj9Iw+/wNk427CjUsL6QPILhIH8opCtjajBPuiTjiAsH4aOrKYbpgb+lc90
-         DRI+D9SM2Pnj3JHz2SX1gDIIHVcxZpKmFfYol7r7GagJuDt/jBTGdbg95qZ1VI5gWbXN
-         xqA/IW+QdfFCVu9v7ZwqIF/WXyX7GRDZyaKD7Qy0HaWX3+E06KMHtPF/SylkHcACIA2+
-         XNTw==
-X-Forwarded-Encrypted: i=1; AL+hErFffCugEg8S6H1rTDAI0E/dU8J9l+O61QsPczO/jRZ95rNAS64olTC7JDfHWpNmKHgoGwk=@vger.kernel.org
-X-Gm-Message-State: APuU4Z8wUpFa2/3AlsFVvGnJOjGcSuv8eB52mS/ghcg5ZSOs4sdLGTcL
-	NK9VVhgu1+NGhiKwRU0VDXbBSCZITEPkFn9HBJmQWAlU05x2LsBXqPpqaCQ9UK9TxEh+W9Nfe/L
-	f61S8o6buYz2fnkVn4eDwmk8el7XjLVHyi9RQp5N/qQ==
-X-Gm-Gg: AZFdTZfPk98Dk+5SibNzdYsWzwHpzOn6LCwJuOnZjtntQUjluQ4aPG1EsvkDgRja4mh
-	e5zj1PcTtNC8/u/fwKMXnNzDeQdP42lFv/exQe961wlS/C0sSuElnex9e1o8HuYwK3KxXboz5Du
-	4ocr7F1v6ug0AXXTxPL7sREEokKMkfEZezuIyXYYMNJxo+ePxbsnxfSnlT8VgITJFy3xdEPoyAt
-	MDijwPMAfPQ6er7CT6ai6plxW/mn4D7p61hSaoze2yZOzJTCxrXuJ5o71GJDiCETVBdQKGcG5wJ
-	7udFFwlByhnUqTU621k4+syNIXTJGc6gP9vkGnT13+W7tnzvb2ggNnDvXhNeDJScGJkdM6wCqtr
-	tg++t2HD2gkcqb8G6daXAJL25c2ylEefp1Mz5RMYHOtRNIRgPo/+CMw6kOVcDLx14Cg==
-X-Received: by 2002:a17:906:694f:b0:c50:ff1c:22be with SMTP id
- a640c23a62f3a-c513aace676mr685329866b.16.1795440731316; Mon, 23 Nov 2026
- 05:32:11 -0800 (PST)
+        bh=s8GkoF4Y0/ft7koVRoDNSDYckCyyov087UPkNw1u++8=;
+        b=ffP5yG8GtAByDfvTwg2B/9saFSiucW3mT02qzfdD4XwPCreYJdlG6viTXNapKH0YB2
+         5Wr3x3T/s3VQCBBOLwqEQTwRFon986OzWQvHzTa5v6B26N9/ezvDeztXuNjealnzWWCv
+         Eoi6glVXeH0swj28Z75MIMAfFuVUlDS1ocyKn+ZTIltJDfYSbr2z6UGwuA5wKTymc2+l
+         hcAx6mfk7PPNZDL17N/Ou6vczlbyePNTLjYRXgvj2j5XNOiCjbinSYflyg85ix3tWs0B
+         1FB34sF7OvawI7cCuTYJLQ1RmXp0Heh5oKsVph8F8jmjly/nk7u3Yw7AbjSLc4fe8QZ0
+         fL2Q==
+X-Forwarded-Encrypted: i=1; AL+hErEZeYeVgOiSc6MPrMFUiWvQ3Q8AVkbU3+rK7K+Hh9V8nZineCOrAwFIz/9s5zeR9JZSXG8=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9BBodoRq0gbxWM+NEuuyaHKT9UNgdioqQIw9bqQkbnAIxIE0wp
+	BWSJTxH21AebZqjMlWq6eRAM8a5OVnwqLCKgI/TzGXu7Tq8ExDnzkPtSudRfOlMT/cVamD3Tffc
+	9Zh7orVrWBAv66AXcGyYI3evbFkMk0P1G6PfdscvlVg==
+X-Gm-Gg: AZFdTZep7mDUcPIdDk2Bt5fRKO9IMmQxG5ySW2/yQQKajihlids3YrqgFWkKtrJllTC
+	h1rWl+pjIUTNXFGoWOorQJMB0i8WpG96DHjrxbCYAXtYM5JEtGPZxmcQXJbHuibUSXajISVjCag
+	g1V8GEJJniJKKDhaA5aOoZoWtSxiteFxuPI9xC84gT1DRNAQ1iGFl28YfjPUZfCw6rbtQw6d1OW
+	YEFTUxxeWrDzMQr8c6QkL3E4lqwSFv6Ibnz/FotfplGQweURdFtjV3fkWegLQkVQZEslq4VPez5
+	H/M7GAWZKkJL7IB5ztXieG0/PLLqnwYBNB/9buheeiqIKAvCzRq9R2Bhwzx/b6aWcwiEtCgTahh
+	WpLSW3G3ufQUtgnT/P7SElTTh3S4gV9NRLfuj84kMeruSkFicbwDy6HRf2Y8vhRVCRA==
+X-Received: by 2002:a17:906:26cd:b0:c41:26b8:c49c with SMTP id
+ a640c23a62f3a-c513a5db1d6mr705781866b.10.1795441238134; Mon, 23 Nov 2026
+ 05:40:38 -0800 (PST)
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -105,34 +105,33 @@ List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 References: <20261116081403.216452-1-max.kellermann@ionos.com>
- <20261116081403.216452-4-max.kellermann@ionos.com> <92bc11db-ef40-48e3-8768-9af36bfb5a7e@linux.alibaba.com>
-In-Reply-To: <92bc11db-ef40-48e3-8768-9af36bfb5a7e@linux.alibaba.com>
+ <20261116081403.216452-4-max.kellermann@ionos.com> <CAGsJ_4yZznwxOZmfeB2SpgT1enRbQMyKnN4QjEFdoN-PJi7mkg@mail.gmail.com>
+In-Reply-To: <CAGsJ_4yZznwxOZmfeB2SpgT1enRbQMyKnN4QjEFdoN-PJi7mkg@mail.gmail.com>
 From: Max Kellermann <max.kellermann@ionos.com>
-Date: Mon, 23 Nov 2026 14:31:59 +0100
-X-Gm-Features: Aa3M54rFMydpSO212ScIFwe64mMnhlUhUt1F_GHwaP5Pid0tLkWi9Npl8x_Do2s
-Message-ID: <CAKPOu+8vso58=3Z8ijpg+91q=BSmJ-M01KyNY=NwUH-9HV_ikA@mail.gmail.com>
+Date: Mon, 23 Nov 2026 14:40:26 +0100
+X-Gm-Features: Aa3M54rKU_f5FEXDCm7DW4j2_TEpJvEJvFs2TZ2jyZi7ub4II_dViU-T8MrTO6c
+Message-ID: <CAKPOu+_SL_XBzgREAgptx8mVouOBg9xVj7q-DW0cyNHay8oHjg@mail.gmail.com>
 Subject: Re: [PATCH v3 3/5] mm/mglru: cache the last memcg node, make tail
  insertion constant time
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: Barry Song <baohua@kernel.org>
 Cc: akpm@linux-foundation.org, kasong@tencent.com, qi.zheng@linux.dev, 
-	shakeel.butt@linux.dev, baohua@kernel.org, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, baoquan.he@linux.dev, 
+	shakeel.butt@linux.dev, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, baoquan.he@linux.dev, baolin.wang@linux.alibaba.com, 
 	david@kernel.org, ljs@kernel.org, liam@infradead.org, vbabka@kernel.org, 
 	rppt@kernel.org, surenb@google.com, mhocko@suse.com, hannes@cmpxchg.org, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, rcu@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 23, 2026 at 11:00=E2=80=AFAM Baolin Wang
-<baolin.wang@linux.alibaba.com> wrote:
-> > Fixes: e4dde56cd208 ("mm: multi-gen LRU: per-node lru_gen_folio lists")
+On Mon, Nov 23, 2026 at 2:53=E2=80=AFAM Barry Song <baohua@kernel.org> wrot=
+e:
+> So this is the case where the list is empty, right? Maybe add a
+> WARN_ON_ONCE() check before this code to make the assumption explicit
+> and catch potential violations in the future.
 >
-> I don't think this fixes anything, right?
+> VM_WARN_ON_ONCE(!last !=3D hlist_nulls_empty(head));
 
-Right.  It fixes a performance problem that leads to RCU stalls and
-soft lockups, but it's not a bug.  I added the "Fixes" tag for the
-commit that added the code responsible for the performance problem,
-because I thought that might be helpful and appropriate - is it not?
+Added, and I'll send v4 today.
 
 --=20
 Max Kellermann
