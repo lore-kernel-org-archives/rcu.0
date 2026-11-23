@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795441930;
-	b=SkXABbXlBsGsUCdB+HtT1VfcImtr6jkgM0ZCA2IjEWkFPWcL/xnx9ep1IdXDaf8dPrBj
-	 7WaKmWoqn3xjzFKi77WiMb/NRTFsK7vg3R+xT+R9/0SpRy1Xe2Mlzl5u3gPB+5/9MwQPC
-	 KsLQ34JnG/c91Ag20MawiQ6CO8yfKYc/iYEK/o5VIlb4X8aaZ1xoXLhyWGZCsnnHV/vxh
-	 abyavvbtd+Om/Pgzk4g6kzsrE7/UfZ9tYebG2nyVx40hwh5NfPGwZ+j4ZWLeEDrY3qufW
-	 zIatcjhtHHq5SCgprf5VeUQgzq1a5o6/WK6WHbu75xStMkmk4+PENI97h0ErdeFdd+w==
+	t=1795441932;
+	b=HOKrdpY+aNqExp/vhtDIqT5VtHLX9CK/F+6T/Ci0HEdHat/AwD01u2UZO65TjoK29oDi
+	 J4YS74WvKPoZonSYeHsl+eyPWpDkNZbDlhIvQoPM4IIamb0icteiIihhsh1NTHo79IrIm
+	 bBU8b+mblFddNRUT2Qhza5g1HnJ/G+PGrWPTkHx7BbmxYhMpb4FL3UqXX8rUuXO/8l6dA
+	 Q97gRSpzvr2/Tv8iyMcnulR//Nc2aCAuvIix1gJhH/QEdpoy00gaKQjthImpNtLMXHgqL
+	 qXn7pAX/9Kg5SHQdw+Lbb1uzZGkETVfI1I+Mw4dMLJHUuK2hY2HY7QnutOrUjOSj1bw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795441930;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795441932;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=EG/Oikx8PiqldF2Yo+sswkzJPWoRKLQTCOHC1uaRhQA=;
-	b=zS+Nb44cb3FjNp77aQvCz9s5tNd+DQHdl+weMBeGAEC9H9ria0SLKyZtTOBSezdRLnoC
-	 eK8G6limE2T/EOvxuR/lJ1p/QjqEhIpPqKfrM1LalHa0X1bPGZK/kKJK4ILXdWwhruqtm
-	 wvISkpWUFo/GA2XwboBQHqS0rRdYQRYv9xVZ29niv/XOwCm4qrQpI5XDgugwsn+t51ZIY
-	 Jw2/gwCGpql3B9xgC+XcckJipmPet+8IW47ts00g4tTmhMhGpw2uCMFx3GRHeVhgzdw/I
-	 8b3rUf16zeElAzttIhDDKxRu/dpAcSBnLNelzY08GVeff/ew1P86Tp1HQiYXhVh3XRQ==
+	bh=t3XbpV7aE8lPEF3WjasnioB+LmUiUo8YbJQhUQP3FUk=;
+	b=bOsZgRrUZWqk+8MrOhQ2XL/TWm8FiMMYpJj8mmHUalBhHV5liEUauUurYdiig3ucwcDy
+	 4Gw9kCkF7NCERPbHyzHeu65ZwrO/V3eudfX4IL3V14FPce3mZ/KE6a6xYuetZvho4ji1Q
+	 CndGMbnmJ4VwUKhBOSMi8lbdtdHd0i/OTxRnHjonCJns3IKvNpu/TANvIMKsKvWuFHiIo
+	 2yyzBta3HJfpje+ziy3lXkC0W23fBSUOCqkWjQM3oUwZWdAJ4bX13RcZKOYRpts2u27QT
+	 rJzbvs/mKFGj4auckFW/ejLf3WzPtZfbNP7zvPh0HX4CdtjGUEn7KTzg6cmCr3s8EjA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=ionos.com;
 	spf=pass smtp.mailfrom=ionos.com;
-	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=jLpeNRkT;
-	arc=none smtp.remote-ip=209.85.128.47
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b="RbfSu/x0";
+	arc=none smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EB7C606A690
-	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:52:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5EB7C606A690
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B002E606A338
+	for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 13:52:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B002E606A338
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=ionos.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=jLpeNRkT
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4bb70074ab2so34171155e9.0
-        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:52:10 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.a=rsa-sha256 header.s=google header.b=RbfSu/x0
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4bb9d8e8e90so4220665e9.3
+        for <rcu@vger.kernel.org>; Mon, 23 Nov 2026 05:52:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ionos.com; s=google; t=1795441929; x=1796046729; darn=vger.kernel.org;
+        d=ionos.com; s=google; t=1795441930; x=1796046730; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=EG/Oikx8PiqldF2Yo+sswkzJPWoRKLQTCOHC1uaRhQA=;
-        b=jLpeNRkT1LwniF5bH3yOxk7DtL8lOQmvku8nN0q7N0mifyQykHKamb6z105uRDnt5F
-         Wef3GIuag9BKlJ7P6l8SL/f/UiY/iObB5XgelgfUlLjC7fvLI455U7snG4h5u6EF7cYe
-         ONjx9rx2l0XXvV0IOZKrJViKXc9VVekxIq6UwEV/iedEtMjV7+Cl3ARnQq7pDvliku1f
-         v2z22ilJR0SgO4FU/XLc2Fn324Rdd0di++9+hJBJNAtehv5qv2ww4zztMy3DYSxHGfKj
-         aHhVidgVKwX3JslII7w27ZJ66sEnGJwYX60jEgupafJWIF/7h0epAKYRte+nAnzWB8Gx
-         aByQ==
+        bh=t3XbpV7aE8lPEF3WjasnioB+LmUiUo8YbJQhUQP3FUk=;
+        b=RbfSu/x0bDwJHK4flElPnk1iqilrNXrIFmDpp8JSLeS0nOuRHwXBkrEGvEsHiyIjRT
+         N5hTJC5fNWPiCGSQpzNXqDsJa2II6qUe8scq0sApwJm71mSZaaTmYe5IDh9JexBg5ITm
+         /Ub5Ixyc1yGS9Q2VA0OZX4nVRTpExuGwOoAaQt6G+WGKh37/8XCxfKpzuevzTiNZKXCw
+         clWXXxtiTYnGfgPafZ4vX1bkHqewPW/LhO05hMUGQkiyWv6X0e7G4WHIzMORyNfLZ3x7
+         RuOz3Y4Vv0/02LPT9GRCshSaCMAQFQ3RFEHEGGkdx5zQ0yuhB/UpdekyELB5Z3TNsdb3
+         qldA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795441929; x=1796046729;
+        d=1e100.net; s=20260707; t=1795441930; x=1796046730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=EG/Oikx8PiqldF2Yo+sswkzJPWoRKLQTCOHC1uaRhQA=;
-        b=X49VENP5i9RiTdLqKHyBvatB0U2Fz0v/yX8CdSU9rKY7gEs7lH7oa0U341wptGmPIP
-         nB/M6dNc7elp5JGrFeoy7T5y7Oj5aDjSJK3s0r4xuMFzAz6Rm3hmBKCHvCAwN0U/5cOE
-         Yz6bCUMECCjUkyr4CyrhuLjN3/pytGn3h0o0h58+LH1VQ6EfjV949azkvIAZQy8Eu1l0
-         E1YMGgngqQLqTCgWFB1kwMoA2UrpN4IaWCnIVhgedJOvZ8t2YoVGGM930cB8KaEbVoe6
-         ZaeG+7aX8EFxy2x9KICn52q2USdxzojQMB+HQJ45J4oqb3eyuVF9/3n5YsNgwHJwQvMg
-         vxGg==
-X-Forwarded-Encrypted: i=1; AL+hErFGrZ8RwMs3YF/xTFY/rO69zbQuEPPedPL9Hw6jw9et2ZW7kbvah21+qBZgv/9YiK7FzyA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/psjpPAXwNT1KpEZCaF/vtTuH39SwB8I8zpEpB0QtK5UDoYmV7
-	LjJSKK9VIcBPu9JZFqPqvHamIjT5HLCx2LZt2zI8ORGM3in3ad4e64uyjVnqMR0zpdU=
-X-Gm-Gg: AZFdTZdnNPp4GodXibGw4UnugpfW645ZCKMZDB4Q2qSCih9a9R/7uo26UcEV67/Jgej
-	F3s0anHpHklCxX+gf1cAfsN74ytoSM1Tej1eE+F5qy51x239Lv8CLbbMp8I/1igqApghDBESTRR
-	1sq5DlhVgH4jKKvxkjUh+c0cGl74QHzGQCOui7hn97hY63tKvgN4hC5w4uZxFuQw7YbvGsUD1DI
-	L/38dNLp3dnAI/7rmfyucR988QPPvVg+vVamIBaCm5KGisiO336ifZ5rFPGZVHKQjG+oIPaDlrd
-	hOM/sLQfnq7xVxW2V3axCe8TbWsNZWh5QV4u3KCqRcIavuxWG5F0+VPy65aJ9bemsYmstReBWWC
-	dIYKCqzLGKMLXSHX3wiINC93Rn16/zByIjrH9TEDRzyptOnu58wO0ML3pFnvCH0I3Z/rjcwtBxZ
-	HxiRD2KitvBx1FMhAS7SH4HzQqXWc9dWJqrKHQn367HZFCzahLOZayayXNq5E+2imN+nReWS0ql
-	iX6XNpkcurrCPeIiRPOrOzXRu0mA5PRlxRZZuUkL7UDTEKn26q89IsxYWZhrQ4PxcuIB2Dcs02O
-	SBDjvchi8UlMJ7jURHdZeDe5nF9QCVm3rlrzI7SNTYBOQBTeNnMnpwX2WCAd8jrWSCHARYk2CzU
-	xKPp7TwPjjapA3O6nUBl160twsAyNgpA=
-X-Received: by 2002:a05:600c:4e87:b0:4a3:59c9:a758 with SMTP id 5b1f17b1804b1-4bb88922c81mr242428605e9.32.1795441928731;
-        Mon, 23 Nov 2026 05:52:08 -0800 (PST)
+        bh=t3XbpV7aE8lPEF3WjasnioB+LmUiUo8YbJQhUQP3FUk=;
+        b=C7sGILHC/1VEFqUatSsTCcpQeh9u2Bx5W9DezgjmSid1qJaCR/cwjS41rqDji/MKJu
+         fxpqavE2l0DqdI+THGbdYd1hQ9Nor5wuR3oX4dL7ShKjNYg+gbriiAPnpA2pWp+ND/v/
+         BuZleOXZPHbSZ7DU/pjmFlSabIFft8MOAqRmfBmexaEI8usZ1RlCp7nMNbOFSr1XjGKn
+         pW8xkEQCRCpEkbGbd1X7uHHEcjfG//K8hNU6PXABL2NopC+Dp2AGCUUXWdIBamVpO0yr
+         TRdCBysWPkaZxEzAd+QE3kqOnuj2TC3m6v7hH5Nr31OgVkk6CqHyz7Vlg4QTOqb7wvRR
+         wK8g==
+X-Forwarded-Encrypted: i=1; AL+hErFHGuCYfeFuq5C0U7H/2moadWDoAppVJC+mABOcWIPUKn4sGg5hV8GmlKdy8yWuBf8aFGw=@vger.kernel.org
+X-Gm-Message-State: APuU4Z98zkwNu8g4nnaeKy71fSO5a3FaT0FcJWq7l5RstwouWxqG39D8
+	jYSlO0H6gZ2XrSLTBbrfBUJYyYyUO5dU6g3m1FBPwRZe4oTIatdovtT1cyDVr1eW3HE=
+X-Gm-Gg: AZFdTZcQylYYdvgRlMe5Xdn4HmJ6MZmkMJWs2gJBWA3S3dTy6cVPmN+U7ad5+Je6Fwy
+	C/bPekp5sEG5xt64oiJ+xG/QzDizAAn67GlbwDWpk0dho8KKpqnjZPLQ1aPBKCjnhguof4XmUYm
+	gc0bQWX4T1u9tH5sCvlMQQCiF9aX4Vs8bvvXT6lSHdIAOlv9pxq07uEO/qcIbvqOl/47/xoX7nG
+	ZXERDwT/oWrU77uMAUTazIZgvHoSFnuCqzYuje0OzWn69KCCMEYWmDDEsIU064+NgIB4aDfhwIF
+	jp9R6XN9PZAo0Ua+q/LCc8b78Ry8Ezw1/iZBFyuCQqqza/3Nq1qit7vH5tcKI5r+kv2tn9AQkfa
+	ta2VnZLJZ3AheeNruRxnrUi+gMSb8r46MEvjNOZlp+DJO+mRR31uUBtTufnMFlQ/fignJJAqXpd
+	N9sh2DUdH8MI28kQAbmePPmlwXgJYRvAMNNROZ4Odv95tQj/Xgaads8WxJAJo5+51Q72KJJl6xe
+	4coBJX6EvLuqxBWFGuxpMeOV2zoRuaR/VDnZq9UKw/LS70m5LZqzzPJ1zodzIoa50MvFAdtcw69
+	vzY+a6tuFOzCpCavTqGEcgai6jJxWOTq4a0RXw2f/ATTFwMegnLZvR3a4RnVraClepYsdminsc7
+	Rid7u7lNLcNTFiHZWtfDbEqQvcgFsX5a8QJiKm8E22oxVPc9Aipw=
+X-Received: by 2002:a05:600c:64c7:b0:4bb:68c4:2044 with SMTP id 5b1f17b1804b1-4bb887fe725mr225665445e9.11.1795441929971;
+        Mon, 23 Nov 2026 05:52:09 -0800 (PST)
 Received: from raven.intern.cm-ag (p200300dc6f1b7800023064fffe740809.dip0.t-ipconnect.de. [2003:dc:6f1b:7800:230:64ff:fe74:809])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb906817ccsm169279215e9.5.2026.11.23.05.52.07
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb906817ccsm169279215e9.5.2026.11.23.05.52.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Nov 2026 05:52:08 -0800 (PST)
+        Mon, 23 Nov 2026 05:52:09 -0800 (PST)
 From: Max Kellermann <max.kellermann@ionos.com>
 To: akpm@linux-foundation.org,
 	kasong@tencent.com,
@@ -102,9 +102,9 @@ To: akpm@linux-foundation.org,
 	linux-kernel@vger.kernel.org,
 	rcu@vger.kernel.org
 Cc: Max Kellermann <max.kellermann@ionos.com>
-Subject: [PATCH v4 4/5] mm/mglru: avoid redundant rotations of young memcgs
-Date: Mon, 23 Nov 2026 14:51:59 +0100
-Message-ID: <20261123135200.4086519-5-max.kellermann@ionos.com>
+Subject: [PATCH v4 5/5] mm/mglru: reschedule between memcg reclaim attempts
+Date: Mon, 23 Nov 2026 14:52:00 +0100
+Message-ID: <20261123135200.4086519-6-max.kellermann@ionos.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261123135200.4086519-1-max.kellermann@ionos.com>
 References: <20261123135200.4086519-1-max.kellermann@ionos.com>
@@ -119,49 +119,52 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Concurrent reclaimers can request promotion after another reclaimer
-has already moved a memcg into the young generation.  Requeueing it
-into a random bin again adds list mutations without advancing the
-old-generation scan.
+shrink_one() can return immediately for empty or protected memcgs, and
+try_to_shrink_lruvec() can break out before reaching its
+cond_resched().  A scan through many memcgs can repeatedly rotate
+entries without giving other runnable tasks a scheduling opportunity.
 
-Therefore, skip `MEMCG_LRU_YOUNG` when the memcg is already in the
-default segment of the current young generation.
-
-In my micro benchmark, this increases the request rate by 36% and
-reduces the average duration of each write request by 27%.
+Call cond_resched_tasks_rcu_qs() (as the existing shrink_lruvec() loop
+does) after shrink_one(), while the memcg reference still pins the
+cursor and before reacquiring the RCU read lock.  Also call it between
+bins and nulls-marker retries, covering scans that skip every entry.
 
 Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Reviewed-by: Barry Song <baohua@kernel.org>
+Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- mm/vmscan.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ mm/vmscan.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 91f31b65f9f6..b9715acf2f22 100644
+index b9715acf2f22..f8259de7f592 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -4492,6 +4492,14 @@ static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
- 	else
- 		VM_WARN_ON_ONCE(true);
- 
-+	if (op == MEMCG_LRU_YOUNG && old == new && lruvec->lrugen.seg == seg)
-+		/*
-+		 * This memcg is already in the young generation and
-+		 * reshuffling it again cannot help the scan of the
-+		 * old generation.
-+		 */
-+		goto unlock;
+@@ -5403,6 +5403,9 @@ static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
+ 	gen = get_memcg_gen(READ_ONCE(pgdat->memcg_lru.seq));
+ 	bin = first_bin = get_random_u32_below(MEMCG_NR_BINS);
+ restart:
++	/* Yield between bins/retries that contain only skipped entries. */
++	cond_resched_tasks_rcu_qs();
 +
- 	WRITE_ONCE(lruvec->lrugen.seg, seg);
- 	WRITE_ONCE(lruvec->lrugen.gen, new);
+ 	op = 0;
+ 	memcg = NULL;
  
-@@ -4504,6 +4512,7 @@ static void lru_gen_rotate_memcg(struct lruvec *lruvec, int op)
- 	if (!pgdat->memcg_lru.nr_memcgs[old] && old == get_memcg_gen(pgdat->memcg_lru.seq))
- 		WRITE_ONCE(pgdat->memcg_lru.seq, pgdat->memcg_lru.seq + 1);
+@@ -5433,6 +5436,14 @@ static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
  
-+unlock:
- 	spin_unlock_irqrestore(&pgdat->memcg_lru.lock, flags);
- }
+ 		op = shrink_one(lruvec, sc);
  
++		/*
++		 * Empty or protected memcgs can bypass the
++		 * rescheduling points in page reclaim.  The memcg
++		 * reference pins our cursor while we yield outside
++		 * the RCU read-side critical section.
++		 */
++		cond_resched_tasks_rcu_qs();
++
+ 		rcu_read_lock();
+ 
+ 		if (should_abort_scan(lruvec, sc))
 -- 
 2.53.0
 
