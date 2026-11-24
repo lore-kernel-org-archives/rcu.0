@@ -1,158 +1,105 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.136
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795533326;
-	b=I3Adv/4b0yoeGlB7D07doX4UcRVQU2u5dKvMPEjsIe/t7Z+eaAoiNxPn6MdFk3Hv+QbB
-	 hvCXGvjlNRNweUWBItwHWyUyuovs2T9MW6erfASHDf7ZWzoUfxLxMrb+eaF44zCxaKB1+
-	 wJXKPPHjao0ocY4nvQgEayC+miHWx83vf8Hdl3N2xo6sKBUh84adLRcXdCEBah1rtcU9b
-	 QP2EG/nUrT4uFoVRqOwqt19H5/7eUM1wGj23zBhV6VmWkI0uwFBKTx5agivnpQKaNN5h4
-	 HLGxdrrAVjX/c4RBYlvrcCTquYOyAfbRb6ma+H7fzYX9zGp8F9G6e729FAULGlJhszw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795533326;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:CC:Subject:
-	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
-	 Accept-Language:Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
-	 msip_labels:x-ms-publictraffictype:x-ms-traffictypediagnostic:
-	 x-ms-office365-filtering-correlation-id:x-ms-exchange-senderadcheck:
-	 x-ms-exchange-antispam-relay:x-microsoft-antispam:
-	 x-microsoft-antispam-message-info:x-forefront-antispam-report:
-	 x-ms-exchange-antispam-messagedata-chunkcount:
-	 x-ms-exchange-antispam-messagedata-0:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-AuthAs:X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-originalarrivaltime:
-	 X-MS-Exchange-CrossTenant-fromentityheader:
-	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-	 X-MS-Exchange-CrossTenant-userprincipalname:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=5of6Fiqhz1ehQEp10+5JOSuFwML33ZAYYmPVFybHzZQ=;
-	b=PQyvcF5+xahJPE9faNcm595kelyPk2ubkK8On1Zd/RnuuaWzDafU8LdyFQuGDxd31PeE
-	 +r/ryF5+7gem4hCKhO3CRci/QVegqa6n6wz7WF+Mp6XEcfTOfyYDt5IzvqOL1tdX2+Ltf
-	 VGres0v6OKssriRHxnFF5X2YoOzIr23lS2l664ixENE08eypDdgOQfgWWINFj918MtoYM
-	 26BGkN+4AKo/soFkHAc4H0pJuVNYANd55DuTSTBenL4/+U0W8us0OrkFk+VOrRRx/fjch
-	 2o0A9IdogqF7Pv5/wDIxSZvN8s/qm/iVFy5Pj2FimHrzbzZnv3fGzrF7TYhaGfGyqCQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=vt.edu;
-	spf=pass smtp.mailfrom=vt.edu;
-	dkim=pass header.d=VirginiaTech.onmicrosoft.com header.i=@VirginiaTech.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-VirginiaTech-onmicrosoft-com header.b="kN/UMlSD";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.201.136
-Received: from PH7PR06CU001.outbound.protection.outlook.com (mail-westus3azon11020136.outbound.protection.outlook.com [52.101.201.136])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795533616;
+	b=0AA05NgeWq9Znw3xjaTwjXr2MfaYPWueh0xO+e7OyWJr5r8p3OzkGSIahGre3V7Uditz
+	 bPCUHbT0QHwcN72w4j0kMTlqRogVw2McQ+lUWbdWLi/bd/YRFSbjY+TXV1rzhoTtbZ2oB
+	 pUYvaj+X5+brZkXQ2pXkHayGslxamxpfWQJpmFLBZmpI+eADsACCDA1LU4gfJLKnYxiIi
+	 Mio2nihAWFtDm8x5goNnZTQcrkR6dv99N3jZMzCOqHypeiq15qAqgDgyRTuc8eDVMXI+c
+	 9/X5n0uj9NnqargpdLQzdMAzI0MEsztWqIaK4guw+0hUOte7wFJcAXPwXUwbYlZ3pkQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795533616;
+	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
+	 X-Mimecast-MFC-AGG-ID:Received:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To:X-Scanned-By;
+	bh=iOPu+6NiMDC/b3ju45EqsPsXdKCHiL1eY1o26WitY9s=;
+	b=w3ENhCUzYBtLvktXbtXt6+y1x7pDmyvA/jZyuKyQ44S3Sse4diBC2vfvQ+3Vu0HaXQtP
+	 60njUnY02pboM0L4BOcDxG+yAqxFSrR8zn2RYhdMnzBW1j1wycaV105cC213pzvY0ykeZ
+	 SabH1ASTC76QC00tv/w0omsjiR4WMQCZPyrC1+fzXVsxUm6kj6eOFzZiSqO8wssTDxx+W
+	 s2mD62P+or8eaDecbHx90totwKh75cARSRlj38U6B4jwMXyN6ro4PNhbkEGAmQlhD04mj
+	 ff8+CVdYP2n9XUwZbeZx9epCWwlRqUNYM8q2b/W0+oGDn7wmkZz+BP09caqE19NP/Bg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=redhat.com;
+	spf=pass smtp.mailfrom=redhat.com;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=hBIuBsWQ;
+	arc=none smtp.remote-ip=170.10.129.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFFFF606A31E;
-	Tue, 24 Nov 2026 15:15:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BFFFF606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vt.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vt.edu
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2F0606A323
+	for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 15:20:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2D2F0606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=VirginiaTech.onmicrosoft.com header.i=@VirginiaTech.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-VirginiaTech-onmicrosoft-com header.b=kN/UMlSD
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SloLO37pcvdNeExm6Q8czweqwhjMldOV8UlD/TOql/jM7o3dW+KL2HM8LjA1r/PFs0lPinHmrIxoeok9X27LnfMNiEXIhfhSL6YPeO9IM5XdECHmR2ODjJ6/Lsw5XFeoju3NjaRuQ/eCBEA1PCj3cNTop51o9EKwRbpxHEZi9c9bk5x5toWf3/ncAayObv+rXoBvRSNuYB5r6GA6GQXCElG2WqaKusoDnzgytp3OFkkM49fD1R/7c9X1T1Ul3REjNZ26FVHLYAaUI68zntlGVRnpAU0JPACRkm/4RSu0exIGYrxvRy55LpVrW/lP0ufs3539AVhQ1h3R2aAsOVOLFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
- bh=5of6Fiqhz1ehQEp10+5JOSuFwML33ZAYYmPVFybHzZQ=;
- b=bD/hOmEF5dm/n0Ly2OyJZgmeNgVvqpje51KFOSnAGraj6W0MBEv2Xzi8jlWjBHzr5hcvdmS1JvHVyp/EbeITaFnNKvW2XqVa7LCnchnoKjF7LIuwEoTBEy+d7jaI9WvwCirugRYcLomzHlG4NJp40+Rb6OBbSO8lnSM9Fc8Pc/rynV8jYn99HFe9yRTHCe7UedZpJ6J9Mm6npT/wQ+5C4pT81wbB1T5deSM2llN6sCbwl2FgDT8Fowxu4dBcn+5pC9cWx9VVQ+jl4IHSeHkCIA+RHLXWQq/x9dkRa1GfoiMXd9ql8HMxE3yUaJeRRSvKMHMDr5zHLLfAsaE09q5opw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vt.edu; dmarc=pass action=none header.from=vt.edu; dkim=pass
- header.d=vt.edu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=VirginiaTech.onmicrosoft.com; s=selector1-VirginiaTech-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5of6Fiqhz1ehQEp10+5JOSuFwML33ZAYYmPVFybHzZQ=;
- b=kN/UMlSDb9LAVAcBjw2TmzNma5G03iRy7rNcDitJaKV3zwUYXZ4nh+tnvm5Ws5FVbHVMVr5tXSnK9KGlozYPfQQnAOSf5jOViF4UBRY7Xvy4hnZZD11Rc1VZmmAU5dEwGbRrgO6FrTv7QjzNVqu1zP7M2k19WpQ3nuwORAUJ9+s=
-Received: from DM6PR05MB4137.namprd05.prod.outlook.com (2603:10b6:5:81::28) by
- SJ0PR05MB7692.namprd05.prod.outlook.com (2603:10b6:a03:2e8::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.13; Tue, 24 Nov
- 2026 15:15:21 +0000
-Received: from DM6PR05MB4137.namprd05.prod.outlook.com
- ([fe80::a6db:3b91:d780:cd9b]) by DM6PR05MB4137.namprd05.prod.outlook.com
- ([fe80::a6db:3b91:d780:cd9b%5]) with mapi id 15.21.0639.012; Tue, 24 Nov 2026
- 15:15:20 +0000
-From: "Ravindran, Binoy" <binoy@vt.edu>
-To: Yafang Shao <laoar.shao@gmail.com>
-CC: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
-	<frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
- Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven
- Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
-	<mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>,
-	Miroslav Benes <mbenes@suse.cz>, "live-patching@vger.kernel.org"
-	<live-patching@vger.kernel.org>, Petr Mladek <pmladek@suse.com>, Joe Lawrence
-	<joe.lawrence@redhat.com>, Song Liu <song@kernel.org>, Ingo Molnar
-	<mingo@kernel.org>, Jiri Kosina <jikos@kernel.org>, "rcu@vger.kernel.org"
-	<rcu@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "Shastri, Jaidev" <jaidevshastri@vt.edu>
-Subject: Re: [PATCH 0/2] livepatch: Do not lose exiting tasks during a
- transition
-Thread-Topic: [PATCH 0/2] livepatch: Do not lose exiting tasks during a
- transition
-Thread-Index: AQHde4yeIwbsGnp4R0y51MdXMm7dBLc8PZ1JgABb5oCAAAiQF4AAJg4AgACNPVs=
-Date: Tue, 24 Nov 2026 15:15:20 +0000
-Message-ID:
- <DM6PR05MB4137C1461A45A521072B526FD1442@DM6PR05MB4137.namprd05.prod.outlook.com>
-References: <20261123-klp-series-v3-v1-0-427c95811d9b@vt.edu>
- <DM6PR05MB41373C039888AD13938D3838D1452@DM6PR05MB4137.namprd05.prod.outlook.com>
- <CALOAHbDu5NmVowk4SHzeUDxASaxKkbL_w1dModFWzdi8yK9tBw@mail.gmail.com>
- <DM6PR05MB41377901DA5182DDFAD6E3D4D1442@DM6PR05MB4137.namprd05.prod.outlook.com>
- <CALOAHbCDSAuvxHt2jd-f5rvTrxeZ4KZkKUfqxrE09PXk+Te36Q@mail.gmail.com>
-In-Reply-To:
- <CALOAHbCDSAuvxHt2jd-f5rvTrxeZ4KZkKUfqxrE09PXk+Te36Q@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
-authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vt.edu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DM6PR05MB4137:EE_|SJ0PR05MB7692:EE_
-x-ms-office365-filtering-correlation-id: d7e04321-7b8d-42cb-84d6-08df4a3dc113
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|376014|7416014|786006|10070799003|23010399003|366016|6133799003|261009223027099003|22082099003|18002099003|4143699003|56012099006|11063799006|261028144727099003|261102123227099003|261026140227099003|261026121527099003|261022075727099003|261022105027099003|261021123027099003|261021121427099003|38070700021|10067099003;
-x-microsoft-antispam-message-info:
- jgfeRbMATzHLD4ylXrVWyJHolvfrlrAwgfLSiq8DqsMF6Npy+pDq4gN6aCI78M4xrFgKIxja1KTt/f2PKZbfduD55FuPc2YjftGSs6EqlvMvaKI0ub5MmDzRfkmNakVd5q2rKx/nleadKcgIlT3nTneNCFW1Zhlwm+XPXXxFaHdZPeK0SnBxq4k6zUd6gm57Ryn4cSHeoG8Fn8S2ddt83qg/rufwfyvsXLQstZIewCQYDjZyg/VHq7KRn8MVR2siKRLfFOGqDGS0nfw1Wp3skWKWXuugo1shPMn93JA16YWwfOr5XhN5c+FriPtIZE2+QHfGyjsYE/wdOWMVYP7t7diwOylvXBZp3XHp4B4UTJJVoNd97m686hh3YjdrNzy0j4h86qK8p/p86XOkHZunF2dgj0Reqji8YZ9PuiFflz28gUdlbZBYNW8xtdIjkIoFoVvGJXkgNGxEa0LXuz9e0Dpc9H/P09CLnUf6JuBPCxAxyjM2l0lRTch0AmIeQWTFsclf+i+6yVcfJk/SJkNCATRq8RJvaMAMlDzBT7FSmoipxCTlQyj5XHN7nftAWCw8R/g3pn9G2+3otqHidDrg2GJHcEVrYpgyZ+J/u11VpdoVEB+PG20i0HMUDotAd82TmULQmWHt6nnhSe5q/arU2Cy4obxPZKQDt98ZeSTJvasCPe3gobzoHKnaFkUUJWxg+HtWlRZWq9jc/mHtM7px/Q==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR05MB4137.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(786006)(10070799003)(23010399003)(366016)(6133799003)(261009223027099003)(22082099003)(18002099003)(4143699003)(56012099006)(11063799006)(261028144727099003)(261102123227099003)(261026140227099003)(261026121527099003)(261022075727099003)(261022105027099003)(261021123027099003)(261021121427099003)(38070700021)(10067099003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?iso-8859-1?Q?zSuDwiU+RuM9UDBZYgh0KoP/Tl/73GyNiEmee0+UQhOZI2HH0TwPytUw5F?=
- =?iso-8859-1?Q?FP/13FTvhPy28kioP2sYCb5DzzIGYGy0YgwduRvS3UH9qGcAG8h2yjC5dV?=
- =?iso-8859-1?Q?GxYqpBdBkZ0efp/wz7FRzJ3P143r8vHzakjXXHHF8/8yMch/FmZrle4RGE?=
- =?iso-8859-1?Q?ttFjZLxnjGhxLckxvGrQaHKPJUJDFuk7MfgMlMtnR8vXdhcd2MUFd/Pqte?=
- =?iso-8859-1?Q?i88smKIGjtm6XuvrirGKN4WnryX9ZXgB2hiP0PWIhjaZnH6dvAKE7GbOQu?=
- =?iso-8859-1?Q?A4u1Hy0HQxh5mpURK0IGsxMChiLiM29gJYyNDVUg5Sowzb6Esc0eNjudEu?=
- =?iso-8859-1?Q?LEI2IdfAO8NIROD7beRzF0aympcyPwFVeCUZ8MwBN7ohFMRZqTriIRiDDs?=
- =?iso-8859-1?Q?gaHIw/+DTKQ9q9QDQDatMdr1Gxh2XpeueBVlqwKoQI+2JlVzh5znrfwBuI?=
- =?iso-8859-1?Q?++YY1YWOVzRjtL5m1vV9nIQLgwBalfKsKfV/cG8cNzkvHgqpMH6bK8MbGF?=
- =?iso-8859-1?Q?vQ+k+ZwjFmYFN1xqMCXcCgLS0fMDmkTiLNhTu2IT5Xl3JxLSa2tbap2XG4?=
- =?iso-8859-1?Q?gv2c86S0+eqfYUb2p0Xv0m2FmszCsDKQoD1yZ0aO2VzegP49IExayFt+km?=
- =?iso-8859-1?Q?NT5fuZX/rxSwe4y6AgzWvbwmGhdiPMkOBYfaMqS/Tq99GKuDQF07mHwQsw?=
- =?iso-8859-1?Q?cuNAs/dgeQzubJX4f4Vg8Cc6W7s9BeKFvlUJEsvfJQ1Df8+HqnFUVAfi4N?=
- =?iso-8859-1?Q?ZRnnadcwxoYEt3f+MjPXZTz4wwXtiiMddUkDjflV3TXBNU3my1XTx3gCpo?=
- =?iso-8859-1?Q?UJUe+OJ4zfPzI1RVPpF7BuZ2bx/PCpjJKbiY2Q3r6cRofP4T6GgYTmyjXh?=
- =?iso-8859-1?Q?hBjjBhUjcVT51R9SZ3eVDn5X+fTiXMAVaUMcJ7jYAdOXj41scPywKywdRF?=
- =?iso-8859-1?Q?hKimFAAkedehplEVu6RhsIkaDq1J/f6NOMIRyP4sQGEMBMMhL1Kmfnj8xC?=
- =?iso-8859-1?Q?e4yLa0KcBk9ZlLXICvYj8XeIpwlqOqefXRX8tjz6AJ/G0WDsPFBPd/KQoB?=
- =?iso-8859-1?Q?UR3znfdsGgNMimmldW2oWHTKm3fr/81LJ+pYwtVHHk7NzM7p3/TUpi+Dcb?=
- =?iso-8859-1?Q?7/lbGuVA/Minh0c/Md13H/6TRoMxLU70g+bcepktCaSJadFa6HHk6P4Q3u?=
- =?iso-8859-1?Q?qP82YcO1JSb0/OtPjvZFNmgY/oMFTSsWflsrC3wg57n4niwoitkd34gT2C?=
- =?iso-8859-1?Q?3IDkZX2y18bGi44UF7p12WIMjOU9JRxwKVBIrjEgVZepu0keyGuEbF4whM?=
- =?iso-8859-1?Q?a/jG1QZbzR5IV8YeSosneUU1bYdZWqEsVlfyElL3lAokp2aTKRstZ9fgC6?=
- =?iso-8859-1?Q?EmB1mTZ5/MKtpVphcV+kmubIDEHG2TAF7agQA2No1fp5fmmoi2sO0Ph4Rk?=
- =?iso-8859-1?Q?ohKOxpe2xPIyBTrxNGK2Clbur3MhDbgAFH0RJXirT5StSgbnKla3EVbO/9?=
- =?iso-8859-1?Q?y05Tj+1j+pY28cRerpS01ZlbpimV3n8PvZT0XcWZR3ePfImGobqONflG6Z?=
- =?iso-8859-1?Q?F4aAG7HdTzFDR5N9Sxh3VE5CN6sbHywqSE8CH7GuXaKjOj/x5J792cDFEo?=
- =?iso-8859-1?Q?CVqm+RsQelndQXPnUgRydyH2IYaShuvaO+OFN+Llf5m3m1x6KNUke0QjCj?=
- =?iso-8859-1?Q?WduDDLj3Qoo2cJDjG7OmOR8gtBJDYUJHA9Dy16qVeAo/AP0JTSEG0jFZ1o?=
- =?iso-8859-1?Q?A4apAjEXj4eQUZoB/OyLSOjXEuPJLT7E8aownTmbg+nOVbYCaRZiaElo4C?=
- =?iso-8859-1?Q?oMJYMPU6lA=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=hBIuBsWQ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1795533615;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=iOPu+6NiMDC/b3ju45EqsPsXdKCHiL1eY1o26WitY9s=;
+	b=hBIuBsWQ9nosSJ+ly4Dx0qt4cMlvvPnEksIVk/SnsbpqXWLvx79xXpubPKfHLBS1iJ6E4i
+	eHj306OtGz2gdeVqKZDr1qVXw2keA6X2DUH+xlbSNF8DUQJnDCVbOdll9xFEJ1KfNlYJ6o
+	xF/w8YLop9o/wiG/qU2y4fx3+llzpoQ=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-399-htAi2dU3ObOwTYEJTuqWmQ-1; Tue,
+ 24 Nov 2026 15:20:09 +0000
+X-MC-Unique: htAi2dU3ObOwTYEJTuqWmQ-1
+X-Mimecast-MFC-AGG-ID: htAi2dU3ObOwTYEJTuqWmQ_1795533605
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AF5B119774EE;
+	Tue, 24 Nov 2026 15:20:04 +0000 (UTC)
+Received: from pauld.westford.csb (headnet04.pony-001.prod.iad2.dc.redhat.com [10.2.32.116])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 538E71800551;
+	Tue, 24 Nov 2026 15:19:58 +0000 (UTC)
+Date: Tue, 24 Nov 2026 10:19:55 -0500
+From: Phil Auld <pauld@redhat.com>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	rcu@vger.kernel.org, linux-doc@vger.kernel.org,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	luca abeni <luca.abeni@santannapisa.it>,
+	Yuri Andriaccio <yurand2000@gmail.com>,
+	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Davidlohr Bueso <dave@stgolabs.net>,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Qais Yousef <qyousef@layalina.io>,
+	John Ogness <john.ogness@linutronix.de>
+Subject: Re: [PATCH v4 3/6] sched: Add sysfs files for the per-CPU
+ fair_server knobs
+Message-ID: <20261124151955.GA1855213@pauld.westford.csb>
+References: <20261123-sched_dl-v4-0-d523e4d960d3@linutronix.de>
+ <20261123-sched_dl-v4-3-d523e4d960d3@linutronix.de>
+ <awVDG-ABOvj7zGRg@jlelli-thinkpadt14gen4.remote.csb>
+ <20261124080833.0I9HFgtf@linutronix.de>
+ <awVgALGuilf2FMsT@jlelli-thinkpadt14gen4.remote.csb>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -162,49 +109,68 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-OriginatorOrg: vt.edu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR05MB4137.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d7e04321-7b8d-42cb-84d6-08df4a3dc113
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Nov 2026 15:15:20.2547
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 60956884-10ad-40fa-863d-4f32c1e3a37a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: lvfU/WF8o5rbLWh+s827sxyiEES2lwRzmOlgns8g9k03EfUPTOD/1vwKfuxRPwZE
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7692
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <awVgALGuilf2FMsT@jlelli-thinkpadt14gen4.remote.csb>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
-=0A=
-Hi Yafang,=0A=
-=0A=
-Thanks for checking it.=0A=
-=0A=
-> Is it worth adding yet another separate list for the klp transition?=0A=
-=0A=
-I don't think so. The exit lists already cover the window we need,=0A=
-from before exit_notify() until after do_exit() disables preemption,=0A=
-and any separate list of exiting tasks would need its own insertion=0A=
-and removal on every task exit.=0A=
-=0A=
-> If not, I think we should at least make the CONFIG_TASKS_RCU dependency=
-=0A=
-> explicit:=0A=
-=0A=
-Agreed. In v7.4, TASKS_RCU defaults to NEED_TASKS_RCU && PREEMPTION.=0A=
-LIVEPATCH depends on DYNAMIC_FTRACE_WITH_REGS or=0A=
-DYNAMIC_FTRACE_WITH_ARGS, which need DYNAMIC_FTRACE and therefore=0A=
-FUNCTION_TRACER, and FUNCTION_TRACER selects NEED_TASKS_RCU. The five=0A=
-architectures that select HAVE_LIVEPATCH (x86, arm64, powerpc, s390=0A=
-and loongarch) all select ARCH_HAS_PREEMPT_LAZY, which rules out=0A=
-PREEMPT_VOLUNTARY, and none of them selects ARCH_NO_PREEMPT, which=0A=
-PREEMPT_NONE requires. The remaining models all enable PREEMPTION. So=0A=
-every livepatch kernel already builds TASKS_RCU, and the select changes=0A=
-no configuration today. It documents the dependency and keeps it if=0A=
-those defaults change.=0A=
-=0A=
-I will add it to v2 as a separate patch with your Suggested-by, and=0A=
-drop the !CONFIG_TASKS_RCU caveat from the changelogs.=0A=
-=0A=
-Thanks,=0A=
-Binoy=0A=
-=0A=
+On Tue, Nov 24, 2026 at 10:59:28AM +0100 Juri Lelli wrote:
+> On 24/11/26 09:08, Sebastian Andrzej Siewior wrote:
+> > On 2026-11-24 08:56:11 [+0100], Juri Lelli wrote:
+> > > Hello,
+> > > 
+> > > On 23/11/26 14:41, Sebastian Andrzej Siewior wrote:
+> > > > The fair_server exposes the runtime and period knobs per-CPU in the
+> > > > debugfs folder. The debugfs interface is not a stable ABI.
+> > > > Make the /sys/kernel/debug/sched/fair_server/cpu*/{period|runtime} knobs
+> > > > available as /sys/kernel/sched/cpuX/{fair_server_period|fair_server_runtime}.
+> > > > 
+> > > > It adds a struct kobject to the rq and exposes only those two. The
+> > > > per-runqueue folder is named `cpu' rather than `rq' since it might be
+> > > > more intuitive to the user than `rq' or `runqueue'.
+> > > > 
+> > > > The set logic is pulled from the debugfs folder but it is still shared.
+> > > > That debugfs logic could be removed (after providing the same for
+> > > > ext-server) or symlinked for a while.
+> > > 
+> > > ...
+> > > 
+> > > > +static ssize_t rq_fair_server_runtime_show(struct kobject *kobj, struct kobj_attribute *attr,
+> > > > +					   char *buf)
+> > > > +{
+> > > > +	struct rq *rq = kobj_to_rq(kobj);
+> > > > +	struct sched_dl_entity *dl_se;
+> > > > +
+> > > > +	dl_se = &rq->fair_server;
+> > > > +
+> > > > +	return sysfs_emit(buf, "%llu\n", dl_se->dl_runtime);
+> > > > +}
+> > > 
+> > > Since these files are new and meant to replace debugfs, how about using
+> > > ns everywhere (you partly commented about it in the cover letter), as
+> > > sched_attr and the dl_server parameters already do, with the unit in the
+> > > name? I.e. fair_server_{runtime,period}_ns here and
+> > > dl_{runtime,period}_ns in 2/6, with only the procfs compatibility path
+> > > converting from us. Right now /sys/kernel/sched/ has dl_*_us in us next
+> > > to cpuX/fair_server_* in ns without a suffix.
+> > 
+> > I can do both in ns (or us depending what is easier/ more useful). Let
+> > me update that then.
+> 
+> Mind that it would be nice to hear from others in this thread before I
+> make you do changes that others might not agree with. :)
+>
+
+I did notice the lack of units on the fair files.  I'd certainly go along
+with adding the _ns to those at least. I don't have a strong preference
+about them both being the same unit if they are properly named.
+
+It probably makes sense but I leave it to people who know dl better to
+say if sub-us configuration makes sense.
+
+
+Cheers,
+Phil
+
+-- 
+
