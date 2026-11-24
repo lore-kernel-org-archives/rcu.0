@@ -1,104 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795514377;
-	b=a5EMxkvGoPHyNf2mV8rfnA+WXtBFVLIHmznkPihFPolLPYGE12EPUKC6O52KtJsoV33o
-	 hIDzO9AJRoYR7faKrAZJurrN0kFZl7GhhEF8ZDJjYPWJ6PLmhMu9+KJav4nOF4ZgeL09h
-	 Xt0A36cI9N+RnNOcFdxyec5naS5+yhpw2gc1Sl7CmYkbL1I3f00tiJvysevpSo3GIL8UP
-	 cQqeM4uVZRRjRfoqQKrKPNq/pW6cGrvMhTKaVtKUzrgD8U7Ub3KgA/9ioYXg8q2RxvxpE
-	 R84Q+LinD8z5hijbJ8nmiOZ8TbrR4c1jQb72xKJYXCVGmIXYd1DEYKwlgG8cFJyW0dg==
+	t=1795515097;
+	b=SWk9UpGO78YFg2v+XPVX1M+pNgCpIg//Oa/iCwVBkuVl9xU8AlG4eOrgh+qRV6us+E0Y
+	 Sd0ZXZiCzF7FVZzfwJbQIuFMEuQbAsc8TeeZ6dEqVb/JLXIDyZhqISZjP04tUuQdQRfOo
+	 kowL5QXsmwqTyLdzfKzpLZp+2xvp66etljaaCZNis/AqXDOIEoKMyb+1x98wvEwSWvyHP
+	 Zc+lPIDQs+XWuA37ZqyAsALVajIv1IvrGo0LxsYT1NoiRHJJibNPvQImvcEfg3bilO7BG
+	 eBAZjlDNbMbhzx/X1ejIwcEBUwV0dWRX8/cKXD8HI/Pn4t+14ZvCWbCkir07x9j3mRw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795514377;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795515097;
 	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
 	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
 	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
 	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=FYuz/K8ZJHw8V19OxffQhxGLJQWBYYcYpwJUkZTtfL8=;
-	b=TxpUMWV0fr0adMLGWPycJHvnGOsFkfDP6vtdRwJulj+JIUY0HPq8qitz08Xdw7xlpc6P
-	 T2TCx3pWUwNDGn1gvjNfsCDoF7lTvjeMNjeKHn5JYox3ci/XEKbyz+kUIW1erHC0ow82M
-	 vQQTpaFUvOP7AOKRDwb9VYtJQhj5C4jQbyQCDswhFOwn0fl5z5KdIoS3mT3pMjW9K5qv/
-	 p7spJscuDEasO5XdN5cmqmbmTn7pyzSsdyy8JQrqGfP5ocxC6LVDri0tBWooFrh6qjNIr
-	 oAeYT5R3QJqBDcpUGjAB+7/v/3KasgR2OsxL7ssd9Gvvsg+WHtex66494NKvnk3jDVQ==
+	bh=XAjHpOoHzD/5/0Qvp1Ofl3iGJdTZMSnNgw4bsE73GGg=;
+	b=SVan39QCedmZkT55aUFGj21lSSt0A9GZ8Koumw0Yr9/HVjJ4EC3cjYf6UbtuB/FcHfCq
+	 J5DXC/rWLN08isAyAKFNEyIlJVCYJnyrusrBiBPNQ8WmddWU5pJKqSLdG331URAD5Hq5I
+	 dzct837o4N321FnLMRI8dI0pZSiqcD7+Ml1tY0P/uD8jqkqqGYTcNdwS0El0X5rXX1T1F
+	 ORyecGsE/Y8wKo8IKJrGB4bheUsNcEeVeZ3yvKzUuE4eF7Vdq92tlKtnNKiFKu2n+LWpV
+	 8IXDaMGr2qLTVCh1gxggx6NRkZOupYCsvB6WAXnhh6Fv/sXsFil9/DlR/VVMVsTkVWw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=redhat.com;
 	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=bQx4x7lr;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=e0n1oN0R;
-	arc=none smtp.remote-ip=170.10.133.124
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b="Qa/Y8Xrc";
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=h7gEJN8O;
+	arc=none smtp.remote-ip=170.10.129.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C49BF606A33E
-	for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 09:59:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C49BF606A33E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBC4D606A31E
+	for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 10:11:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BBC4D606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=bQx4x7lr;
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=e0n1oN0R
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=Qa/Y8Xrc;
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=h7gEJN8O
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1795514376;
+	s=mimecast20190719; t=1795515095;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FYuz/K8ZJHw8V19OxffQhxGLJQWBYYcYpwJUkZTtfL8=;
-	b=bQx4x7lr3w9Et8UW2Lk+nWsMtEDMbG54swlE2niwsyA4MDs16ROxQHAAlQIfQNjsqBjYkF
-	5FLa7a9Ij8pvYINyrM93AsVTNNCq8nnHSGKt8pEYFk0/XxjC5MJiIdXm/Cpwkp3UlIWaru
-	3hH/IO0YkQZuRicKNIZ91QjwzmQB2fs=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=XAjHpOoHzD/5/0Qvp1Ofl3iGJdTZMSnNgw4bsE73GGg=;
+	b=Qa/Y8XrcwT8WUAv2GuNiOcaeaxuzHHoqMuR/T2uTsLnHD7a2apBcOaZ0bEFkDniPhjEdHl
+	CmJogIBJkAuwsLvsJNNBJkpqWOQKnkNlF8gDKfoQjZxJexoXqWSxATzgidPXq/eE9lpiBB
+	vAGKtT6WbszcPLRp5X2VPwBC8+YqHB8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-THRXXSuAP8GwDnjeBomz7w-1; Tue, 24 Nov 2026 09:59:33 +0000
-X-MC-Unique: THRXXSuAP8GwDnjeBomz7w-1
-X-Mimecast-MFC-AGG-ID: THRXXSuAP8GwDnjeBomz7w_1795514372
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-4ab855a8c21so3527443f8f.1
-        for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 01:59:33 -0800 (PST)
+ us-mta-261-GjQHmy7kNl-SSMs2dlgBWQ-1; Tue, 24 Nov 2026 10:11:33 +0000
+X-MC-Unique: GjQHmy7kNl-SSMs2dlgBWQ-1
+X-Mimecast-MFC-AGG-ID: GjQHmy7kNl-SSMs2dlgBWQ_1795515093
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4a204f135ffso22584715e9.1
+        for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 02:11:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1795514372; x=1796119172; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1795515092; x=1796119892; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=FYuz/K8ZJHw8V19OxffQhxGLJQWBYYcYpwJUkZTtfL8=;
-        b=e0n1oN0RmBVJLCI2UlG/FmdCSTssxV+exz7Odw9yPctRTzDBOLz+b2w7bqcsPMtVhY
-         YZsnJlqpYryo6qXAzhI+HVuYKj2kQ6eORj7Y9ra/+xc7/TMDdxWlDbxBQGWNlPWo+pYh
-         P9Yh8ZIEPzKxRF39734uIOFuoBGSrOiagZDcnGRKcPvqCx8+d6iKyBGSdkKsUn7cDzEH
-         Zfq11/qZ89jFO2QeuD57BKgJ0CvhpX40ao4X/57E3cqcucRCuS5KVkPNQoYFzuwAs7nT
-         OgpeiwiGocdpfMzny02EziP9mr4b4+NpyTTgWQUvN5rhKV3uyv69ttF9MXSiOudVL5A5
-         KyaA==
+        bh=XAjHpOoHzD/5/0Qvp1Ofl3iGJdTZMSnNgw4bsE73GGg=;
+        b=h7gEJN8OBgFNUHMdvcvxCov1aoor2h//nVUcZ4O1IeANH5Uw9lTCw81D8dSFXQYQuI
+         TlFGbh5jsTUr3qC9NYY48D7BnE563i6L1gwsCg9YhdYf7Jzd+TpwNdve2e1UufSUTfva
+         A+0M1ayAJ70R1B6OGnMQLNUYZoBrNcfGhTH/xQIH0rdcBiY7+0fYEGzzya8Jye5F4nvW
+         d7MaqcsOAhuqmC9y24fkr9lszPYSwZMLlqWAPxhCCwAMAnWUvD0guVB9/JsSNKWHwz36
+         L2y4QQIiLlJu1kz76Rvpo2bVQIZrTT3QQhZ2FwhtkjVFMM0Dn+cGWemtLuAYiZjR7SZB
+         FeKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795514372; x=1796119172;
+        d=1e100.net; s=20260707; t=1795515092; x=1796119892;
         h=in-reply-to:content-disposition:content-type:mime-version
          :references:message-id:subject:cc:to:from:date:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=FYuz/K8ZJHw8V19OxffQhxGLJQWBYYcYpwJUkZTtfL8=;
-        b=CVZJ87B0xrwJo0FWkCqiucwyt7tq5m8g8rBmyT2jiWgbCoJaibcITezUywvouR+g5T
-         4mKhyXnxFiu9BcYYqio2HiYHomEuKWyG0lgtoeVAWXKkQEmwe3+jW2HqCX5nWRKl/KoS
-         kVVMolOnHRdKIs79DyHwYfR4iJSQGLmrCkvZPOqqLTlPtv1zwpE/x7FC8rBr1Mx3yXPg
-         ZpxDFfOVcuQRuhHlIXpAjxlcb5WCrGwFc4h9kxM+HbrL1RrjDU6fMfbHlmByjXhD/EIY
-         uht48gF1XXYyi0jAgnO2/bnFIk9I3jTk9eYRchi1tVsJsR4kR3U3lDbA/0RS/myQZ+Te
-         MVFA==
-X-Forwarded-Encrypted: i=1; AL+hErE3LNSqiwj1/FAKAxfMY0unkASDAP+pAjArNLkxQ4cbx4fbm7fUTwHXdnbCQG4z+8rQEnI=@vger.kernel.org
-X-Gm-Message-State: APuU4Z8RdumZAekv4hZJ2zOGYvycWf4ba2Mwj9gGBuQynq7rZoUtLemH
-	yNOiLJk3I8634p00qBNV7RKeo/lut6GdmLPpDA+kPmn73rsQNnPIc+irXzqXKIC2v8KEZJ8dPud
-	zhJviCf8as4UbYVRHi502KFmoBDXu5ZWArRKgQRh5ugmWGXhfXws/hg==
-X-Gm-Gg: AZFdTZcBnmioqKpqjLHNMTzbLEFpSqrBZdi4zCE1bmCwHOpaiF57hjAyZZhUFeKiPAX
-	Og/E1zID9KbZXxRKsHF4z2l2BxtcdWYJ9tm2yBcuKGHAADiDd5GRxsilQnEIX6SHv0UDS9S4qcz
-	jb8wOPWlJPXzAlUtKiPNA2OJRQmM8kFopZtSQ14i7rDwOuQgpwWWLcuTBNDm41QYuXH+OAHzo4V
-	qOyYx/XVODFW2S15KesH6rwqcCxBLGT2NhLZkohanWQ+eXW9pDDxX3TMYM2ztq3S2RNJ7q8NsKI
-	fZW4KbgdsUnTVnMO7GP+Qe/jPQLlOBAOAwQ1XlBrvOW761CyuIuFBu0xFj+IEKanDx70BE8k+rT
-	4y46+GLLiD/4WzpuzlL2lFqph/dZ5fh8Wdt3ij8LUSn/rUlPW+EBR+vbFDp87KYCfThx16Ki9RX
-	2yUNw=
-X-Received: by 2002:a05:6000:4013:b0:4a7:d4c9:ea03 with SMTP id ffacd0b85a97d-4abaac57bb5mr26588492f8f.6.1795514372448;
-        Tue, 24 Nov 2026 01:59:32 -0800 (PST)
-X-Received: by 2002:a05:6000:4013:b0:4a7:d4c9:ea03 with SMTP id ffacd0b85a97d-4abaac57bb5mr26588458f8f.6.1795514372081;
-        Tue, 24 Nov 2026 01:59:32 -0800 (PST)
+        bh=XAjHpOoHzD/5/0Qvp1Ofl3iGJdTZMSnNgw4bsE73GGg=;
+        b=ojOJSs50YAfbjlHdCZYPvdLdpb5tyeve66RiWpUQMOyY+3NOA6LZF314PTZ8oAjCZ9
+         B0o8uSet5CdlbmOZz1Q3HqEABx/8/9ckeUh1miR604BompduUFZAw+JQvu4gUih7qtmq
+         GwDPuLmkfsIGLL7ibbHI9N5c5YbxLsYds5sFicYyj369hfqGcjdaFtNzHMsI82cYxZU7
+         ZZjKrhXz53+RwmtV9EvITGhxaYWT+FWK7sQDG9PPSDDjNVB0iLnIZYyBxS/jmS2gXgBk
+         BowBuoJoqgK7PS10Ogz6kbSQxnjMbvYSdwy7DDkbFf5SywZUV2X5/T2u9kOYJ8kk4xij
+         pb9A==
+X-Forwarded-Encrypted: i=1; AL+hErHWiEH1d7LW1RUtrNNOwvnHbpwc6gRAo0EXcR7okwyyDEMW15DFK1PZQ2uVyU6voJIvl3g=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9T+RxrJDf53IQh/Mnt6AF3ll9CEI5KoN4TSRkyNeKEqVQ+8onL
+	fD24yveENJHbcMnPe80zH0/K5sn2Dr7UjbILtPiQRrhV5VF0j2zejUQfbKDtda5p1aHgBDpS+Dc
+	9d9Ja+9x6W+2yk2Q69c/fV0DZDUxqgUWSsiF1HUH2NDDNjMS+jM56oA==
+X-Gm-Gg: AZFdTZdu3jkfDoAvQMtCkq9ChM6g7E4eTh9+6ItZTenhlI8w6G/g8lOLPzpCD39fuOC
+	nt3EHAhkrBYA1A2tc6KELqh7Je/zms5fh5S8dGwOZgu4RGwtxkg1XHs0XBteer/Q8B+4u0Uo0sl
+	Bhr2ewemNXkfh4UO8vuxC0pw+NLfOTCoSDRho5tEhGUqjg5ouvaNj2Hq7d1R6M1jG4VklElAv4n
+	tuuf+C/JfakcVZcx535IkkWhfvwtqIQeK9qxol1nQhVytK3N+MhV6H6AcjhB57feFiR1+Rwzi6G
+	pnEQBKsHgMxG/P0/9fyFgUQwnnICm0Fe/zfgsue50FhR1YzZ5BReu99h1fSD6Qc2B3LjgXYJOfM
+	jaUXs5sBNQGOe6BmGqJ5lCSoprbOSEvk1TUh9XMQ1gj8lmDPxzl87du6R7lCCXkqjsU060EAEwK
+	FMxXI=
+X-Received: by 2002:a05:600c:1d86:b0:4a1:fa27:df7c with SMTP id 5b1f17b1804b1-4bb88922972mr294991455e9.34.1795515092635;
+        Tue, 24 Nov 2026 02:11:32 -0800 (PST)
+X-Received: by 2002:a05:600c:1d86:b0:4a1:fa27:df7c with SMTP id 5b1f17b1804b1-4bb88922972mr294991115e9.34.1795515092291;
+        Tue, 24 Nov 2026 02:11:32 -0800 (PST)
 Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.158.90])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4ab5ffcad11sm26055111f8f.0.2026.11.24.01.59.30
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4ab6c61e53asm28093795f8f.59.2026.11.24.02.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2026 01:59:31 -0800 (PST)
-Date: Tue, 24 Nov 2026 10:59:28 +0100
+        Tue, 24 Nov 2026 02:11:31 -0800 (PST)
+Date: Tue, 24 Nov 2026 11:11:29 +0100
 From: Juri Lelli <juri.lelli@redhat.com>
 To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
@@ -130,13 +130,11 @@ Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Qais Yousef <qyousef@layalina.io>,
 	John Ogness <john.ogness@linutronix.de>
-Subject: Re: [PATCH v4 3/6] sched: Add sysfs files for the per-CPU
- fair_server knobs
-Message-ID: <awVgALGuilf2FMsT@jlelli-thinkpadt14gen4.remote.csb>
+Subject: Re: [PATCH v4 4/6] sched: Limit sysctl sched_rt_{period|runtime}_us
+ to RT_GROUP_SCHED
+Message-ID: <awVi0VQJCBNYc8u9@jlelli-thinkpadt14gen4.remote.csb>
 References: <20261123-sched_dl-v4-0-d523e4d960d3@linutronix.de>
- <20261123-sched_dl-v4-3-d523e4d960d3@linutronix.de>
- <awVDG-ABOvj7zGRg@jlelli-thinkpadt14gen4.remote.csb>
- <20261124080833.0I9HFgtf@linutronix.de>
+ <20261123-sched_dl-v4-4-d523e4d960d3@linutronix.de>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -148,50 +146,55 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20261124080833.0I9HFgtf@linutronix.de>
+In-Reply-To: <20261123-sched_dl-v4-4-d523e4d960d3@linutronix.de>
 
-On 24/11/26 09:08, Sebastian Andrzej Siewior wrote:
-> On 2026-11-24 08:56:11 [+0100], Juri Lelli wrote:
-> > Hello,
-> > 
-> > On 23/11/26 14:41, Sebastian Andrzej Siewior wrote:
-> > > The fair_server exposes the runtime and period knobs per-CPU in the
-> > > debugfs folder. The debugfs interface is not a stable ABI.
-> > > Make the /sys/kernel/debug/sched/fair_server/cpu*/{period|runtime} knobs
-> > > available as /sys/kernel/sched/cpuX/{fair_server_period|fair_server_runtime}.
-> > > 
-> > > It adds a struct kobject to the rq and exposes only those two. The
-> > > per-runqueue folder is named `cpu' rather than `rq' since it might be
-> > > more intuitive to the user than `rq' or `runqueue'.
-> > > 
-> > > The set logic is pulled from the debugfs folder but it is still shared.
-> > > That debugfs logic could be removed (after providing the same for
-> > > ext-server) or symlinked for a while.
-> > 
-> > ...
-> > 
-> > > +static ssize_t rq_fair_server_runtime_show(struct kobject *kobj, struct kobj_attribute *attr,
-> > > +					   char *buf)
-> > > +{
-> > > +	struct rq *rq = kobj_to_rq(kobj);
-> > > +	struct sched_dl_entity *dl_se;
-> > > +
-> > > +	dl_se = &rq->fair_server;
-> > > +
-> > > +	return sysfs_emit(buf, "%llu\n", dl_se->dl_runtime);
-> > > +}
-> > 
-> > Since these files are new and meant to replace debugfs, how about using
-> > ns everywhere (you partly commented about it in the cover letter), as
-> > sched_attr and the dl_server parameters already do, with the unit in the
-> > name? I.e. fair_server_{runtime,period}_ns here and
-> > dl_{runtime,period}_ns in 2/6, with only the procfs compatibility path
-> > converting from us. Right now /sys/kernel/sched/ has dl_*_us in us next
-> > to cpuX/fair_server_* in ns without a suffix.
+Hello,
+
+On 23/11/26 14:41, Sebastian Andrzej Siewior wrote:
+> The admission control for SCHED_DL has been moved to sysfs and RT
+> throttling has been moved (long ago) to the fair_server and its debugfs
+> interface.
 > 
-> I can do both in ns (or us depending what is easier/ more useful). Let
-> me update that then.
+> This file remains to have an impact only on RT_GROUP_SCHED. Keeping it
+> for ABI/ compatibility reasons makes no sense because its original
+> purpose (RT throttling) is no longer served. Anyone changing this file
+> and hoping to change the throttling behaviour will be surprised.
+> 
+> Limit sysctl sched_rt_{period|runtime}_us to RT_GROUP_SCHED so everyone
+> using this outdated file is aware.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> ---
 
-Mind that it would be nice to hear from others in this thread before I
-make you do changes that others might not agree with. :)
+It looks like subject and changelog still describe the previous version,
+as we are not removing the interface anymore?
+
+>  kernel/sched/rt.c    | 8 ++++++++
+>  kernel/sched/sched.h | 5 +++--
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index bd37dbf2bebbe..258b187459bb9 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -2877,6 +2877,14 @@ static int sched_rt_handler(const struct ctl_table *table, int write, void *buff
+>  	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>  
+>  	if (!ret && write) {
+> +		if (!IS_ENABLED(CONFIG_RT_GROUP_SCHED)) {
+> +			const char *msg =
+> +			"Please note that DL admission control (via sched_rt_period_us, sched_rt_runtime_us) moved to sysfs.\n"
+> +			"This update will be mirrored. Controls for RT throttling moved to the fair_server.\n"
+> +			"This will not be mirrored. The fair_server settings are under /sys/kernel/sched/cpuX/.\n";
+
+I am not sure a user who hasn't followed this thread will understand
+what "mirrored" means in this context. What about something like (names
+depending on the unit discussion):
+
+ sched_rt_{period,runtime}_us only control SCHED_DEADLINE admission control,
+ now also available in /sys/kernel/sched/dl_{period,runtime}_us.
+ RT throttling is done by the fair server, see /sys/kernel/sched/cpuX/fair_server_{period,runtime}.
+
+Thanks,
+Juri
 
