@@ -1,52 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.86
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.223
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795613152;
-	b=MvqqpIF4v7yLSilkPI9FyMe+zbiiYLJN6l4CUSq8SIpCJTugoFaGbiZxZ1fqgM8D7eTK
-	 uQzurssjl4WdDmU6pHseYMt3qajZ574UC4VDCTQRM8J7A0D1tdBPWb2/cgiyehGnim9TB
-	 Ihp9+rwkExUAhWARlLPknVPKPu3IsKmlJmVEXDlwNucs4cK+D5/7i/qQgcgonSA4vlN16
-	 rSiUaG2arMYeQQM/HVZl8DzulOu9r1BGnh7BECxZRO5I95YhMzaKAbvcvB9lV5sRpn/ak
-	 zUV5juvBvQDb8UkiJMWbtrv+r+AsUsuQEjCf1RzWsVgUKHtUlo5Q47fbVCky5kZ0KIg==
+	t=1795613983;
+	b=ti5SjRmY4mX1J9aq7bVZ0mGaK7vuvakNtm3liy7h/130xfRGkfpVvIr2kNS4E4EB33dX
+	 TmAmB9mCdpkFTGsdkEaDB/GEoJeATGOzFDQDRLjgSCXHSGz93Ljv67fvMl64lfXm9TRhk
+	 h7XbKg8N0gpQixBFgHz5y2MyKsB88fp9imivsgEKOR3gjHqQkpkAInsOhNJIA71Hi8wvO
+	 x6JC1RqI5nkjv4GAtt56UDE5XZmw8/k7fmXl9UervFmiMzzTsu1wzp0NpBNcglF1LVdiL
+	 PcFL9C9OLsEau13wWrrWn8RQ96GRXm0vAmqL7tZjMo1RhZrmk6PETrBUGkBW6xSlw/Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795613152;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795613983;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
 	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:
 	 Content-Transfer-Encoding:In-Reply-To;
-	bh=HbIdcR0wI49MGRVPfZrgHFwb+AvBA40KkuNLrNWIzbE=;
-	b=SCdib4HRPnCZzUV00Com+0Md8ZU/dY4ohjTUpBnXpwcbOjKar6KQ/trYnaIbkN2u5oY0
-	 2/jQeFqm5xLwcT0P77pkYN0Fup2tt6VRNxTavu0U8sjAV3H+2l4vkWoT8PhLnl8mYnZmC
-	 uhTbqVy9RFvlLJiGSOgQLPvRa0Lg8EY7IYwiO6Sc7gUciNaXyrlqn3AT1sQ6gDTpRc+E/
-	 A/yphS26yepm2hvLOyyZI+oke9RiF5kTgT9Ofb2VELGhvM4uQf7i7NsoUWnle/qq4kvmc
-	 yO+CF2zuK1UhdSeS6NNLFNLEf16SBiDPQ/9zS+64CCwf99XC8wPei44yI6bGTgaP1wg==
+	bh=LhM6iTyXiIOEJIXv0OBGTF8appdtEpEB3/JCzQzxpvc=;
+	b=5a+RDzfp50IpH8B75xZvYQbuv2g/pgOfv7iwoJzcfilOT8JrM26t0tdxyFzPrWE4dP5w
+	 hN356jjqBP37MzbqJEN+TuQkLcLqizuSqeBMzO/zvAxCgIeOLFIPJrU6VXTtEKWSq1OnP
+	 UZOaWfWG6kdgy8Oq/Hdpd0/GJ7OiZFvO/uHZQu+kYnvDdImqXFcoHIF1asy1U6vpA15kn
+	 JMFyP5q9yM2myfGFcQGjvZ1EZEPAiptzMBIwI0qOizxV5871q+UOxEkJ5KRMP2guyJQYB
+	 U9fpHSp1rvWipZR9KQYgTXJVk7TZkl9YsAb8m3RkxiU8Qp8p503meP7BiWXWxAJfuEQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=wyuan.org;
 	spf=pass smtp.mailfrom=wyuan.org;
-	arc=none smtp.remote-ip=91.218.175.86
-Received: from mta0.migadu.com (out-86.mta0.migadu.com [91.218.175.86])
+	dkim=pass header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=FEBs91P3;
+	arc=none smtp.remote-ip=95.215.58.223
+Received: from mta1.migadu.com (out-223.mta1.migadu.com [95.215.58.223])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A1A9606A683
-	for <rcu@vger.kernel.org>; Wed, 25 Nov 2026 13:25:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A1A9606A683
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADC87606A32E
+	for <rcu@vger.kernel.org>; Wed, 25 Nov 2026 13:39:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ADC87606A32E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wyuan.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wyuan.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=FEBs91P3
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=ztrTNlbe/EoB32+GFExbbnOihiqmDaAyMHnrHhteuLM=;
+DKIM-Signature: a=rsa-sha256; bh=N9ENgSZ+v9UuLjndY4DpD0xAO04Gu2V+C6pDYo21KKk=;
  c=simple/simple; d=wyuan.org;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795613145; v=1; x=1796217945;
- b=s3U6AbpOrBYsvCB6fVgYeDlPFKNQBwlDEe7ZPeHyXxC2mACtM82D/PdjLmpklJQBSrpsVaFB
- cA+L4KcCpMeSbkKFXIGIgYszHzA4O+Jlgev95rfGIaKO3SxzT9ELEcFDyNWW9fZZX+FLkI+O/Lk
- OEOhNGRy6sXrWTeewdo1eSa6NPhELFuDnncWZeIydCpDuI3Sn10nH6pzFV8T2vwAkj6IIGEPo9P
- KwC+4unyoLDRkPAVElhIp0hiBWqhAvSAhVFh1IslCl+NvHW/9V4Kf0fmhLiq/ew+PHA7hPxuzR0
- SxXqbgn+qVqqrciHTw1lpyc3HpBQ4MaulKLqYKRB4zVEA==
+ t=1795613980; v=1; x=1796218780;
+ b=FEBs91P3rXNhoFAOm0DecWIxc1fy2YmeNpdM10O/uNVbPLto0pzN4e5B6dABj8K7jB6ABJJ+
+ T/1InzPl9R6XPxUolZkondrjRW81QnzOYHydjFuyFgUna/cUlNRHhbcSpD/tl+/FcUKBN+NAvAO
+ Yzq580GfQo/ZU3Iw68qJ+MofgHkuyA7v7jI8cx8Sru3lqQyfTD8dM1Qq0alyPRJq02KMnqeLUB6
+ Ge0bQ/weshZH0NkmjHZIhkY+2WR4YSgQpMhLKn8gMpksLHu+WugEviWitHXasdfRooIAWxwJste
+ XfFtCooWI7i5hyA1fY2eWyxOtJE0iOb6i10Vc5slilQwA==
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 5427324283b5a104;
-	Wed, 25 Nov 2026 13:25:44 +0000
-X-Mizu-Trace-ID: 5427324283b5a104
+Received: by smtp.migadu.com with ESMTPS id 5f5e866f165caebd;
+	Wed, 25 Nov 2026 13:39:40 +0000
+X-Mizu-Trace-ID: 5f5e866f165caebd
 X-Migadu-Flow: FLOW_OUT
-Date: Wed, 25 Nov 2026 21:25:40 +0800
+Date: Wed, 25 Nov 2026 21:39:32 +0800
 From: Weijie Yuan <wy@wyuan.org>
 To: Bruce Song <xiongwei.song@linux.dev>
 Cc: Dongliang Mu <dzm91@hust.edu.cn>, alexs@kernel.org,
@@ -56,7 +59,7 @@ Cc: Dongliang Mu <dzm91@hust.edu.cn>, alexs@kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v2 2/2] docs/zh_CN: Add RCU/whatisRCU.rst Chinese
  translation
-Message-ID: <awbh1KS3N14bZ2sa@wyuan.org>
+Message-ID: <awblFDdSa7wVStKW@wyuan.org>
 References: <20261118131636.5131-1-xiongwei.song@linux.dev>
  <20261118131636.5131-3-xiongwei.song@linux.dev>
  <09ef3d3d-0e68-49c6-a6a2-c754104ede9e@hust.edu.cn>
@@ -77,12 +80,9 @@ Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <66189c93-6f82-4ac7-9538-2a036842f70e@linux.dev>
 
-On Wed, Nov 25, 2026 at 09:14:22PM +0800, Bruce Song wrote:
-> On 11/25/2026 11:43 AM, Weijie Yuan wrote:
-> > On Tue, Nov 24, 2026 at 10:23:50PM +0800, Bruce Song wrote:
-> > 
-> > [...]
-> > 
+
+Sorry I missed the first part.
+
 > > > > > +:翻译:
 > > > > > +
 > > > > > + 宋雄微 Xiongwei Song <xiongwei.song@linux.dev>
@@ -109,8 +109,20 @@ On Wed, Nov 25, 2026 at 09:14:22PM +0800, Bruce Song wrote:
 > 
 > I feel like this one is better. Maybe the unsued labels will be used in the
 > future?
-> 
-> > 
+
+Thanks for your opinion. And yes, maybe. But it is alse okay for me that
+if they are needed at that time (later), it can be added as well in that
+specific patch.
+
+This is something raised to me recently. (Maybe not fresh news to
+old-timers.)  As I said, I don't see any existing docs mentioning about
+this (or I missed) , while I haven't searched some threads about this on
+list. I was planning to bring this to a discussion and then hope there
+will be a consensus. But sorry now it's pending because my and our
+schedules are a little bit tight these days.
+
+Thanks.
+
 > > or
 > > 
 > > (2) check usused labels and do not create new labels for it.
@@ -129,54 +141,3 @@ On Wed, Nov 25, 2026 at 09:14:22PM +0800, Bruce Song wrote:
 > > is not used? This will make our job easier.
 > > 
 > > [*] https://lore.kernel.org/linux-doc/20261119041009.63651-1-danielmaraboo@gmail.com/
-> > 
-> > 
-> > [...]
-> > 
-> > 
-> > > > > +概括起来如下：
-> > > > > +
-> > > > > +-    使用rcu_read_lock()和rcu_read_unlock()守护RCU读端临界区。
-> > > > > +
-> > > > > +-    在一个RCU读端临界区之内, 使用rcu_dereference()解引用RCU保护的指针。
-> > > > > +
-> > > > > +-    使用可靠的设计（例如锁或信号量）保持在互相干扰的情况下并发更新。
-> > > > 
-> > > > 
-> > > > |The original says to use locks or semaphores to prevent concurrent
-> > > > updates from interfering with each other. Please change this to “使用可
-> > > > 靠的设计（例如锁或信号量）防止并发更新互相干扰”。|
-> > > 
-> > > The verb in original doc is "keep", and the objective is "updates" here.
-> > > IMO, "prevent" has changed the original meaning, and the objective has been
-> > > changed to "interfering with each other". Or do you have any other thoughts?
-> > 
-> > In my dictionary, "keep A from doing B" means "防止 A 做 B",
-> > so something like:
-> > 
-> > Use some solid design (such as locks or semaphores) to keep
-> > concurrent updates from interfering with each other.
-> > 
-> > 采用可靠的同步机制（例如锁或信号量），防止并发更新相互干扰。
-> 
-> I tried the google translator, and the translation looks similar with the
-> above one. But one thing I'd like to mention is maybe "采用可靠的设计" is
-> more accurate than "采用可靠的同步机制"？
-
-Yes, I just copy-paste what my llm told me as an example ;-). This looks
-like a freer translation, though we generally prefer to stick closer to
-the original wording. I suspect the llm interpreted the phrase in light
-of the surrounding context and translated it accordingly. So I'm of
-course fine with 设计.
-
-> To be honest, I used the google translator sometimes when I translated this
-> article. However, I don't think the results are good as we expected, so I
-> never trust it 100%.
-
-That's really a good parctice IMO. Btw nowadays LLMs do translate better
-than google translate, I feel like. But yeah, if you are familiar with
-these certain parts, you certainly know whether it's doing good or bad.
-So please double check the output of these tools manually. Otherwise
-reviewers are going to have a hard time ;-)
-
-Thanks.
