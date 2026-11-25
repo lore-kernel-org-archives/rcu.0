@@ -1,62 +1,69 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.168
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=91.218.175.132
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795558313;
-	b=2FfhspBBnJ/pek2EYpsioApDXCMCfIjplgTXSrIThKPcB2gsZUHKH0YBmrXt7uJeXEtA
-	 bOF5+CR+cYNH7AvoFlkVglQrpuwJFTXCliNc77XqX42wO1vL5k/C8DwFj5W2s8Tl+j+gL
-	 /RDPCmTirZK+5XbbzjFRtleJaq0Ktg6j7uU9w5KcozuzuUkX8B2eJwdDqYd6LbgmLKDmi
-	 xSQaeoGjfezzw/oNsExVfWAsxM6YupbiXQXEuKf/hyW4/evNB4PvMKCg+WqKeuYaQvf/K
-	 m1sWjlz7hFR7Tws/t1K7u75D+GNo1txTZuVRfFs9Cehj4j5DLEXYBEEXN7Ft6Y/yDlA==
+	t=1795578205;
+	b=rfMwcyxviD24tzF7zzouZsbo7flimJNeIawDvXWY/yL04RIC/cdDlkTwO1HWdfvS++rq
+	 STnIrG6MJ9ne03vVzP55B/TxB6/FRR7fRgP2uCd5NKYW6cDRq+UvWFMfZM913OCkw3cjk
+	 p7SHNK5Z26spvG0RFr+2q96GjyzEj4rgGt2WYNBQMhxBMrMMKlwEMbADxTUrUueP8aRHQ
+	 iTaiTBSDJFMtJ8A9t4v21wqOBBnBhzFLAH5s3cDtsFSqh/asLcjhsNkussy/ZoK2Y4dvJ
+	 fT7tQz0TAOfE9V9Uhj+IxcVfDopikUDJvbyeol/ImPotPyEFVO+yZMq30cqMyn0ySog==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795558313;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795578205;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:CC:Subject:In-Reply-To:
-	 Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=rOPoxz8WrRhhiqOkFhj1QitT4Havi0HdNhUP1VJbZPo=;
-	b=O2mmM8Gc8HEG1zJaBy4jKGSA2u33R91E5Yh0pN6XbXaHPu/e2tO1SICudQ/DAI05WdEz
-	 O2X1/BrA7VaFH8m2I7odiPfwCnQ3LMm1Cv2lXgYKReUeliV1Go8WwV4XCudEWHM6D7ZcZ
-	 arcEcod0OhHgnCMNGP3fpwtOf6TUo4/HSclLlMFKRxN2XFc/v+gQUCEjQSSQrR32ZBkK7
-	 4FO8eEW70VFJtbFCA5TZnvhMnuax4ryAvmgi6WgbFiQmkFdfdjt3DrC/PLpBvAtZN2Uf2
-	 KqqNSsPmo1NBeHk+8zauC3lqXP0M4DeItKc+4KkIsy7e8cOiIpItMbQdK6UDx2l7P9A==
+	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:
+	 Content-Transfer-Encoding:In-Reply-To;
+	bh=SoZ7grorL+n8DKqrdd1wAaI5dBboW50o8fMv+joHKz8=;
+	b=bS41AHUMs2Ip++LHHmnSvBNmSzPpjhwprtYVAGGe+WZWBNY1wza0mwyP56nmwANOyvWV
+	 didZWJLZ9DTfXqTtp6RriD5LLrk6AeX/AYVdCTbOnc7AszLLTKv/oIZP9acECd+13Q1Cz
+	 gSjMhOqKIyxT4MskntKy1TjJkmn7zYmkFHLlW5C4SHT3aQOHYdipYAnRoePnphBkvolEQ
+	 zFPG8en2wGQJJ35LL+PZIp1CCZ9NngTmLMKNZfR85NNSACWm3vl+luRP75AMWNhDkIPM0
+	 WOIohVgDR++uBDlmREEeC92Ge/JnqCX6brcJc0dr/SPs+yuXROOSO/Vy+12702MlVGg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.dev;
-	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=SPDI1+TE;
-	arc=none smtp.remote-ip=95.215.58.168
-Received: from mta1.migadu.com (out-168.mta1.migadu.com [95.215.58.168])
+	dmarc=pass header.from=wyuan.org;
+	spf=pass smtp.mailfrom=wyuan.org;
+	dkim=pass header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=JVi+Vb13;
+	arc=none smtp.remote-ip=91.218.175.132
+Received: from mta0.migadu.com (out-132.mta0.migadu.com [91.218.175.132])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4597606A323
-	for <rcu@vger.kernel.org>; Tue, 24 Nov 2026 22:11:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B4597606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F58606A329
+	for <rcu@vger.kernel.org>; Wed, 25 Nov 2026 03:43:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 03F58606A329
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wyuan.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wyuan.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=SPDI1+TE
+	dkim=pass (2048-bit key, unprotected) header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=JVi+Vb13
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=1exNnXtNN18n5Ncp+78T01qFoaQmDQQwLTH3J8SLk6Q=;
- c=simple/simple; d=linux.dev;
+DKIM-Signature: a=rsa-sha256; bh=CbClVjeawVI/BOCBHpvWu57rNo0mDD9eas63Rjr+JY4=;
+ c=simple/simple; d=wyuan.org;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795558310; v=1; x=1796163110;
- b=SPDI1+TEcY5AnELc149oKmjBbVoclRqhPh/LuyKC+vG6jeEKtQqa52k2flhr1m0oPLaTUyzL
- 2O8a295yD/b/R0b3tcVzE+oaOlhqaMT1MsBgl3ZvJbCLPOXsgcVdKkt60ZZHpCBhgDocoFbxZtO
- JwFxRe6mRZTRZpNbgiTalk1A=
+ t=1795578202; v=1; x=1796183002;
+ b=JVi+Vb13T6gOdXif0a2wbiRzxe/Lbbza81Uc4kwNq1trALER7zgK7l4lhdpn406UvOrSmXpn
+ pXlVg0ZrxVf/mnuAMdls0RhaD9/k49a2UeadtYu1ac/PrpxzNXhDdXHt1/oe5fZAKSzFcjmhcjW
+ 4rPJ3zJW7XnyriU+qsJ8NeBdNC1gOKbVxpwxiBILjR7ZIHyHMTiBGow7nM4z7U+qavqPP/VTbMT
+ 7r7q0Tr9LxxYk7iC7nxYlpTXpj9SK1Og8Fbt8Rwo2lJR9yw03DjW3qXIqSnEfAHhnkgwkTVvel7
+ 3fEP11pX4rYIPsxwNhiESdku1cH9aUdxXBsulG6aYXzhw==
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 8c1096aa2f557005;
-	Tue, 24 Nov 2026 22:11:50 +0000
-X-Mizu-Trace-ID: 8c1096aa2f557005
+Received: by smtp.migadu.com with ESMTPS id f97d83fc035d789e;
+	Wed, 25 Nov 2026 03:43:21 +0000
+X-Mizu-Trace-ID: f97d83fc035d789e
 X-Migadu-Flow: FLOW_OUT
-Date: Tue, 24 Nov 2026 22:11:51 +0000
-From: Bradley Morgan <bradley.morgan@linux.dev>
-To: alexei.starovoitov@gmail.com
-CC: boqun@kernel.org, bpf@vger.kernel.org, frederic@kernel.org,
- jiangshanlai@gmail.com, joelagnelf@nvidia.com, josh@joshtriplett.org,
- mathieu.desnoyers@efficios.com, neeraj.upadhyay@kernel.org,
- paulmck@kernel.org, qiang.zhang@linux.dev, rcu@vger.kernel.org,
- rhkrqnwk98@gmail.com, rostedt@goodmis.org, urezki@gmail.com
-Subject: Re: [PATCH] rcu: Mark rcu_read_unlock_special() notrace
-In-Reply-To: <DN3QYI65E4KR.27D6XBG0SUWVI@gmail.com>
-Message-ID: <F6FC9F7A-43BE-44E4-92FD-034AB96A1C3C@linux.dev>
+Date: Wed, 25 Nov 2026 11:43:17 +0800
+From: Weijie Yuan <wy@wyuan.org>
+To: Bruce Song <xiongwei.song@linux.dev>
+Cc: Dongliang Mu <dzm91@hust.edu.cn>, alexs@kernel.org,
+	si.yanteng@linux.dev, corbet@lwn.net, skhan@linuxfoundation.org,
+	rdunlap@infradead.org, paulmck@kernel.org,
+	linux-doc@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] docs/zh_CN: Add RCU/whatisRCU.rst Chinese
+ translation
+Message-ID: <awZZVV3BlovD-xNf@wyuan.org>
+References: <20261118131636.5131-1-xiongwei.song@linux.dev>
+ <20261118131636.5131-3-xiongwei.song@linux.dev>
+ <09ef3d3d-0e68-49c6-a6a2-c754104ede9e@hust.edu.cn>
+ <946792d2-4241-445d-820b-301a570ee2c3@linux.dev>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -66,64 +73,85 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <946792d2-4241-445d-820b-301a570ee2c3@linux.dev>
 
-On 24 November 2026 21:08:46 GMT, Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->On Tue, Nov 24, 2026 at 10:56 AM Sechang Lim <rhkrqnwk98@gmail.com> wrote:
->> The BPF trampoline calls rcu_read_unlock() on its exit path. If the
->> task was preempted in the RCU read-side critical section, this ends up
->> in rcu_read_unlock_special(). When a BPF fentry or fexit program is
->> attached to rcu_read_unlock_special() itself, the trampoline runs again
->
->Not quite. need_qs and exp_hint set rcu_read_unlock_special.s too,
->no preemption needed.
->With fexit it recurses on entry, before the prog runs:
->
->  __rcu_read_unlock()              nesting 1 -> 0, .s != 0
->    rcu_read_unlock_special()
->      __bpf_tramp_enter()
->        percpu_ref_get()           nesting 0 -> 1 -> 0, .s != 0
->          rcu_read_unlock_special()
->
->> -static void rcu_read_unlock_special(struct task_struct *t)
->> +static notrace void rcu_read_unlock_special(struct task_struct *t)
->
->It should be fixed on bpf side. Only the bpf trampoline recurses.
->ftrace, fprobe and kprobes take ftrace_test_recursion_trylock().
->notrace takes the function away from them and from livepatch.
->__rcu_read_unlock() is in btf_id_deny for the same reason.
->
->
->diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
->index e7013ed..0e8afc0 100644
->--- a/kernel/bpf/verifier.c
->+++ b/kernel/bpf/verifier.c
->@@ -24735,6 +24735,7 @@ BTF_ID(func, preempt_count_sub)
-> #ifdef CONFIG_PREEMPT_RCU
-> BTF_ID(func, __rcu_read_lock)
-> BTF_ID(func, __rcu_read_unlock)
->+BTF_ID(func, rcu_read_unlock_special)
-> #endif
-> BTF_SET_END(btf_id_deny)
+On Tue, Nov 24, 2026 at 10:23:50PM +0800, Bruce Song wrote:
 
-ahh crap, brain fog, sorry.
+[...]
 
-yeah, this approach looks good, again, looks correct to me, won't blow
-anything up.
-
-If a patch is submitted:
-
-Reviewed-by: Bradley Morgan <bradley.morgan@linux.dev>
-
+> > > +:翻译:
+> > > +
+> > > + 宋雄微 Xiongwei Song <xiongwei.song@linux.dev>
+> > > +
+> > > +:校译:
+> > > +
+> > > +.. _zh_cn_whatisrcu_doc:
+> > 
+> > 
+> > Please double check all the references. If one reference is not referred
+> > from other places, please remove it in the translation.
 > 
->Pls target bpf-next.
->
->pw-bot: cr
->
->
+> Ok, I will do that.
+
+Let's make it a rule or instruction, shall we?
+
+I didn't find any specific rules for label usage in doc-guide dir. (only
+no more top-level label on list) But I suspect there must be unused
+labels in English docs.
+
+We either:
+
+(1) make it consistent, i.e. keep adding unused labels.
+
+or
+
+(2) check usused labels and do not create new labels for it.
+
+1 may be easier for manual translating jobs that you don't need to check
+every label manually. You just need to add a '_zh' before each original
+label. But apparently this will create tons of unused labels. So, no?
+
+2 may costs more attention, but I guess agents could handle this
+nowadays with proper prompts.
+
+I forgot to mention this thing in Daniel's series [*], shall we mention
+this now, or send a RFC patch after they get merged?
+
+And also, add a rule for English docs that _do_not_ write a label which
+is not used? This will make our job easier.
+
+[*] https://lore.kernel.org/linux-doc/20261119041009.63651-1-danielmaraboo@gmail.com/
 
 
---- Thanks!
+[...]
+
+
+> > > +概括起来如下：
+> > > +
+> > > +-    使用rcu_read_lock()和rcu_read_unlock()守护RCU读端临界区。
+> > > +
+> > > +-    在一个RCU读端临界区之内, 使用rcu_dereference()解引用RCU保护的指针。
+> > > +
+> > > +-    使用可靠的设计（例如锁或信号量）保持在互相干扰的情况下并发更新。
+> > 
+> > 
+> > |The original says to use locks or semaphores to prevent concurrent
+> > updates from interfering with each other. Please change this to “使用可
+> > 靠的设计（例如锁或信号量）防止并发更新互相干扰”。|
+> 
+> The verb in original doc is "keep", and the objective is "updates" here.
+> IMO, "prevent" has changed the original meaning, and the objective has been
+> changed to "interfering with each other". Or do you have any other thoughts?
+
+In my dictionary, "keep A from doing B" means "防止 A 做 B",
+so something like:
+
+Use some solid design (such as locks or semaphores) to keep
+concurrent updates from interfering with each other.
+
+采用可靠的同步机制（例如锁或信号量），防止并发更新相互干扰。
+
+Thanks.
