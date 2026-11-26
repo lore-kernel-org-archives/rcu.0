@@ -1,54 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.62
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.170
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795700153;
-	b=AJFimKXRTA0FkyLGO0HSwF85DGq0MZJ4rvxBrpCEYtrS5kgwtx59Kqh+J1y78CBtmSiM
-	 jKO9vBhUrnbz60jqtV1EA9xTBSlVIv5fbgYLDobQYrEuk2Kvz18KZgyuB7jlgZa3N/10h
-	 zwPZ2w4OlvwV/U0cw+Q84chERL6SaAEOrSjCTMRXiN0itQE8JXRiqKK3EH/ZA+EvhXrSt
-	 dZ5JZjLS3rF0c6PemslFOK3xBCcsebe74oXYVGRbxr7GWhfOIB0HmS3NCf67WBL9U7nPQ
-	 aXuV4J2HJ29P8G5McDUgRsTRc7aR6TqlWkcIBwJdpISLbzCB1T7BLRetDsC94ozP8XA==
+	t=1795701191;
+	b=ozVoOTKPByF4Cw3DC7gtWx8rhUHkjTnxpfdaylDCw39zHTf49E0POxdnBGlSkYQFfmVy
+	 XDFdj2jxd0obams1f9NqfHoGLFxVxVr2kmVoQnUCK4ywSHDJ5QOjsV4OkKWGCYAAnTf+L
+	 SNKTmyAWyyxp2sqQ/0EMHaMxdXJwF6Wg7HYqhvGiWcTEUDHBxcDprxXu6jjS9NPO6KbFp
+	 lqSimG0L4nyovfyd+GyuQNRwHGSzcafhJf4KX5SWxOU0MngIoOY3ICJcJEL8YQg90m+H8
+	 XRfVIGQA6CB2qnqxPhbrJJQtPBvIuJIzQUBU+jSZdztWDuPhOtNQv/aaftnknZeZz4w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795700153;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795701191;
 	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:Message-ID:Date:MIME-Version:User-Agent:
-	 Subject:To:Cc:References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=Xb09k+Q7S+nusy1E9oGvKPTatGNmG4h5RDxHcIpii4U=;
-	b=U4DpsKkwergu97CEjdHKRn/M4ugrVvpaHiPgGkrDTuF5nEq8K2+EofL0L06kqWombBIf
-	 MNzu/goiTLc2NhP6FgEB//RwW89DHsNRHAbl7ya1FkNMgybXo31S7IR/FrOp/MX96fLFS
-	 sKIGE5CqeV0lI6K4RjS01DqI9sfQy0MT/Z6IVh2HiZwZlLF2xbqvzJEjdg6tY7TFd8vmp
-	 HVeWn1SuwNqnKmuaex+3WEvEfX4j7WOwqQHp+ZCwU63VlvDlfiPr09O9a2NjnxNY4OyHy
-	 QQac6iK5ZhyO/3UZWuZuey+iHhJJt+/PGkK355NFHF+aBoTFq2modCTK+iTuAxiQrpQ==
+	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=wBNF/N6dV01CZXPBjN7hTYh2V25GC86ewPpc4xVTK6Y=;
+	b=ZYb4n7IxjkOqBH78a6F2AirxB2v9VVQIQVEaQkmsAFmN7Ceu6EwLXd52y6dy3L/o9+0h
+	 xczv8+ErGTNYdOE1edzNSq01JCocDVTy5ak/pDSxmZ82QdaVBh7klfPI9ixeho79+UGuh
+	 /czyuEYoLSPvvPWfkV+qmitQBLLd4pPFGWdFRyXsPBc2vFiTxLtbssKzwPMlMesTA36Jk
+	 5J07S6n3BPurZjlbYGwTflO0I9DTBz7JjjCrC34XAaPR23oZBFeObk2qrH+rmKLzblMzU
+	 hmODy6AnMgQb1aRfDJVp403n84PIKuQgKYh+L59LfyCf53Vweapo52wth5o+28ZqaMQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=linux.dev;
-	spf=pass smtp.mailfrom=linux.dev;
-	dkim=pass header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=CObOpJZm;
-	arc=none smtp.remote-ip=95.215.58.62
-Received: from mta1.migadu.com (out-62.mta1.migadu.com [95.215.58.62])
+	dmarc=pass header.from=wyuan.org;
+	spf=pass smtp.mailfrom=wyuan.org;
+	dkim=pass header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=MNz1ax2l;
+	arc=none smtp.remote-ip=95.215.58.170
+Received: from mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04C8E606A31C
-	for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 13:35:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 04C8E606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3EC9606A31E
+	for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 13:53:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C3EC9606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wyuan.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wyuan.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=linux.dev header.i=@linux.dev header.a=rsa-sha256 header.s=key1 header.b=CObOpJZm
+	dkim=pass (2048-bit key, unprotected) header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=MNz1ax2l
 X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=dUdgIW56zc2LmSVw8C0r8LZdqQmDkcHedRF69L+C9RU=;
- c=simple/simple; d=linux.dev;
+DKIM-Signature: a=rsa-sha256; bh=wBNF/N6dV01CZXPBjN7hTYh2V25GC86ewPpc4xVTK6Y=;
+ c=simple/simple; d=wyuan.org;
  h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795700150; v=1; x=1796304950;
- b=CObOpJZmLdQcR1KhwsX1sJzeNLJrle2kxiHgKrfXFVKhRL1cnhQQhTnA2mfd0SdtdM7Sfe1f
- 9pq0+f1cgSqSZYwm71e+W9KMV2t1+nG8AvXi+pc1u1+fxfCwTHbEbLk99nJnNauUwT1AoRXhI2T
- 2NfVFzJBJqaLG5HNQ9BvLKIw=
+ t=1795701185; v=1; x=1796305985;
+ b=MNz1ax2loOfN/E7+3B5LjZ6IsPtZBpL96L6Km2Y3WX8qz2f1KO0dOKeVsCjFbTdr5mGR93PA
+ 0IBXNNGXAXJEvOHlm76CUVPLz0LkrFZzt6qD+vuRYOiaAiAHXNG4Lk/FwxbLnZ9rfG0w6PM0g59
+ ykLePE3nkU5M61q/1ZEBMzJNaQesuzcTy+U39DbNNqsDgq/DhM22XJZxkz3mT+Gl9Zuj9jf40wB
+ zIK3Q4dQaF2d7/gT0zWjOx2E4NiN31XBk5Z5iCnk2cCg6I8vGpayexGUW6+krw/HLCDHDUCge6a
+ p2hrOZbL2a13rgwFGZJtSOW5hqbLI4E+LKNaqy2iudLLg==
 X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 6b52514b2ec1a5b2;
-	Thu, 26 Nov 2026 13:35:37 +0000
-X-Mizu-Trace-ID: 6b52514b2ec1a5b2
+Received: by smtp.migadu.com with ESMTPS id 8a22f4692d3e40a9;
+	Thu, 26 Nov 2026 13:53:05 +0000
+X-Mizu-Trace-ID: 8a22f4692d3e40a9
 X-Migadu-Flow: FLOW_OUT
-Message-ID: <0d5126e6-7588-4cf7-90de-0bd193db8246@linux.dev>
-Date: Thu, 26 Nov 2026 21:35:28 +0800
+Date: Thu, 26 Nov 2026 21:52:50 +0800
+From: Weijie Yuan <wy@wyuan.org>
+To: Bruce Song <xiongwei.song@linux.dev>
+Cc: alexs@kernel.org, si.yanteng@linux.dev, dzm91@hust.edu.cn,
+	corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
+	paulmck@kernel.org, linux-doc@vger.kernel.org, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] Add RCU docs Chinese translation
+Message-ID: <awg5sl7LxTOVqpSw@wyuan.org>
+References: <20261126132523.6329-1-xiongwei.song@linux.dev>
+ <0d5126e6-7588-4cf7-90de-0bd193db8246@linux.dev>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -58,56 +68,17 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/2] Add RCU docs Chinese translation
-To: alexs@kernel.org, si.yanteng@linux.dev, dzm91@hust.edu.cn, wy@wyuan.org
-Cc: corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
- paulmck@kernel.org, linux-doc@vger.kernel.org, rcu@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20261126132523.6329-1-xiongwei.song@linux.dev>
-From: Bruce Song <xiongwei.song@linux.dev>
-In-Reply-To: <20261126132523.6329-1-xiongwei.song@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0d5126e6-7588-4cf7-90de-0bd193db8246@linux.dev>
 
-Sorry for the noise. git send-email returned "timeout" after the cover 
-letter was sent out. So I resent v3 of the series. Please ignore this one.
+On Thu, Nov 26, 2026 at 09:35:28PM +0800, Bruce Song wrote:
+> Sorry for the noise. git send-email returned "timeout" after the cover
+> letter was sent out. So I resent v3 of the series. Please ignore this one.
 
-Regards,
-Xiongwei
-
-On 11/26/2026 9:25 PM, xiongwei.song@linux.dev wrote:
-> From: Xiongwei Song <xiongwei.song@linux.dev>
-> 
-> Changes in v3:
-> 	- Some translation improvements.
-> 	- Deleted unused label.
-> 	- Fixed indentation warnings.
-> 
-> Changes in v2:
-> 	- Fixed build warnings and errors for both RCU/index.rst and RCU/whatisRCU.rst.
-> 	https://lore.kernel.org/all/20261118131636.5131-1-xiongwei.song@linux.dev/
-> 
-> v1:
-> 	https://lore.kernel.org/linux-doc/20261113013054.5662-1-xiongwei.song@linux.dev/
-> 
-> The following 2 patches are adding RCU docs Chinese translation for the first
-> time.
-> 
-> Currently, RCU is not listed in TODOList in subsystem-apis.rst. I propose
-> adding it.
-> 
-> Thank you
-> 
-> Xiongwei Song (2):
->    docs/zh_CN: Add RCU/index.rst translation
->    docs/zh_CN: Add RCU/whatisRCU.rst Chinese translation
-> 
->   .../translations/zh_CN/RCU/index.rst          |   50 +
->   .../translations/zh_CN/RCU/whatisRCU.rst      | 1218 +++++++++++++++++
->   .../translations/zh_CN/subsystem-apis.rst     |    1 +
->   3 files changed, 1269 insertions(+)
->   create mode 100644 Documentation/translations/zh_CN/RCU/index.rst
->   create mode 100644 Documentation/translations/zh_CN/RCU/whatisRCU.rst
-> 
+I'm not sure if it's a problem with Migadu or network condition in
+mainland China. Every few months, I encounter the issue where email
+sending gets stuck. I do not know whether other linux.dev users or
+migadu users frequently meet this problem, or just me made stupid
+mistakes elsewhere.
 
