@@ -1,80 +1,155 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.196.122
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795648346;
-	b=QB1G0+bdvJLK8Bsnnr4eCKehPe1dmbOIQDJvofeIE8jujw0KY7xf5DP8nsUKm+bAhCCi
-	 AxWXYED7nY+RzkAuQHbtN/S8vDMlDoMeBCM1QRDGNWZLT7da3b4nVDPQE9ohUG/BEWZSf
-	 PFSXtd0qKkAFB32ZpoHSIAOoFF2ElkA2GIa5IB4XwKoVVp04KcpYPHerHEz1SEO/Q4G20
-	 IfC4AsXGgMVwjGVjZTd+dG3lv4TdmXZtbCo628h4IJy/IUEc6sgshAeD8iKWqu0Axg5X0
-	 Xd9Mb3wYr7WlQwxKuCzUxCl3mfJCcIxRr8pyDltFXaiqmE3fA9uI36H+wcW+RFtJDag==
+	t=1795654726;
+	b=b6XVEttoWusfhV/JZUpiGBVr29VDaze19R5606UIxbCt6MM5lNKDOXsPhozx3GIDHM8Y
+	 laO6ZNV2dPBgzmWGg5gxtrMWFt32leJid/vDD0kU+w0o1OS9N69/od/Lwz0VqvJD8RoEX
+	 qY0iNcaVCJuz7DgTkDY3aJYi7MEC/m09yEuL4Dhox9UStStEkSiCSDcVyLTM/djn3sfJk
+	 ZQqKiJZhoLBXjQvuMBHyHcmK9hOJGad5SKT7NNoolAzAkvsaMtH7FGk/S6HukBZKew+39
+	 5CWI+rIho4OGgsFQK44jpuJqJ3eNbNrAit/BJYql+8Mp1j8J2hG9JL3gXOFZ0NJPJjg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795648346;
-	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
-	 X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
-	 X-Endpoint-Received:X-Original-From:Reply-To;
-	bh=WAL9GS8gm4ZhwTck2VGOi+Qh7YlizBKQQ4wMZbwKUqE=;
-	b=MDb/9vlMZ0q/c2ysbny1r0zvTVQEr3k5SpeDCUCauPolAc9tnE7qhOHH7qEU/kBYTQu5
-	 8ZSptAEMBMtmpT6SJlPIr3QqrIklbhvKk8YuwPPgdmr1LavjOdfp9MZ03ZnihQXSkLNz6
-	 Lb28due4Mpe2UFowYzdSpYGVvPnji3mcAR0eiaNHGwM7mRHnnTh66fE0Zvsj7YbqlnuyF
-	 HpnKlBGt1l/ztueElpxAlnpJ8b0gmS+MILLhMUxXI42NyC1fAvfpGvdKNakXp+urNwPZC
-	 rF4xNi70TyL8MwYsbfzhNmnEQJQwFEWhU++NwNwIXRxEPTdA7XkzUNdWOwYXaWOTJZA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795654726;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:CC:Subject:
+	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
+	 Accept-Language:Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 msip_labels:x-ms-publictraffictype:x-ms-traffictypediagnostic:
+	 x-ms-office365-filtering-correlation-id:x-ms-exchange-senderadcheck:
+	 x-ms-exchange-antispam-relay:x-microsoft-antispam:
+	 x-microsoft-antispam-message-info:x-forefront-antispam-report:
+	 x-ms-exchange-antispam-messagedata-chunkcount:
+	 x-ms-exchange-antispam-messagedata-0:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-AuthAs:X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-originalarrivaltime:
+	 X-MS-Exchange-CrossTenant-fromentityheader:
+	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+	 X-MS-Exchange-CrossTenant-userprincipalname:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=hXP8RZ3w0MGOH5VE+IOwLzvFeu2XWMfpV5TvVYyypFo=;
+	b=am0ua0tvYkHHSPfvZwS2T7kZSxCLK8X5GPSfXwl8q6finixPGPfe5Jsh2nQeA0Wbh0fs
+	 fGuiJ09cA9wS0j8xREPH6KyK9xZDEWuFM9J+jqzETxBacGhqGKJqjc/IPqGOW1DBXHDXi
+	 Jps/p7720A2Bo8HXAaRFUrqt4BDffqhq/ZrYZoYEpsBv49u2/t1SmkcUjw1vYPKc0G41N
+	 +wyzJ8f3bIyKxxa6v6KtvKOUUeCEbPM5mmhYAlg5AXZirsXvGIMsXRbOdkkUsMB8twUZK
+	 hr4ocDZotDKp1azNwA4Z3dl/avQ0BDDHR17t6pbrFa28LpdY5fuF8G+259n4c28tq0g==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IA4OtX+M;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=vt.edu;
+	spf=pass smtp.mailfrom=vt.edu;
+	dkim=pass header.d=VirginiaTech.onmicrosoft.com header.i=@VirginiaTech.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-VirginiaTech-onmicrosoft-com header.b=WaYpfYrJ;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=40.93.196.122
+Received: from SA9PR02CU001.outbound.protection.outlook.com (mail-southcentralusazon11023122.outbound.protection.outlook.com [40.93.196.122])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4A9606A33A;
-	Wed, 25 Nov 2026 23:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E05606A31E;
+	Thu, 26 Nov 2026 00:58:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 33E05606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=vt.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=vt.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IA4OtX+M
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795648346;
-	b=EcbwUCvSaAl9gf1OOPeMDgDaAIWL7vIQJcY9MtS+TrsIDs/JxgbKyxU2NwIcbBwj4WiD
-	 JtJv+OEUDgb15jM8+oKbSGg8hAMk06QBqYpoEi6B6yaAaR+605INmOodS5tyXHE9FH7WK
-	 ibY8QGqeEt0O0EJPcM3pttdWonMXsv/KNVKPrtMlQDEl68Rc9RDnzK3pWIfcD9d3GRvPl
-	 HqdYyZReLLW7Q6vAASAw2oRa2MURvYhh0qGSwlAKNtmucp+T5aY2hKha1jsdIMhqAyoMj
-	 bBHrZYBqYGjGCAsBR9a2rWjfBSuE+jtZHPbhrw3lJuF8Sqjc+J9RFJ4DUkKc5QHbIwg==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795648346;
-	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:
-	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To;
-	bh=WAL9GS8gm4ZhwTck2VGOi+Qh7YlizBKQQ4wMZbwKUqE=;
-	b=no9X+ZsbOjxI/ckSGCCRpog0YPB6ZmL6YSynztKmyn05/kY+Wa7lUcnEm7nsxfnL9wXc
-	 y6jbgCCOLg1Q5Mr6eVNj00Z3eo+yeerN9LUkIm6McBqI2NOMIO3qjVQaCWiO1tWhwHgHy
-	 vKurzEPhE9X2jLWs6GaVH+o3ntNBDrnhFePKJc+6qgKkdJnhxzLj17Xr9iBqNf0lQkZvn
-	 xISKyjElj+21tft7ON8mXWn5ICZu0gCqRgd7XCO3Sr5T+9t5MxmMqitgoL2YtAz2irqem
-	 m/3aLqAf+2DU6VIcWOKVjb8oPh7Tp2/Nj68TbhJovKW0zluPFM6eYnUOpeBorWxVYug==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id D856F1F00ADE;
-	Wed, 25 Nov 2026 23:12:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795648346;
-	bh=WAL9GS8gm4ZhwTck2VGOi+Qh7YlizBKQQ4wMZbwKUqE=;
-	h=From:Subject:Date:To:Cc:Reply-To;
-	b=IA4OtX+MQ52e1dEIayGOUYywB4aai9RLwFsmUSX5V/fhHY7jxvJMnI/u6E7SjD6PP
-	 oAyXbpVEJX6nZ+eWVcB6PC5OSNpYjpaDqgbmARfGE2DMhzBWqrUGuSs+PrEq3gVo8G
-	 QRKpDxcQHVHQnjCIcd8gKTZHidxi/mgbEaY25kwNLSDgGvIBTgNMmy8ltNxF0P5yQZ
-	 E0QK3sJlywywyHZ4QQ/Ky/I3NDZ74xstIzhlgPuO+pvuxuBaTl04GMvSJtaN5yr8VK
-	 ZG73djBPfYjlfBZcS17tuP1iDsH2Z1NiBQzeUEg3UVJsrFbLbKr+6T7vszYrIKAXG7
-	 VMyW9SZOgBOJg==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 34B654D0A6;
-	Wed, 25 Nov 2026 23:12:07 +0000 (UTC)
-From: Binoy Ravindran via B4 Relay <devnull+binoy.vt.edu@kernel.org>
-Subject: [PATCH v3 0/3] livepatch: Do not lose exiting tasks during a
+	dkim=pass (1024-bit key, unprotected) header.d=VirginiaTech.onmicrosoft.com header.i=@VirginiaTech.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-VirginiaTech-onmicrosoft-com header.b=WaYpfYrJ
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lABFQriLyje+Hc4Tc2xZR06qBct88Su2jkBBHEEwmdBby58c2bMZKfkzK8vDaMQOksaecIGUPZy4Sof8texPH7IaQlnwvO2SEnRKdpMHbJLLSYLZjxmYFMQiuS+hDhyugf0LtK9TOeRikA9bz2VbTVSTf6IxOP3F/+3Z48EIPBJWIqRxvwBS8a7i9nmo2LUVqkDtfF9FCi9qQY/X2sNzc7Ud60b7K8PrzyKBL0CqzI3z0HknrK+adMTRf/nS9lfPgPG1mu0/tSi/miPep/H18hiLleUIR3L97Gc4BUk1urUhvdFlMMZPQCFvZXHt8F9CkSP3SDfn2hhUcZz9Z7rmYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001; h=From:Date:Subject:Message-ID:MIME-Version;
+ bh=hXP8RZ3w0MGOH5VE+IOwLzvFeu2XWMfpV5TvVYyypFo=;
+ b=ipFwh2FF5zaw+dWZIu1VWgux59YDChsrZkPTINQMGrrtxgCPY8nXpNUCuoass6zVNfqXGBYpr95aCvB0Fpa8JQkFqRxyd73meagMs1xMrSwd/n79Y6t0twI40MmscEVZN1VqFQgYTskdmZWSN4C/bpjzNi/Mx16P5uskWy6pdTdGtJy7z4gzSQHVdVL5Dy+a3wb8b5fCuiFU4r5NFmIWvUvUxfgMmSPaYbhu6fS2NQURoBfu7oc+feb410boy84t5+D+xO02xZKCeuZrHbHlRApJCUl/zqCD5u+/87+zqPkD/Q16eNKnpiIGnpybhZBx0K8RG93T3sW2IBoo+1jYaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vt.edu; dmarc=pass action=none header.from=vt.edu; dkim=pass
+ header.d=vt.edu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=VirginiaTech.onmicrosoft.com; s=selector1-VirginiaTech-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hXP8RZ3w0MGOH5VE+IOwLzvFeu2XWMfpV5TvVYyypFo=;
+ b=WaYpfYrJ9SExpZfx53vcalzMudWTnWcYvhGnD1ylCabDshUolHqEmwbiwlILEocVZBJiv6E4rjkot2ZUCtoFsQFAkBo1btaMvrbrjcXr5A3ybnsn/8sR8yeNxxuYY9tbFZRquiZMh4QWBO0vP0q8RXmm+2d3gg3TxD/IW5yxD8k=
+Received: from DM6PR05MB4137.namprd05.prod.outlook.com (2603:10b6:5:81::28) by
+ BLAPR05MB7316.namprd05.prod.outlook.com (2603:10b6:208:293::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.639.13; Thu, 26 Nov
+ 2026 00:58:41 +0000
+Received: from DM6PR05MB4137.namprd05.prod.outlook.com
+ ([fe80::a6db:3b91:d780:cd9b]) by DM6PR05MB4137.namprd05.prod.outlook.com
+ ([fe80::a6db:3b91:d780:cd9b%5]) with mapi id 15.21.0662.004; Thu, 26 Nov 2026
+ 00:58:41 +0000
+From: "Ravindran, Binoy" <binoy@vt.edu>
+To: "Paul E. McKenney" <paulmck@kernel.org>, Frederic Weisbecker
+	<frederic@kernel.org>, Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel
+ Fernandes <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven
+ Rostedt <rostedt@goodmis.org>, Mathieu Desnoyers
+	<mathieu.desnoyers@efficios.com>, Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>, Josh Poimboeuf <jpoimboe@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>, Petr Mladek <pmladek@suse.com>, Joe Lawrence
+	<joe.lawrence@redhat.com>, Song Liu <song@kernel.org>, Ingo Molnar
+	<mingo@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+	"sashiko-reviews@lists.linux.dev" <sashiko-reviews@lists.linux.dev>
+CC: "live-patching@vger.kernel.org" <live-patching@vger.kernel.org>, Yafang
+ Shao <laoar.shao@gmail.com>, "Shastri, Jaidev" <jaidevshastri@vt.edu>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] livepatch: Include exiting tasks in the transition
+Thread-Topic: [PATCH v3 2/3] livepatch: Include exiting tasks in the
  transition
-Date: Wed, 25 Nov 2026 18:11:45 -0500
-Message-Id: <20261125-klp-series-v3-v3-0-b1e0f79af331@vt.edu>
+Thread-Index: AQHdfTJuiyumefKm6UKWCWT4PZeyLrc/cFoAgAAFQio=
+Date: Thu, 26 Nov 2026 00:58:34 +0000
+Message-ID:
+ <DM6PR05MB4137C0B5BB4D88A9D5847EBAD1432@DM6PR05MB4137.namprd05.prod.outlook.com>
+References: <20261125-klp-series-v3-v3-0-b1e0f79af331@vt.edu>
+ <20261125-klp-series-v3-v3-2-b1e0f79af331@vt.edu>
+ <sashiko-outbox-234405@kernel.org>
+In-Reply-To: <sashiko-outbox-234405@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vt.edu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR05MB4137:EE_|BLAPR05MB7316:EE_
+x-ms-office365-filtering-correlation-id: cdcbfc76-f1ef-4f74-bb38-08df4b586989
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|10070799003|23010399003|1800799024|786006|366016|7416014|376014|261026140227099003|38070700021|261026121527099003|261022075727099003|261022105027099003|261028144727099003|921020|11063799006|4143699003|56012099006|10067099003|261009223027099003|22082099003|18002099003;
+x-microsoft-antispam-message-info:
+ lg5RMrnw18EEbaV9bL1++33OBxaGkBEMKjrie3xNv7gkI2KzjqnXS1A6tCA4XIw3n9y1t1xxi3A0orYscU1di4gcE35Yl9gVEJooXN5YekfOGFJD3FTzQkoC3E8ETqjDz+cVbSqWKCMijdiobb8W/epCoAycTms4PFcKRaNv6Ao7gz1zh1RBJN1OXfAuK3sVr9zeqmv9pTxfobMZtzwjpKl9vWjEELhwsmpSnYaha2dPzgYDMydaJKxAP3Biak8DfQWG2axHYolzU38zm21JRnNw5TWKBgFMcl1olegW2hRwqjiRkWzQjRO3nc8zkXIYDf85/RMCsczrM9fOdalKFV0UBRVTTYcQKxJaj+/VknROKvy2En2LbelZTkYo7x4sPNGrYJuJSI0pDOIFVAgKLbTy9fPJ58PEP05cqJN6pq/C/BRSNwD+zpl2grZPnRP5AGMsSPzJuvm+rd2JU6KGKV+rddL6GZx32wmBJMycE5yrX6U9xD0+YduEZ7176debNKt9Dm5KBeJExs4l9dytM/6KSS5gOuwJDRv42Nd7KfnpZc/8qItPmgbS3840wbaDpw5Yk4S3Vy5lUuaqt1D1X1KTkw+sxgr525kv6m8NQJToQQS5bTG+9Dxe8B64yX367lSE1+cVtDid4Kpt9q0KaqQ3JZ3cFbwuItwZuY/mrHoxZ+6ZYfSqgRXKVAoWOCgy6k+9mixPw2z0Buav3nBxsq58Err3Kbdnv8cNz2mFN4RRQCvHCeOMkFSszA5X1A/Y
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR05MB4137.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(23010399003)(1800799024)(786006)(366016)(7416014)(376014)(261026140227099003)(38070700021)(261026121527099003)(261022075727099003)(261022105027099003)(261028144727099003)(921020)(11063799006)(4143699003)(56012099006)(10067099003)(261009223027099003)(22082099003)(18002099003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?7b2yigXtkepn2/zP+0TloShX78O7/DJHWuxkBCPSqCT3ybImJm7BvPn6Xl?=
+ =?iso-8859-1?Q?Bihd4pBgR4+0kuBrSGfwrj3DMOGI/4sNh72oK+zuK/71SVDIGsjgSl1EiP?=
+ =?iso-8859-1?Q?69DSNuckhyd0cxEU1Jri4WhxBtNyK6jkEeuhS7sGuLTsVOGO+Lg6hIv7IJ?=
+ =?iso-8859-1?Q?bhz5OpW4Zajg+tzT09mjRz5CEa+8w7PvOjVA9fyEDlEPM2NxtBWCKeGfbl?=
+ =?iso-8859-1?Q?UdVlHnjGC0IRxCu5uqejFv92V9U73H7Bl8+n0lks4HsxBOE/HWFbOzrtz7?=
+ =?iso-8859-1?Q?LhIIANSRbzM6lUdMdr8vgeQnCG55Bw6T9UFfVkNYtb9I2y4MSws18k/LZG?=
+ =?iso-8859-1?Q?1zB9UPAOUIgVgnaa3J6uvo28rY4QpckQZs7UpH+Jk8FY8JgQSsAPRLTYWm?=
+ =?iso-8859-1?Q?94aRexUMlqs0+I7chk05TSQRF0q2t4boVuYxOogHrNg/fEXcJhsiNBYI+F?=
+ =?iso-8859-1?Q?I8TdXWsTejEt5rY7wxFm+FxPqWxYvla3tUy/+GAbWQkxv3lhUWkfU3P7Ru?=
+ =?iso-8859-1?Q?f5XZD+4uOIJGoypnRdEqlm+v+Y0I+eH1FyDK36y4/cvnPlGZFRN38ozBQq?=
+ =?iso-8859-1?Q?ifgXV0PQsqJ474+6b6kyT5qvxWFHyH5kEnoGlw+UD8DTrwS45Boa1qbAYP?=
+ =?iso-8859-1?Q?IQqx+V8vqJsbkOy65jDjF8hV2HNFJ/A9k6lGTwVcvq4USfAhN4gio+k3Ge?=
+ =?iso-8859-1?Q?FB7tETSLKFPm1VcSzqtynXvwAmefXTFoRAi4k9OO0lGuU6HfsFyMmQP5bE?=
+ =?iso-8859-1?Q?H/BN0zJVYZl5107HNHXzm8RulT5y1uByioveTo1K8Xmp745uMiCpV7g6ty?=
+ =?iso-8859-1?Q?CcOw3qPkkNDBW3NzTNIxqsfRnozDkf/7tznzGYRlm/j6VuYQsKVBh1dPzp?=
+ =?iso-8859-1?Q?Jk95+ZsDae94CurLXfI4swZVvB+v0cgkWtRatEv9wHHZwr9+pllsCJJrAn?=
+ =?iso-8859-1?Q?2VNO36jIafsliDsoDERfI3gfElo1gjMGj4ncfKaSIbvxzs/waqQ8MWE5XN?=
+ =?iso-8859-1?Q?2M2QGMYBnCULPjkgf4DqJgD4q8zaZ/oURvqM3mAnzIMUyFCtCCsFOgE4+q?=
+ =?iso-8859-1?Q?H5zpwWpeGUxjYmO51sWcHWXtTgS5nVDf85MAuUpRerPKH6c031RZxYSmCT?=
+ =?iso-8859-1?Q?lvMPwqDjsJMZUF3AkQceItZ58wCKDiYhMR+kz0NRe5833WceT9ryB+egE2?=
+ =?iso-8859-1?Q?0NvKLGL7NVsdAHxMb9Ya3VU68fI9x+OWdFTo3Uuo6Eki1iLM8Nag4k4kwd?=
+ =?iso-8859-1?Q?WDR7J6Cz6K8xfQVGdaoGjBFu1eLcpxzRlRSXoE0AKNepmYLbrKwjTkkMsC?=
+ =?iso-8859-1?Q?/KWo34n5NCuale1GchRl8KKeJFaPiB5jYz7lzzwe8XnR8/39kkUnuhsarz?=
+ =?iso-8859-1?Q?n+CoAqtWscEjeK909NOf9fAy0hlWkJBUPb/TlT0HlpY8wRTAv8KcqTWi08?=
+ =?iso-8859-1?Q?QgBUG8W1nt3QgPLgIHmROPDZjC3mR6wODJ3BQLDopxRYGYzE6xtI2jQcu+?=
+ =?iso-8859-1?Q?QffkPi08oPPiUqQ9fGW/2ikMJSRpGS4+qpAUvQEaR/J+tOsEuTzdxTDfCi?=
+ =?iso-8859-1?Q?wLIZIJmtkMQzEfkz21v2O2J1uwEGbXC/EkjJf/HAQb2upv5kLT8PY0bOeV?=
+ =?iso-8859-1?Q?bMc/L0U8jUnzEie8wXpYV2lE/aK7QeGsZK1mhNH7OGk0z+yaoplUYJf6hp?=
+ =?iso-8859-1?Q?JHWJRqAxxA/cCB+CQnmjqB5zWy9blEt/iTkekhE5OGKOo1zPcotlCMnJMB?=
+ =?iso-8859-1?Q?+GD3jW3Or+oZdLPcOLIFEHakryY5ob+SWp+91SdsajxIQkp1piMptfuvvy?=
+ =?iso-8859-1?Q?wlEXgcfQ0Q=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -84,151 +159,37 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADFrB2sC/3WN0QqCMBhGXyX+6xbbP6euq94jutBt5ipUNh2F+
- O5tChFBlwe+c74ZvHHWeDjuZnAmWG/7LgLf70C1VXc1xOrIgBRzxpCT+2Mgm0MCJ1pgIXNFhaQ
- NRGdwprHPtXe+bOyn+mbUmCJp0Vo/9u61HgaWdv/agRFKMiyUFCVjWtanMB6MniCFA36r2a+KU
- RVUIy1RVpwXH3VZljeaGyBj9AAAAA==
-X-Change-ID: 20261123-klp-series-v3-d52796c0590f
-To: "Paul E. McKenney" <paulmck@kernel.org>, 
- Frederic Weisbecker <frederic@kernel.org>, 
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
- Joel Fernandes <joelagnelf@nvidia.com>, 
- Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
- Josh Poimboeuf <jpoimboe@kernel.org>, Miroslav Benes <mbenes@suse.cz>, 
- Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>, 
- Song Liu <song@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
- Jiri Kosina <jikos@kernel.org>
-Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
- live-patching@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>, 
- Jaidev Shastri <jaidevshastri@vt.edu>, Binoy Ravindran <binoy@vt.edu>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795648326; l=5443;
- i=binoy@vt.edu; s=20261123; h=from:subject:message-id;
- bh=oeulflrpaOtQWHSfhsh+UIlfdExERenQnmbTmiZ3tNo=;
- b=lwnaW0EwcTZ9LN4bkX3r57sXyi/w/nY9K3ax+AWLdjGPp6Tbg+iUpFS482LiYSX9dqWOFt2NK
- tG2NjOltWmUAOi/O3gMdhyjwcicOMslD5u0BihtC+2OcaO8WTA0RoMf
-X-Developer-Key: i=binoy@vt.edu; a=ed25519;
- pk=4cNdKPHP0InmhK/9bb7Tm2ZMUXUvLGfw1pmVt5b98fA=
-X-Endpoint-Received: by B4 Relay for binoy@vt.edu/20261123 with
- auth_id=1622
-X-Original-From: Binoy Ravindran <binoy@vt.edu>
-Reply-To: binoy@vt.edu
+X-OriginatorOrg: vt.edu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR05MB4137.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdcbfc76-f1ef-4f74-bb38-08df4b586989
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Nov 2026 00:58:40.9617
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 60956884-10ad-40fa-863d-4f32c1e3a37a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CVT5AsG9JDfepCk1xXzl76xfBEWx5XoqbbzeQewCuJy549uNUbW1anYOOaVlzqrk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR05MB7316
 
-After exit_notify(), a self-reaping task is unhashed from the task list
-but keeps running the rest of do_exit(). The livepatch transition walks
-the task list, so it can complete while such a task still runs code from
-a patch module that atomic replace is about to free. Yafang Shao and
-Petr Mladek discussed this race in [1], and Josh Poimboeuf suggested a
-similar approach in [2]. The race is hard to hit, but any livepatch that
-replaces a function on the exit path can reach it, for example a fix to
-do_exit() itself.
-
-Every exiting task is on an RCU-tasks exit list from
-exit_tasks_rcu_start(), before exit_notify(), until
-exit_tasks_rcu_finish(). Patch 1 adds helpers to visit the tasks on
-these lists. Patch 2 makes every transition step, including reverse and
-force, visit them too. After exit_tasks_rcu_finish(), do_exit() runs
-with preemption disabled until the task's final switch. Patch 2 waits
-that stretch out with synchronize_rcu() before func->transition is set
-and before the transition completes. The exit
-path itself is unchanged. Patch 3, suggested by Yafang, makes LIVEPATCH
-select TASKS_RCU, which every livepatch kernel already builds, so that
-the exit lists are always there.
-
-Tested on v7.4-rc2, x86-64, under QEMU/KVM, with two klp-build
-livepatches that each replace do_exit() and replace each other ten
-times per run, and a debug-only 2 s sleep after exit_notify(). Without
-the series, 9 of 12 runs crashed; with it, all 12 completed their 120
-replace cycles. With lockdep, PROVE_RCU and DEBUG_ATOMIC_SLEEP
-enabled, the series ran 180 replace cycles, 120 of them with the sleep,
-with no reports. Without the sleep, 20,000 replace cycles with the
-series, in both the default and preempt=full modes, completed without a
-fault. Compared with v7.4-rc2 alone (about 30,000 transitions per
-mode), the median transition time rose from 8 to 12 ms in the default
-mode and from 8 ms to 0.8 s with preempt=full, while the 90th and 99th
-percentiles stayed at about 1.6 s and 1.8 s. v2, which waited with
-klp_synchronize_transition(), kept the median at 7 to 8 ms in both
-modes. The wait is the only functional change from v2, so we attribute
-the increase to the synchronize_rcu() calls. Each commit
-builds without new warnings with and without CONFIG_LIVEPATCH. A
-reproducer and the logs are available on request.
-
-checkpatch.pl in v7.4-rc2 reports the Assisted-by: trailer as
-non-standard. The trailer follows
-Documentation/process/coding-assistants.rst.
-
-[1] https://lore.kernel.org/all/20250127063526.76687-1-laoar.shao@gmail.com/
-[2] https://lore.kernel.org/live-patching/20250124010848.pdcxokfsk2ngrowl@jpoimboe/
-
----
-Changes in v3:
-- Wait out the do_exit() tail with synchronize_rcu() instead of
-  klp_synchronize_transition(), as rcu_tasks_postgp() does
-  (Yafang Shao). With preempt=full this raises the median transition
-  time in our test from 8 ms to 0.8 s; the 90th and 99th
-  percentiles stay about the same. See the test notes above.
-- Replace the callback-based snapshot walk, which had a single user,
-  with klp_try_switch_exiting_tasks() (Yafang Shao).
-- Link to v2: https://patch.msgid.link/20261124-klp-series-v3-v2-0-50d20829a337@vt.edu
-
-Changes in v2:
-- Walk the exit lists under tasklist_lock and skip tasks that are
-  still hashed, so that each task is visited exactly once (Sashiko).
-- Call klp_synchronize_transition() after initializing the transition,
-  before func->transition is set, and before completing it, to wait
-  out tasks past exit_tasks_rcu_finish() (Sashiko).
-- Document rtp_exit_cursor in the kernel-doc comment (Sashiko).
-- Add patch 3, which makes LIVEPATCH select TASKS_RCU (Yafang Shao).
-- Test on v7.4-rc2 instead of v6.12.1, including lockdep and
-  natural-timing runs.
-- Link to v1: https://patch.msgid.link/20261123-klp-series-v3-v1-0-427c95811d9b@vt.edu
-
-To: "Paul E. McKenney" <paulmck@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-To: Neeraj Upadhyay <neeraj.upadhyay@kernel.org>
-To: Joel Fernandes <joelagnelf@nvidia.com>
-To: Josh Triplett <josh@joshtriplett.org>
-To: Boqun Feng <boqun@kernel.org>
-To: Uladzislau Rezki <urezki@gmail.com>
-To: Steven Rostedt <rostedt@goodmis.org>
-To: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To: Lai Jiangshan <jiangshanlai@gmail.com>
-To: Zqiang <qiang.zhang@linux.dev>
-To: Josh Poimboeuf <jpoimboe@kernel.org>
-To: Miroslav Benes <mbenes@suse.cz>
-To: Petr Mladek <pmladek@suse.com>
-To: Joe Lawrence <joe.lawrence@redhat.com>
-To: Song Liu <song@kernel.org>
-To: Ingo Molnar <mingo@kernel.org>
-To: Jiri Kosina <jikos@kernel.org>
-Cc: rcu@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: live-patching@vger.kernel.org
-Cc: Yafang Shao <laoar.shao@gmail.com>
-Cc: Jaidev Shastri <jaidevshastri@vt.edu>
-
----
-Binoy Ravindran (3):
-      rcu-tasks: Add helpers to visit tasks on the exit lists
-      livepatch: Include exiting tasks in the transition
-      livepatch: Select TASKS_RCU
-
- include/linux/rcupdate.h      |  9 ++++
- kernel/livepatch/Kconfig      |  1 +
- kernel/livepatch/transition.c | 99 +++++++++++++++++++++++++++++++++++++++++++
- kernel/rcu/tasks.h            | 69 +++++++++++++++++++++++++++---
- 4 files changed, 172 insertions(+), 6 deletions(-)
----
-base-commit: 7475ea8b58616b33c04afb976cf0fbaad9dd63fb
-change-id: 20261123-klp-series-v3-d52796c0590f
-
-Best regards,
---  
-Binoy Ravindran <binoy@vt.edu>
-
-
+=0A=
+Thanks, this is right. A dying task reports its quiescent state in=0A=
+rcu_note_context_switch(), early in __schedule(), and then still runs=0A=
+traceable code, such as update_rq_clock() and pick_next_task(), until=0A=
+switch_to(). RCU does not promise to wait for code after that point, and=0A=
+with expedited grace periods the quiescent state is reported right=0A=
+there, so synchronize_rcu() can return too early.=0A=
+klp_synchronize_transition(), which v2 used, does not have this=0A=
+problem: schedule_on_each_cpu() completes only after the work item has=0A=
+run on every CPU, which on the dying task's CPU happens only after=0A=
+switch_to().=0A=
+=0A=
+v4 goes back to klp_synchronize_transition() for both waits and keeps=0A=
+klp_try_switch_exiting_tasks() from v3. I will send it after rerunning=0A=
+the tests.=0A=
+=0A=
+Yafang, this reverses your second suggestion; I hope the reason above=0A=
+makes sense. It also brings back the v2 transition times.=0A=
+=0A=
+Binoy=0A=
+=0A=
+=0A=
