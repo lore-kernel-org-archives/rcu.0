@@ -1,64 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=95.215.58.170
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795701191;
-	b=ozVoOTKPByF4Cw3DC7gtWx8rhUHkjTnxpfdaylDCw39zHTf49E0POxdnBGlSkYQFfmVy
-	 XDFdj2jxd0obams1f9NqfHoGLFxVxVr2kmVoQnUCK4ywSHDJ5QOjsV4OkKWGCYAAnTf+L
-	 SNKTmyAWyyxp2sqQ/0EMHaMxdXJwF6Wg7HYqhvGiWcTEUDHBxcDprxXu6jjS9NPO6KbFp
-	 lqSimG0L4nyovfyd+GyuQNRwHGSzcafhJf4KX5SWxOU0MngIoOY3ICJcJEL8YQg90m+H8
-	 XRfVIGQA6CB2qnqxPhbrJJQtPBvIuJIzQUBU+jSZdztWDuPhOtNQv/aaftnknZeZz4w==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795701191;
-	h=DMARC-Filter:X-Envelope-To:DKIM-Signature:X-Envelope-To:Received:
-	 X-Mizu-Trace-ID:X-Migadu-Flow:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=wBNF/N6dV01CZXPBjN7hTYh2V25GC86ewPpc4xVTK6Y=;
-	b=ZYb4n7IxjkOqBH78a6F2AirxB2v9VVQIQVEaQkmsAFmN7Ceu6EwLXd52y6dy3L/o9+0h
-	 xczv8+ErGTNYdOE1edzNSq01JCocDVTy5ak/pDSxmZ82QdaVBh7klfPI9ixeho79+UGuh
-	 /czyuEYoLSPvvPWfkV+qmitQBLLd4pPFGWdFRyXsPBc2vFiTxLtbssKzwPMlMesTA36Jk
-	 5J07S6n3BPurZjlbYGwTflO0I9DTBz7JjjCrC34XAaPR23oZBFeObk2qrH+rmKLzblMzU
-	 hmODy6AnMgQb1aRfDJVp403n84PIKuQgKYh+L59LfyCf53Vweapo52wth5o+28ZqaMQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=wyuan.org;
-	spf=pass smtp.mailfrom=wyuan.org;
-	dkim=pass header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=MNz1ax2l;
-	arc=none smtp.remote-ip=95.215.58.170
-Received: from mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795711317;
+	b=TdurHD0XJw7U0NOa8Jwgj8+LuBAQslO5MIs0i5VqbnHA8WzSy9Us5VdNBNGBGmgg9ZH+
+	 jGCfvznC6c0/nm2NVs7nGVIyuUk9jTwg6JVYzMMm3hsjkNa3niEQ8cDgwKEfZpChhcFzA
+	 2/TpmdSZskwdixb9QYgsLbwtBMEVhLYAxD0w6HOX+/XBuyNOtDJnPhZzlIJ/kbOVESO/2
+	 fp+6II5u15QFm0Um+/Nq620kiTDGbjZZJgdNeoeEw9pQMa5i7IC1kR/uQ/Ny9urHN9KsY
+	 YcrOqumNNzZOGqRyiqLP0xC2nSU4xyYj4QNMGeGbWrkSaC1aSbBV4SWDBaYrhaMtVRw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795711317;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=VygsRWMu19YlnfF9gsoqmfWMLGEp1qEBqKlVHOIN/xU=;
+	b=fl6itvXjOXmQPafoPoHVln1anbB/cCgdXWbuEPrfD5/I39oKl2lw3XLNICQ9OdVB0rN+
+	 lC88iAe83+TwsT1402C1emLTEpKKN0OfPVnfzNqlDU5qOSSSyhXY7XgkgAxJMTCfm5xFL
+	 esN/AIIjBzvRZpVEnJN29KBDopn8aIol6sfZsZtNgNznWMPJzlNNo4csZ2mWResyi/1vL
+	 iZAFcYq0qrvhFzOKIsDEZy8gxfppD2w1zer/fvr/f6CgH9gFT8p3ImXb2jhfK428NSYp0
+	 eR9QR/yQedouVidJvCktIb6v6rgpcaaFkF/23cIfz3O0/wbDMXtT/cAN9ndRHTKLWLA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hWZQCSri;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A1E606A321;
+	Thu, 26 Nov 2026 16:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hWZQCSri
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795711316;
+	b=h7diWlj7iDwEWt842v7eO29fII2ynDngXs9Wv7wgI+mRl1IbkoVyN0tB3ziTdKdYbi55
+	 km2AQ40vztDo8edHode0sSbUOuMBA3iRU5kr9Vutv7mRnYp8fMFfhZDBuyM3LAkKYuuxk
+	 ptZbMuRFlUISGgaR/KQlTT6/W52aAjIOE1VXyFtmP/Hif29uKlGOFNEKJmFpGiomJJ4B6
+	 qweBj2ovBR2UHENvuubC+8S4wOdwbjNg5Is+ybrPPRZwJGzxc8e2uvfshaUjNQF1NpM1Z
+	 cN9fcjA4PI47S/tJuSHtRlkA7ih9rVUJhLoKFIyPcBt2X8We3qZqIplgzLqbLlBVUCA==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795711316;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=VygsRWMu19YlnfF9gsoqmfWMLGEp1qEBqKlVHOIN/xU=;
+	b=YCSG1qCaI8lEs3PT1a0noNxMYwa3RBmJxmr8y5BWW2R4yikOAFcVeHY7VY+TynrfTehO
+	 VPC76+BvivjAtXO5LMrqRmDoUUXde5/CVTzXwT6ipFntlDEt0i4JJLa9SoHskAm8vE7Qk
+	 C5CUsX1nK3xngsbC+Y/fEo7vAlOLRsB3KsU9bl3uL8lodik0CGewCQBGZrRmQ/bfS8no+
+	 2+7HD1C/z1GpacXRJd0Mlyas0bhlblWpf4EFEB/hgHBCgV8jYjhJgbyvvqMgYH/rD9vLV
+	 bl6w0FfaRaWfzvDF6GOEKCo3fIazH4FwSPKR9RLkP1gc7wlqD7YNe0cbF5zucgSTFnQ==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3EC9606A31E
-	for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 13:53:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C3EC9606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wyuan.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wyuan.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=wyuan.org header.i=@wyuan.org header.a=rsa-sha256 header.s=key1 header.b=MNz1ax2l
-X-Envelope-To: rcu@vger.kernel.org
-DKIM-Signature: a=rsa-sha256; bh=wBNF/N6dV01CZXPBjN7hTYh2V25GC86ewPpc4xVTK6Y=;
- c=simple/simple; d=wyuan.org;
- h=from:to:subject:date:message-id:mime-version:content-type; s=key1;
- t=1795701185; v=1; x=1796305985;
- b=MNz1ax2loOfN/E7+3B5LjZ6IsPtZBpL96L6Km2Y3WX8qz2f1KO0dOKeVsCjFbTdr5mGR93PA
- 0IBXNNGXAXJEvOHlm76CUVPLz0LkrFZzt6qD+vuRYOiaAiAHXNG4Lk/FwxbLnZ9rfG0w6PM0g59
- ykLePE3nkU5M61q/1ZEBMzJNaQesuzcTy+U39DbNNqsDgq/DhM22XJZxkz3mT+Gl9Zuj9jf40wB
- zIK3Q4dQaF2d7/gT0zWjOx2E4NiN31XBk5Z5iCnk2cCg6I8vGpayexGUW6+krw/HLCDHDUCge6a
- p2hrOZbL2a13rgwFGZJtSOW5hqbLI4E+LKNaqy2iudLLg==
-X-Envelope-To: rcu@vger.kernel.org
-Received: by smtp.migadu.com with ESMTPS id 8a22f4692d3e40a9;
-	Thu, 26 Nov 2026 13:53:05 +0000
-X-Mizu-Trace-ID: 8a22f4692d3e40a9
-X-Migadu-Flow: FLOW_OUT
-Date: Thu, 26 Nov 2026 21:52:50 +0800
-From: Weijie Yuan <wy@wyuan.org>
-To: Bruce Song <xiongwei.song@linux.dev>
-Cc: alexs@kernel.org, si.yanteng@linux.dev, dzm91@hust.edu.cn,
-	corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
-	paulmck@kernel.org, linux-doc@vger.kernel.org, rcu@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] Add RCU docs Chinese translation
-Message-ID: <awg5sl7LxTOVqpSw@wyuan.org>
-References: <20261126132523.6329-1-xiongwei.song@linux.dev>
- <0d5126e6-7588-4cf7-90de-0bd193db8246@linux.dev>
+	by smtp.kernel.org (Postfix) with ESMTPS id E6EF61F000ED;
+	Thu, 26 Nov 2026 16:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795711316;
+	bh=VygsRWMu19YlnfF9gsoqmfWMLGEp1qEBqKlVHOIN/xU=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=hWZQCSriccAZ+bqj8mal26ynme6sUFw8mykHOEXpOrDP67kE0bnZt2Fa6HpohuD+3
+	 xMfwfcwfQeFKywrA5gZ8KVMYBhoQXEIR9c5c0MafWdE44jMvjvbsVwl2kOt4HPLrHX
+	 ePy5nelODrCNIQ3seBtYdIkJDCi9g7A76jINNy3dvLTMZ4cSPDLhpCe98g7/ovDinD
+	 GW3tsA/c6HtfksHlaa8thsahAyNGsGFEbiRIRTMuASvLVmooA0C2bUBCttwXq0OqXP
+	 GjcBLEdUr0P8A8QRhlboc4Ki2/9XbsDHcKTjOQvLnHi4juYrbCbAv0yJosNK5wJQkk
+	 ry2+xdAaTASdA==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 77B814D721;
+	Thu, 26 Nov 2026 16:41:46 +0000 (UTC)
+From: Binoy Ravindran via B4 Relay <devnull+binoy.vt.edu@kernel.org>
+Date: Thu, 26 Nov 2026 11:41:32 -0500
+Subject: [PATCH v4 1/3] rcu-tasks: Add helpers to visit tasks on the exit
+ lists
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -68,17 +83,203 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d5126e6-7588-4cf7-90de-0bd193db8246@linux.dev>
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261126-klp-series-v3-v4-1-2ad73e9c9254@vt.edu>
+References: <20261126-klp-series-v3-v4-0-2ad73e9c9254@vt.edu>
+In-Reply-To: <20261126-klp-series-v3-v4-0-2ad73e9c9254@vt.edu>
+To: "Paul E. McKenney" <paulmck@kernel.org>, 
+ Frederic Weisbecker <frederic@kernel.org>, 
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, 
+ Joel Fernandes <joelagnelf@nvidia.com>, 
+ Josh Triplett <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>, 
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>, 
+ Josh Poimboeuf <jpoimboe@kernel.org>, Miroslav Benes <mbenes@suse.cz>, 
+ Petr Mladek <pmladek@suse.com>, Joe Lawrence <joe.lawrence@redhat.com>, 
+ Song Liu <song@kernel.org>, Ingo Molnar <mingo@kernel.org>, 
+ Jiri Kosina <jikos@kernel.org>
+Cc: rcu@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ live-patching@vger.kernel.org, Yafang Shao <laoar.shao@gmail.com>, 
+ Jaidev Shastri <jaidevshastri@vt.edu>, Binoy Ravindran <binoy@vt.edu>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795711306; l=6595;
+ i=binoy@vt.edu; s=20261123; h=from:subject:message-id;
+ bh=yjPjOhb/Atfnqas8UHt57mA11woD8FJQKXxBGP8uW1s=;
+ b=9JjPDopv/FzV2BE3xbWYnLkY5+zY4UuS+0XPxoaBGbdW7BTJTeK0Pcql70MxVQZWLAQPAeXBn
+ XAIT0NcWOufAJvcIHZsR7T3op/SkJsYzkKuc1LbDvY7bmUXkAHIB2WY
+X-Developer-Key: i=binoy@vt.edu; a=ed25519;
+ pk=4cNdKPHP0InmhK/9bb7Tm2ZMUXUvLGfw1pmVt5b98fA=
+X-Endpoint-Received: by B4 Relay for binoy@vt.edu/20261123 with
+ auth_id=1622
+X-Original-From: Binoy Ravindran <binoy@vt.edu>
+Reply-To: binoy@vt.edu
+Content-Transfer-Encoding: 7bit
 
-On Thu, Nov 26, 2026 at 09:35:28PM +0800, Bruce Song wrote:
-> Sorry for the noise. git send-email returned "timeout" after the cover
-> letter was sent out. So I resent v3 of the series. Please ignore this one.
+From: Binoy Ravindran <binoy@vt.edu>
 
-I'm not sure if it's a problem with Migadu or network condition in
-mainland China. Every few months, I encounter the issue where email
-sending gets stuck. I do not know whether other linux.dev users or
-migadu users frequently meet this problem, or just me made stupid
-mistakes elsewhere.
+A task joins its CPU's RCU-tasks exit list in exit_tasks_rcu_start(),
+before exit_notify() unhashes it from the task list, and leaves it in
+exit_tasks_rcu_finish(), after do_exit() has disabled preemption for the
+final switch. Once exit_notify() has unhashed it, the task is no longer
+found by for_each_process_thread(), but it still runs do_exit() and may
+sleep there. Code that must reach every task that can still be
+descheduled, such as the livepatch transition, has no way to find it.
+
+Add two helpers. rcu_tasks_visit_exiting() calls a function on each
+task on the exit lists under the list locks, without allocating.
+rcu_tasks_snapshot_exiting() copies the tasks into a caller-supplied
+array with a reference held on each, for callers that must sleep or take
+other locks while examining them. Without CONFIG_TASKS_RCU there are no
+exit lists, and the helpers do nothing.
+
+rcu_tasks_postscan() keeps its place in an exit list with a bare
+list_head while it drops the lock to reschedule, relying on nobody else
+traversing the list. Move that cursor into struct rcu_tasks_percpu,
+next to the list it marks, so that the new helpers can recognize and
+skip it. Only the grace-period kthread runs postscan, one CPU's list at
+a time, so one cursor per CPU suffices.
+
+Assisted-by: Claude:claude-opus-5-5
+Signed-off-by: Binoy Ravindran <binoy@vt.edu>
+---
+ include/linux/rcupdate.h |  9 +++++++
+ kernel/rcu/tasks.h       | 69 +++++++++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 72 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 3f74ae6d6e1f..55b8b4a0fa94 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -214,6 +214,15 @@ static inline void exit_tasks_rcu_start(void) { }
+ static inline void exit_tasks_rcu_finish(void) { }
+ #endif /* #else #ifdef CONFIG_TASKS_RCU_GENERIC */
+ 
++typedef void (*rcu_tasks_exiting_fn_t)(struct task_struct *t, void *arg);
++#ifdef CONFIG_TASKS_RCU
++void rcu_tasks_visit_exiting(rcu_tasks_exiting_fn_t fn, void *arg);
++int rcu_tasks_snapshot_exiting(struct task_struct **buf, int max);
++#else
++static inline void rcu_tasks_visit_exiting(rcu_tasks_exiting_fn_t fn, void *arg) { }
++static inline int rcu_tasks_snapshot_exiting(struct task_struct **buf, int max) { return 0; }
++#endif
++
+ /**
+  * cond_resched_tasks_rcu_qs - Report potential quiescent states to RCU
+  *
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index fcac7361ec51..b5fa5a3a8503 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -33,6 +33,8 @@ typedef void (*postgp_func_t)(struct rcu_tasks *rtp);
+  * @barrier_q_head: RCU callback for barrier operation.
+  * @rtp_blkd_tasks: List of tasks blocked as readers.
+  * @rtp_exit_list: List of tasks in the latter portion of do_exit().
++ * @rtp_exit_cursor: Placeholder that rcu_tasks_postscan() parks on @rtp_exit_list
++ *	while it drops the lock, so that exit-list walkers can skip it.
+  * @cpu: CPU number corresponding to this entry.
+  * @index: Index of this CPU in rtpcp_array of the rcu_tasks structure.
+  * @rtpp: Pointer to the rcu_tasks structure.
+@@ -49,6 +51,7 @@ struct rcu_tasks_percpu {
+ 	struct rcu_head barrier_q_head;
+ 	struct list_head rtp_blkd_tasks;
+ 	struct list_head rtp_exit_list;
++	struct list_head rtp_exit_cursor;
+ 	int cpu;
+ 	int index;
+ 	struct rcu_tasks *rtpp;
+@@ -1068,7 +1071,6 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
+ 		struct task_struct *t;
+ 		struct task_struct *t1;
+-		struct list_head tmp;
+ 
+ 		raw_spin_lock_irq_rcu_node(rtpcp);
+ 		list_for_each_entry_safe(t, t1, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
+@@ -1081,14 +1083,15 @@ static void rcu_tasks_postscan(struct list_head *hop)
+ 				continue;
+ 
+ 			// Keep our place in the list while pausing.
+-			// Nothing else traverses this list, so adding a
+-			// bare list_head is OK.
+-			list_add(&tmp, &t->rcu_tasks_exit_list);
++			// The cursor lives in rtpcp so that the exit-list
++			// visitors can recognize and skip it.
++			list_add(&rtpcp->rtp_exit_cursor, &t->rcu_tasks_exit_list);
+ 			raw_spin_unlock_irq_rcu_node(rtpcp);
+ 			cond_resched(); // For CONFIG_PREEMPT=n kernels
+ 			raw_spin_lock_irq_rcu_node(rtpcp);
+-			t1 = list_entry(tmp.next, struct task_struct, rcu_tasks_exit_list);
+-			list_del(&tmp);
++			t1 = list_entry(rtpcp->rtp_exit_cursor.next, struct task_struct,
++					rcu_tasks_exit_list);
++			list_del(&rtpcp->rtp_exit_cursor);
+ 			j = jiffies + 1;
+ 		}
+ 		raw_spin_unlock_irq_rcu_node(rtpcp);
+@@ -1332,6 +1335,60 @@ void exit_tasks_rcu_finish(void)
+ 	raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
+ }
+ 
++/*
++ * Call fn on every task on the exit lists, in place, with the per-CPU list
++ * lock held and interrupts disabled. fn must not sleep. Does not allocate.
++ * These are the tasks that have passed exit_tasks_rcu_start() but not
++ * exit_tasks_rcu_finish(). Once exit_notify() has run they are no longer on
++ * the task list, but they still run do_exit() and may sleep there.
++ */
++void rcu_tasks_visit_exiting(rcu_tasks_exiting_fn_t fn, void *arg)
++{
++	int cpu;
++	unsigned long flags;
++	struct task_struct *t;
++
++	for_each_possible_cpu(cpu) {
++		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
++
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
++		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
++			if (&t->rcu_tasks_exit_list == &rtpcp->rtp_exit_cursor)
++				continue;
++			fn(t, arg);
++		}
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
++	}
++}
++
++/*
++ * Copy up to max tasks on the exit lists into buf, taking a reference on
++ * each. Returns the number of tasks on the lists, which may exceed max.
++ */
++int rcu_tasks_snapshot_exiting(struct task_struct **buf, int max)
++{
++	int cpu, n = 0;
++	unsigned long flags;
++	struct task_struct *t;
++
++	for_each_possible_cpu(cpu) {
++		struct rcu_tasks_percpu *rtpcp = per_cpu_ptr(rcu_tasks.rtpcpu, cpu);
++
++		raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
++		list_for_each_entry(t, &rtpcp->rtp_exit_list, rcu_tasks_exit_list) {
++			if (&t->rcu_tasks_exit_list == &rtpcp->rtp_exit_cursor)
++				continue;
++			if (n < max) {
++				get_task_struct(t);
++				buf[n] = t;
++			}
++			n++;
++		}
++		raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
++	}
++	return n;
++}
++
+ #else /* #ifdef CONFIG_TASKS_RCU */
+ void exit_tasks_rcu_start(void) { }
+ void exit_tasks_rcu_finish(void) { }
+
+-- 
+2.39.5
+
 
