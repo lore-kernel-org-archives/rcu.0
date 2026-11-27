@@ -1,85 +1,103 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.170
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795726339;
-	b=IBDaLDNH3OrMdIjKkNKh0XaBYNMUadJ3uWbQTelWbASZvJYJxuVJk4WNe/YIVDpCCkey
-	 jjYMoQ7r+bz6RhvsmsQzd7A4vFklfv+hHnbRwcxSOroamlT1acnQvpmaSzkg0Ld3lCfAU
-	 A2sFGNlLkhh79SPXWzSJ9g1dYErQvxdlFHcAqafAcXUagLxzuPWCPJ/wxFhhxiNgL5u3a
-	 OfmeLQiFNQwpbiwweDyr5Sa0l6PJ5+achMyI/4LFNLGxpQKUimjgrCyiraR0F20OuvWFC
-	 PKww0CzbsqREJiTTNEBFsyq95ko76HoXuaDpYVv3BtAEOlNx3jrZRRq80v2Q8nsYw0Q==
+	t=1795741296;
+	b=vLYHylvHBWKhUbTN5BhpbWWMf3Hl/bIhRTTWpDKI20zjV+TLB5e5oaGNgrs3Fvklj//X
+	 8HBwrxdq8WprFLpfk7awpuE+XaxmyyVr3sYAIi7GnJSFb7RIlkG7CkUVZDgkYYwwhanzw
+	 gz2ZOuYo08JAxnV+LaoxTYHWaJaY39WQfKjc75iqj+TBRI00BoWgZ0sKD/cv4+Dj+cLdk
+	 /vi50uR7koXLBl3v293SrTpCFadiHacbKDnSEo6GfF4zOXQz0ziHASRFpKA35/uWuVB9X
+	 5tycksh/tZSzAktxJAnPcMex8xQiL5HK1i9gEqBARnO7GpncD24qr2N8iIHsZL0HtXg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795726339;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795741296;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Mime-Version:Content-Transfer-Encoding:Content-Type:Date:Message-Id:
-	 Cc:Subject:From:To:X-Mailer:References:In-Reply-To;
-	bh=JcEEyA3sx+c6Rpqf0psrYSYbyT1hssX8f9kin0pu5oc=;
-	b=xMRIhOpJC2pYQ8KYJTBIIossJlRep9SieA5YPpvH0QDPdGpd33TsdGTSKmYnJEBhCW/O
-	 Z4yb2yhb558PMI1vdA8ZBr43si7KfNzkC5mXKPkuZQPlySY26kV9QCPpBAPwR1oRUmrG/
-	 TrdsFGBqTokZx62R40YkNfHcdO4zgvBTWE0f6i+QLw41gctOSH/9g/9yLpg3wBJuz+YOa
-	 Wa99/ESaXW93yFHtZ2zZBSpiEHFSshxbC9fS5tUwtnFRyHPsVA5cJhXeN9md43SlGJW0C
-	 BmOmrs57ArgTiAoNZl3npqts8uxmUda0v5unAsVHQaZUb02vLSp0Tlwjz7lKezFZViQ==
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=R2dYx+9VfkblowgRJ/VmPm34jz2gVpt82fxbuv77UBc=;
+	b=kiHw3JOULmwnjlIkibxSiqZjsTMsA70uFD3b/5om+L+10/B3kJpFkDZsOLZWMtgOs3EK
+	 ke+loFKHDetzmY60NE5VVFMlaNF7O/GclsiRJrU0owRRMGUTPI041O28jYwXosCaO9pL3
+	 Lynv9d+ayvTuFNCdVcHnvsyArtV6ZMOEAFiBQTaehCMPr/A+alv0IdCc/wzZR3LC2AalC
+	 Qou7DCtcwICNbqVlIxMhoJsRr9qvEPcQtOy+bBEtikc8zHcjn8oPQNJOV799rkWDzoqdV
+	 nbZdfZWM8C7pi5gVrnjKK4/vF6z7zStbR5ucTK6ASsOhlj+aSUbcDR1QjKkvqO6nX0g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sGCTtS2V;
-	arc=none smtp.remote-ip=209.85.215.175
-Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=L2jLSq1T;
+	arc=none smtp.remote-ip=209.85.214.170
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C745606A31E
-	for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 20:52:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5C745606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A42E9606A31C
+	for <rcu@vger.kernel.org>; Fri, 27 Nov 2026 01:01:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A42E9606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=sGCTtS2V
-Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-cd6acc50b8dso3784277a12.3
-        for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 12:52:19 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=L2jLSq1T
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2f05b465cd1so41152965ad.3
+        for <rcu@vger.kernel.org>; Thu, 26 Nov 2026 17:01:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795726339; x=1796331139; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:content-transfer-encoding:mime-version:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=JcEEyA3sx+c6Rpqf0psrYSYbyT1hssX8f9kin0pu5oc=;
-        b=sGCTtS2VGoZw5jrde8R1AV7EAUVYQ1ka19rLViNoI4nBW6vy17pzFKbbefiStr/558
-         uPYLarn1XZHNLmbEzxqHJ9fmvSy+AzfeiQZZxRSRFq3ZUvTwxH1OPrUnbeCKrFG3w/x3
-         4CwtFAT6A3l+HcgJGHWD5fYPJrsA4+pkgvunLPlZmPGXwbLy//MJ6rHfMs4WnFdv/m4P
-         cd5MdgCQsxZRqmvMOigFKhYseHN2E4mtvzF5CA/xkdk5bd+DOxlgh+b0iNmAAPvevO/5
-         UL1VRFqOZEWg8gyexWkVI26T6mCaKVUhBJzcuKa+Yw64m6DT5AadgmXQh8XCi40Z/t/v
-         jhVQ==
+        d=gmail.com; s=20260707; t=1795741295; x=1796346095; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=R2dYx+9VfkblowgRJ/VmPm34jz2gVpt82fxbuv77UBc=;
+        b=L2jLSq1TsxTtGGugUno1bN6CZSx/7lGwp9t4+byNhC2tfSo4NBQStXHUoDWQrgSsXK
+         uLfAS+ATmhVr0h7eyhj7uyTsQ7zGPYRb376ggq0TtInys+4qVsX+GcePm+k8SyHQLF24
+         4bhHyNZ07NV2QW45M6Q44P8PMxK15U6PHr8Rd+pEhbvezL+D13VNezc/2443eNafyO0g
+         3On26BchelSQ0o5UjZDHRkuJOYdao0r81FQr7ivRu/uEni1Ku2f+SLZczCRc58Xm8kyd
+         cCzszz38A1ROnM76ziRueYmGuOpCEJnazMRTDEdXp6TA/gxWdnGbcjO2SRB/CZPQZxSA
+         PRRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795726339; x=1796331139;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:content-transfer-encoding:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=JcEEyA3sx+c6Rpqf0psrYSYbyT1hssX8f9kin0pu5oc=;
-        b=cbaLjdHKkEHn9leiXekY3+26Q5vHQ9ZAGDnPZJpj8ikrAngOAMUB2eG2ee4aQLgUbL
-         7jgdISOTfmD58qwavL0zbMKY8wjfzbWpTveJX9qSWiTRhrxznGdL1NYTO/8Eg3ovroMp
-         ZYoolLkuASQPWBDR6YUoXxst8KmWCU3UEbP12N/fcmTWCEZA3Hlqdosd6gbDlwc2lYi6
-         t4vhzjW+iUoVxS5UNHS1ZeXX45GDaJCkTLH61OdouHg7nR6q/bRRGMUOGP5ivmGFIx6s
-         G8qhSq4idTONjmL/ZBKjc8xpUPElPxwH4Rvgob/YEgA+7YFvXFvd1QvN6fTdgxDOWk1e
-         kO7g==
-X-Forwarded-Encrypted: i=1; AL+hErF8M5GckIPitGfgEPYRQhAW4fL/Dcvn6E1c70bbrpERrVyYS6oD8PNjLwJLReNpG67XdUc=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9uPsZ2yVOhn/SbNnCxid9XgoeMaBNKAYAzlxQ7cuDD6yGfeJLE
-	VQaRpN2SWHwGguo3EC1JX9DzVbyzmLW1NBVr/A4OD4sgR/K6RRH3R5/g
-X-Gm-Gg: AZFdTZcNxFVWOv7v6itxxCzx0r9Xvwc9SVwQkRjolTGWy3RYcdBJUPZSpH/jt36x6Cg
-	/M+IHTIxb9H0EduvjIJdFMrZaFFJB9rw/4sDi9uIqMhYcrae8pC65gq1YEWZAxfJYLc7ln0DL3k
-	2UUOydTq+ttnyA1I52cb5TjRAaWD4jCmxSPVbJDGjjz5tTZPiz7zQc4v8UjbI5mZnbpzUAVaEjK
-	WVlnh2UweAWTqPa+mph4wsPSIstA0pzmz1YTQIzipQd6r5qbfy9H9NyBTTJT6VE2skeO0nDC06M
-	IgNuM69hwD0CVD8/XQWknCedx3bz32NeDPF8bgAi9BLuLodyAgyGvOHqnEOtY0kD90qVZ+mdVhp
-	tmA9XU2tzxZBLq9FfTtAxPFIrer1824GNlXdiZREICeVlhb+K+eq7lmL9tcFKdgGjujknHbpFuU
-	9x6X22VZA+aqp+zioNkPRxYQETH2TqNKeWA4Yyezf1+X4vWM6vXKtbKIqydsoKaf41+kLlnZLqY
-	RzXiXCigWAP2YY1Emup6bDfEoghHOf2UygtOBurPo1iA4S/oRIacmmVIXnslbzsr3ln85QuDcMC
-	k6pfZHyEmQPfo1NIT+7dQZEALVmdOtiN2vkRPHR2HSNK6yt1IUoQ/zOsQmKHDOFx5LUlIlbF/lq
-	FFEhzYEQUKVUUA7RCgEIBmq29EEqaKL7fpA==
-X-Received: by 2002:a17:90b:3d50:b0:3b4:d312:8fb4 with SMTP id 98e67ed59e1d1-3b4d31292ebmr10238160a91.43.1795726338554;
-        Thu, 26 Nov 2026 12:52:18 -0800 (PST)
-Received: from localhost ([153.61.198.246])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b40f4312dfsm36006303a91.3.2026.11.26.12.52.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Nov 2026 12:52:18 -0800 (PST)
+        d=1e100.net; s=20260707; t=1795741295; x=1796346095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=R2dYx+9VfkblowgRJ/VmPm34jz2gVpt82fxbuv77UBc=;
+        b=X3ym8hgVjJQEwbk+0bNAb/sQVUQNRPXep+Wbjscy6Hyj3tCGE0l5JYMqNSBNmh0dNE
+         P/3IevHAiWDZGi9LSPvDmR8kLtWIdGHjmG6Av9byIisGyaXRlIG+rrPfIQubSevMN/fm
+         6It4ghcI4GLULLZqzNdfSc3YVASoJTBLqsfQgj4LJg1Thtppv5FEXKRjZNtuXEX+k7lk
+         WP1q8bLQNB5CiDrb0TIMcVm8u832vymNPpXe4ZKYyA0T9dvU+arLejzBzYyvSpxI+Cry
+         SFV/FyNJHaVTM3lQHYigZkrDNboqjusKfubebrl2ps2zacdN52r6ySHx1eFhJsVWuyrc
+         6sYg==
+X-Forwarded-Encrypted: i=1; AL+hErH06NfOHeHR0P7/wFt8PRj+oYXspYhtN4suREZ91nEqaQR9hHKWY4J7xz70h1soMm58bP4=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+DQoOJf/WaU6T9gWEHXQ2PIloa6CUecFexW4CW+nF9/fjDy+fF
+	2EgJRxxn/ToTt97tsh7lXIQAMyD305phJkfQ+S7nqgX6fENwN+TIbST8
+X-Gm-Gg: AZFdTZecRDjwF8ZscMFwE9cDpVetYnLnT5aBsYt7eyZqoqF94pHffavxt3chjvHfZZg
+	Uacsf39LdeeFbO0ZVwx+ZytFpe5Zw/P6lDfTEdZRsuZtljKhRXliVd+VSpc4ZdP8OkTluecundB
+	L0dy1GM+a/+XfX5iPlziTT5vUnklMMOaDjefh1TcJYXXAYpDhDoDeHjasoqLz0oXqtGvcvQigZr
+	PBjnzSweUGye+GTLJwwTSlgUVDsL//PKJFgj93FLyQ8h5rZ5Ur7BQeymGpMiSYsWIStF0+sS9qF
+	76o5eI9/LNWuWOZqzjNH27tfh1SNNx466ck80rk1Hhrl2Y/yQBvpPyF7YiDy299qCpT1KBimtWq
+	oNaO488McK0U+vl6h19jSminhpvJAtpX66EGwtwH2Sfr2P6iiwvRL8LWATeC6+4U9HNqEfBTL4x
+	yH32QQJCfzW9YZPazRV6uWSW/BBpVs46TxeFsy/ZRO2JTQrvselD1CIZhkDffJPZtA7ex+wMr21
+	Nuq+WT9gS4M7mcjQ8Ji9QYexu6tzet+Zidzgh0EpjeBaWHB5rbrxty6ML1IM0jDm74RNzV4Y2ya
+	i72bnP0uOewBPXJ0clMtWp8xpDYlGgQcSMFfNZ293vBpJtCk/H94Hsk9xDUZk1fkmF1CLuyjXV0
+	z
+X-Received: by 2002:a17:903:230d:b0:2ef:f432:3fab with SMTP id d9443c01a7336-2f03f169933mr212665565ad.43.1795741294670;
+        Thu, 26 Nov 2026 17:01:34 -0800 (PST)
+Received: from localhost.localdomain ([2605:bc80:3010:503:f816:3eff:fe99:6bb3])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f051a566f7sm99260055ad.41.2026.11.26.17.01.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Nov 2026 17:01:33 -0800 (PST)
+From: Zhouyi Zhou <zhouzhouyi@gmail.com>
+To: jarkko@kernel.org,
+	peterhuewe@gmx.de
+Cc: lance@osuosl.org,
+	rcu@vger.kernel.org,
+	Zhouyi Zhou <zhouzhouyi@gmail.com>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	Shrikanth Hegde <sshegde@linux.ibm.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-integrity@vger.kernel.org,
+	Li Jun <lijun01@kylinos.cn>
+Subject: [PATCH] tpm: ibmvtpm: Fix unused suspend callback with CONFIG_PM_SLEEP=n
+Date: Fri, 27 Nov 2026 01:01:24 +0000
+Message-Id: <20261127010124.848125-1-zhouzhouyi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -88,76 +106,55 @@ List-Subscribe: <mailto:rcu+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 26 Nov 2026 20:52:17 +0000
-Message-Id: <DN5FUYZ25YIK.1DK9UDC0VY8CZ@gmail.com>
-Cc: "Alexei Starovoitov" <ast@kernel.org>, "Daniel Borkmann"
- <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>, "Eduard
- Zingerman" <eddyz87@gmail.com>, "Kartikeya Dwivedi Kumar"
- <memxor@gmail.com>, "John Fastabend" <john.fastabend@gmail.com>, "Martin
- KaFai Lau" <martin.lau@linux.dev>, "Song Liu" <song@kernel.org>, "Yonghong
- Song" <yonghong.song@linux.dev>, "Jiri Olsa" <jolsa@kernel.org>, "Emil
- Tsalapatis" <emil@etsalapatis.com>, "Ihor Solodrai"
- <ihor.solodrai@linux.dev>, "Bradley Morgan" <bradley.morgan@linux.dev>,
- "Paul E. McKenney" <paulmck@kernel.org>, "Frederic Weisbecker"
- <frederic@kernel.org>, "Neeraj Upadhyay" <neeraj.upadhyay@kernel.org>,
- "Josh Triplett" <josh@joshtriplett.org>, "Boqun Feng" <boqun@kernel.org>,
- "Uladzislau Rezki" <urezki@gmail.com>, "Steven Rostedt"
- <rostedt@goodmis.org>, "Mathieu Desnoyers"
- <mathieu.desnoyers@efficios.com>, "Lai Jiangshan" <jiangshanlai@gmail.com>,
- "Zqiang" <qiang.zhang@linux.dev>, "rcu@vger.kernel.org"
- <rcu@vger.kernel.org>, "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH bpf-next v3] bpf: Add rcu_read_unlock_special() into btf
- id deny list
-From: "Alexei Starovoitov" <alexei.starovoitov@gmail.com>
-To: "Sechang Lim" <rhkrqnwk98@gmail.com>, "Joel Fernandes"
- <joelagnelf@nvidia.com>
-X-Mailer: aerc 0.20.1-355-gf870624f6c37
-References: <20261125055359.2715140-1-rhkrqnwk98@gmail.com>
- <E03F487E-3E0D-4FE8-9BD4-F2ABAC7213B4@nvidia.com> <awcXeA5xej8w-UL7@srsys1>
-In-Reply-To: <awcXeA5xej8w-UL7@srsys1>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed Nov 25, 2026 at 5:14 PM UTC, Sechang Lim wrote:
-> On Wed, Nov 25, 2026 at 08:18:51AM +0000, Joel Fernandes wrote:
->>
->>
->>> On Nov 25, 2026, at 12:54=E2=80=AFAM, Sechang Lim <rhkrqnwk98@gmail.com=
-> wrote:
->>>
->>> The BPF trampoline takes and drops the RCU read lock itself. When the
->>> outermost rcu_read_unlock() finds ->rcu_read_unlock_special.s set, it
->>> calls rcu_read_unlock_special(). If a fentry program is attached to
->>> rcu_read_unlock_special(), the unlock on the trampoline exit path still
->>> sees .s set and calls rcu_read_unlock_special() again, which recurses
->>> until the stack overflows:
->>>
->>>  BUG: TASK stack guard page was hit at ffffc90001657ff8
->>>  ...
->>>   bpf_trampoline_6442575622+0x5e/0xac
->>>   rcu_read_unlock_special+0x5/0x490
->>>   __rcu_read_unlock+0x9c/0x120
->>>   rcu_read_unlock_migrate+0x93/0x220
->>>   bpf_trampoline_6442575622+0x5e/0xac
->>>   rcu_read_unlock_special+0x5/0x490
->>>   ...
->>
->>Can this problem not happen also if you have an RCU read-side critical se=
-ction within an ftrace probe on sensitive RCU functions?
->>
->>If yes, I wonder if we need a more general fix than BPF-specific, such as=
- using notrace on the sensitive function.
->>
->
-> I don't think so. ftrace, fprobe, and kprobes take ftrace_test_recursion_=
-trylock(), so
-> only the bpf trampoline recurses here. v1 used notrace, and Alexei
-> suggested fixing it on the bpf side instead:
-> https://lore.kernel.org/rcu/20261124185659.1370644-1-rhkrqnwk98@gmail.com=
-/
+Discovered in the Open Source Lab of Oregon State University when running
+RCU torture.sh on a ppc64le VM.
 
-I don't insist. Sounds like RCU folks prefer 'notrace' ?
-Then pls apply v1.
+With CONFIG_TCG_IBMVTPM=y and CONFIG_PM_SLEEP disabled, SIMPLE_DEV_PM_OPS()
+omits the references to the system sleep callbacks. This leaves
+tpm_ibmvtpm_suspend() unused and produces the following warning:
 
-pw-bot: cr
+  warning: 'tpm_ibmvtpm_suspend' defined but not used [-Wunused-function]
+
+Use DEFINE_SIMPLE_DEV_PM_OPS() and pm_sleep_ptr() so that the compiler
+sees the callback references and can discard the unused PM code when
+system sleep is disabled. Preserve tpm_ibmvtpm_resume(), which is also
+called directly from tpm_ibmvtpm_send().
+
+Tested on PPC VM of the Open Source Lab
+of Oregon State University.
+
+Fixes: fc0ddb3174b0 ("char: tpm: Use SIMPLE_DEV_PM_OPS for ibmvtpm power management")
+
+Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
+---
+ drivers/char/tpm/tpm_ibmvtpm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
+index 51c7e2add3d2..9840d0ebe6a3 100644
+--- a/drivers/char/tpm/tpm_ibmvtpm.c
++++ b/drivers/char/tpm/tpm_ibmvtpm.c
+@@ -462,7 +462,8 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
+ 	.req_canceled = tpm_ibmvtpm_req_canceled,
+ };
+ 
+-static SIMPLE_DEV_PM_OPS(tpm_ibmvtpm_pm_ops, tpm_ibmvtpm_suspend, tpm_ibmvtpm_resume);
++static DEFINE_SIMPLE_DEV_PM_OPS(tpm_ibmvtpm_pm_ops,
++				tpm_ibmvtpm_suspend, tpm_ibmvtpm_resume);
+ 
+ /**
+  * ibmvtpm_crq_get_next - Get next responded crq
+@@ -714,7 +715,7 @@ static struct vio_driver ibmvtpm_driver = {
+ 	.remove		 = tpm_ibmvtpm_remove,
+ 	.get_desired_dma = tpm_ibmvtpm_get_desired_dma,
+ 	.name		 = tpm_ibmvtpm_driver_name,
+-	.pm		 = &tpm_ibmvtpm_pm_ops,
++	.pm		 = pm_sleep_ptr(&tpm_ibmvtpm_pm_ops),
+ };
+ 
+ /**
+
+base-commit: 5f22fb20497f4983094131f00a734362300d22d2
