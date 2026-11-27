@@ -1,60 +1,115 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.43
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795780402;
-	b=t3zxBAPnXF9FjT+niL6BulFThFO4nk8PZWFQxcrDdfMTlDgc6bnI6tN4aYQcslSCWHuQ
-	 pF/PpgENaNqASpDZZCmvWnqs/66+02tOLI4y5xklZlXOCbTqYNvRt7qnLE7rduthn8ukt
-	 UOd9nvfzNTKq1dOL7aCqiRGh3ugIrmEILUWNe0UfVllBYTZVBFskgF0dYCcKEPhEpWZmE
-	 iix5PFP7K6P2gVKeSELQ64pn4hWdTN9P2FeW4M1qLze1oLqpYy5F39ManAuMoIfqL+7TD
-	 M15SkdCasyqSF0zjXIL2lSAOQSKdhMWNYUIzuGA1bV3oitoHpi4+H7f6GVnqcWBHS2A==
+	t=1795790360;
+	b=JPmTAz/5LogGdLWDzSkuw2N00wMdl4pR1ONn3alPUnuF0bVopNfpw63urFCo1qoYjqRn
+	 XuXtXmqkZfnVrY/S+XJIcBr5rE01ToO3rQqIP9XEcZfimwhvnsz2/1c8WmtaMcsIyUX2z
+	 AQHoVaLihnMD+ULloBDBKIdFO6xoyW0NwEwEavKYPwpCamwKTghAjVyBR+/hqHa5LpJxD
+	 UUM3GPStJ/viSgNAkfij9YCToungiHNfJZ0vpemDr9uFqbjI6ip2lJ6lMhmGz1etZUk81
+	 asVnCDVo7lHUENYVG8KMEz61uzbS3fpYUOJbfJyUpt6ukipNkoYs3GTaJqYciRR1vbQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795780402;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=rByPEfNf4XLcPucHVrwkNxEV0dJQaoEcaC2v04KImDc=;
-	b=pYKDC5pQr8yytRJx8PZFEri9Ub21bt8ie2DOyqDJND2TRReX7hbgSnNa3GT4uzYe3iai
-	 bn/ltHCm74V4L2VCZduTEAVUuwQQtLNplmyzMqxdb/MDS0q4lsL0MQblXuItCbWnUMDvt
-	 mCtcw0vPXMN5HbL43mA765gViRYC81msTvdAGn7DTB+F6rtbt3bTPkWYykIk//VujHGWk
-	 mEwRU8imGW34ZBAc8akUnJ0I7B9T4oxtMOrQv9wLzHz6aJZjlYDynucXt8KGqXT4+iVK1
-	 rA1kDt6/XeQnLH0uEZL2eEa4XFcTzuxHVegm9l4wyNEXEETPv4Hgt/1TYqdJrhaTnvA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795790360;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:Content-Transfer-Encoding:
+	 In-Reply-To;
+	bh=6/DHKlXFhMo0Z9b6H9IFVOO6KYXjJkCSJrFRpsaTfpo=;
+	b=QxFi0IK8ukQEdE4dzdobl1Gg6AL6s2T6RqWqV/QglW6kYjbK2T7nvr3ZrT+Cm4Clxom2
+	 t08tkW18EFW+d+OXnVHAr78VHrOlSR5beg4smcEbRnm/A2diV6+M9FFrVZAt8VNCPrMvx
+	 tKxCSKwNvmMZGc2I+/7zmgQkhj1LGd/cdmE1/gVc/ICzdk3tGamnJLGrtfMwVmltHRjiT
+	 d93RMkmr2uIoWxgPRL9AhcljmFzT/x6RVl4Gkz5t2G2YGcwEj90o46ssE+wX0TSyeBE3l
+	 kG579NlqBtxxe4ysNj97iFdtedgNlkM3IUZllQ/lJgGTyjQKaFlIUwyemvu3EsDgaSA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=itVam21t;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=suse.com;
+	spf=pass smtp.mailfrom=suse.com;
+	dkim=pass header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=C+KiDKIk;
+	arc=none smtp.remote-ip=209.85.128.43
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with UTF8SMTPS id 7EFCF606A31C;
-	Fri, 27 Nov 2026 11:53:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21918606A85A
+	for <rcu@vger.kernel.org>; Fri, 27 Nov 2026 14:39:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 21918606A85A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=itVam21t
-Received: by smtp.kernel.org (Postfix) with UTF8SMTPSA id 8862A1F000C1;
-	Fri, 27 Nov 2026 11:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795780402;
-	bh=rByPEfNf4XLcPucHVrwkNxEV0dJQaoEcaC2v04KImDc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=itVam21tTHvEcaE5VJdWfQ/tgPSDAV6CDG2GMzdzyoN/mxuMlbjCKvTu2FworV8ko
-	 U7OM/C/AREEZstZ1VU3BDDwN/goi5NSVpHgyhlDjXS6qgi2nf64jSnYSLll7UVpryS
-	 WLdIPBh/exuiD/BBUBW5FXh68SNsHV4YssiLRrvITYGhcBKAd5wLXwjx7yGh5od1O1
-	 8hMFBo2DQVo3yX8N1qNr+U/E5QyfOPsa03nsb5nl21/an5e2Oegt8L8t1cEqRNbZkM
-	 efMDAmVRNTrhYS5cwidxYxi5Ge/AO1veZfDec67oehMQtdy9nU4FznwC7zn99d+vx+
-	 UcvATeB77jmlA==
-Date: Fri, 27 Nov 2026 13:53:18 +0200
-From: Jarkko Sakkinen <jarkko@kernel.org>
-To: Zhouyi Zhou <zhouzhouyi@gmail.com>
-Cc: peterhuewe@gmx.de, lance@osuosl.org, rcu@vger.kernel.org,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, linuxppc-dev@lists.ozlabs.org,
-	linux-integrity@vger.kernel.org, Li Jun <lijun01@kylinos.cn>
-Subject: Re: [PATCH v2] tpm: ibmvtpm: Fix unused suspend callback with
- CONFIG_PM_SLEEP=n
-Message-ID: <awlvLjQT17DBZKpN@kernel.org>
-References: <20261127051359.852628-1-zhouzhouyi@gmail.com>
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.a=rsa-sha256 header.s=google header.b=C+KiDKIk
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4bb702a7548so75024455e9.1
+        for <rcu@vger.kernel.org>; Fri, 27 Nov 2026 06:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1795790358; x=1796395158; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=6/DHKlXFhMo0Z9b6H9IFVOO6KYXjJkCSJrFRpsaTfpo=;
+        b=C+KiDKIkOntzP/sj1I7O2rUUqPpSVBmmAI1n+KYTyNAMZnmgZI7IZz/spt69kO2BMw
+         nnjaP+QY1JPZ5eqIDfjDJ+xhZeVi4akvv2sIGRuYQrGpfYoanZdAS5yl5qqJ/eM3GVES
+         J259yff9j5IlS6SQlyHR8MEK4XgM0kHpbalWjnDitGNKNMy824nIqaLrnyxvj2LmXElB
+         x4I5L9MJ+idJxN7xh5VSGAm3GS1+H19nXW6U6ugzvIzARwAV+lps2pkXV5IO3P/kUHC2
+         4YTW86EXnFL+16/sbnmd07XgBCAhq43/th91ZhVVWe0/vhW4MSEdku4a+v5Jtp1x0piu
+         5gCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795790358; x=1796395158;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :content-type:mime-version:references:message-id:subject:cc:to:from
+         :date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=6/DHKlXFhMo0Z9b6H9IFVOO6KYXjJkCSJrFRpsaTfpo=;
+        b=qeYyxUn+FydGHWjfN0s2Tf1LNtZG0pliENsYm3v9hAY0g50mVV5qbkoINPQQcBYiAX
+         IUj4AL5RmQEREztXz9TlrhJmxanyKKdPLVAIJ32PyxuZw+Uww0YjJzMIS1s11Dyw22+F
+         ArqXMz2hFC4eqyF/ge3jjYXstrojBzXwbMBK/oSwzxByAjYgV9B7Zb34iIi3eAqW0I2M
+         4LMUJ/owCYm9bVslMSPA/8e9dIgCKw7Rn5xwt30sJMRJLHEr2Lk8PmkOp1euIJoEmuAf
+         ACl2T8e9I5SSZ0JjziGrzQqKSzZznCTv9z8KAWKkqm81W/gyvUsrMXriIrggEQdGftJT
+         AetA==
+X-Forwarded-Encrypted: i=1; AL+hErG8G6wYa1luC9LTfmx/s9oS8AiO3C6lXwocDe1RBhGpM80zfOMLPI5x17vEsZyx6XpXkDY=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9ELzKWRuGsJNZc1HsM4W8l0A9CDUZGAiA2xkYqu6hB4ebF+Qkq
+	WzNujSqRjddTem7Mm9+kHb227BxSLTqjmGmIV4lBdRWtg3AVKVnqxX9g8bjtPQJEZJg=
+X-Gm-Gg: AZFdTZfOCUc3MrXtiEqMRyKSa1ZC1DHFYvdqBY9TJi2iZ0tenHmcvNswmRkcxUBby/V
+	jANsQoidyWYchfI/D/a/BJRy41HsQPktA0baFeCJj59og0ZCEtK99oN/QPCmaEFBnNaK6jUPx92
+	QuNCklRjYkvya9/fL7uusUISAW//CXiOrAvZXY6doKC8GfZ9rTqjFpmaIVa+hPzBBeeCEVVeqlh
+	SQNSbzT4axJd/19vKXUcpvOrhywd0HR8OHtA80EHsznfK1JqqKuFReAm0DQtlamE3gcqymoFOWr
+	n4l0lVRuI12LkgQdpZe+jXu0aoUGrSfxmF1ojZHcq6NuzAyzZ30gC5Gp73sH4gudtUgVRGZZjH/
+	5KHo+PCzjpzseKq3MRu1/HiCal/YvleRidWxGqR87wAigrrIyoR7CodWEf+rMOHmpufZbC7e7NV
+	2m1VhGxAhtM7bYyVJlFVFPCW1/aQ19bDWN7nCcRE0p0MZDOEbct2u6PN2Dfom33VSOk9CIwn1c7
+	v7d0wC1ooyDX+EhJnV2K9VpCnN19I+sXA5Uk6fddv1JQmAfJsh4+O8ajQCvSeRcoiuC1WUbsUxO
+	1hHSwvljrBfMMVMBRL+8HHXSMoWgXWM=
+X-Received: by 2002:a05:600c:4584:b0:4a7:c366:d791 with SMTP id 5b1f17b1804b1-4bb887e266amr484172275e9.1.1795790358486;
+        Fri, 27 Nov 2026 06:39:18 -0800 (PST)
+Received: from pathway.suse.cz ([176.114.240.130])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bbb97e5356sm7164615e9.4.2026.11.27.06.39.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Nov 2026 06:39:18 -0800 (PST)
+Date: Fri, 27 Nov 2026 15:39:15 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Yafang Shao <laoar.shao@gmail.com>
+Cc: "Ravindran, Binoy" <binoy@vt.edu>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Miroslav Benes <mbenes@suse.cz>,
+	Joe Lawrence <joe.lawrence@redhat.com>, Song Liu <song@kernel.org>,
+	Ingo Molnar <mingo@kernel.org>, Jiri Kosina <jikos@kernel.org>,
+	"sashiko-reviews@lists.linux.dev" <sashiko-reviews@lists.linux.dev>,
+	"live-patching@vger.kernel.org" <live-patching@vger.kernel.org>,
+	"Shastri, Jaidev" <jaidevshastri@vt.edu>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"rcu@vger.kernel.org" <rcu@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] livepatch: Include exiting tasks in the transition
+Message-ID: <awmWExtIJGM805__@pathway.suse.cz>
+References: <20261125-klp-series-v3-v3-0-b1e0f79af331@vt.edu>
+ <20261125-klp-series-v3-v3-2-b1e0f79af331@vt.edu>
+ <sashiko-outbox-234405@kernel.org>
+ <DM6PR05MB4137C0B5BB4D88A9D5847EBAD1432@DM6PR05MB4137.namprd05.prod.outlook.com>
+ <CALOAHbAQuYG__4b054bRobVRyT+v143wBcVAN26T_PtiO-oqmA@mail.gmail.com>
 X-Mailing-List: rcu@vger.kernel.org
 List-Id: <rcu.vger.kernel.org>
 List-Post: <mailto:rcu@vger.kernel.org>
@@ -64,69 +119,44 @@ List-Unsubscribe: <mailto:rcu+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:rcu+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261127051359.852628-1-zhouzhouyi@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALOAHbAQuYG__4b054bRobVRyT+v143wBcVAN26T_PtiO-oqmA@mail.gmail.com>
 
-On Fri, Nov 27, 2026 at 05:13:59AM +0000, Zhouyi Zhou wrote:
-> Discovered in the Open Source Lab of Oregon State University when running
-> RCU torture.sh on a ppc64le VM.
+On Thu 2026-11-26 11:12:27, Yafang Shao wrote:
+> On Thu, Nov 26, 2026 at 8:58 AM Ravindran, Binoy <binoy@vt.edu> wrote:
+> >
+> >
+> > Thanks, this is right. A dying task reports its quiescent state in
+> > rcu_note_context_switch(), early in __schedule(), and then still runs
+> > traceable code, such as update_rq_clock() and pick_next_task(), until
+> > switch_to(). RCU does not promise to wait for code after that point, and
+> > with expedited grace periods the quiescent state is reported right
+> > there, so synchronize_rcu() can return too early.
+> > klp_synchronize_transition(), which v2 used, does not have this
+> > problem: schedule_on_each_cpu() completes only after the work item has
+> > run on every CPU, which on the dying task's CPU happens only after
+> > switch_to().
+> >
+> > v4 goes back to klp_synchronize_transition() for both waits and keeps
+> > klp_try_switch_exiting_tasks() from v3. I will send it after rerunning
+> > the tests.
+> >
+> > Yafang, this reverses your second suggestion; I hope the reason above
+> > makes sense. It also brings back the v2 transition times.
 > 
-> With CONFIG_TCG_IBMVTPM=y and CONFIG_PM_SLEEP disabled, SIMPLE_DEV_PM_OPS()
-> omits the references to the system sleep callbacks. This leaves
-> tpm_ibmvtpm_suspend() unused and produces the following warning:
-> 
->   warning: 'tpm_ibmvtpm_suspend' defined but not used [-Wunused-function]
-> 
-> Use DEFINE_SIMPLE_DEV_PM_OPS() and pm_sleep_ptr() so that the compiler
-> sees the callback references and can discard the unused PM code when
-> system sleep is disabled. Preserve tpm_ibmvtpm_resume(), which is also
-> called directly from tpm_ibmvtpm_send().
-> 
-> Tested on PPC VM of the Open Source Lab
-> of Oregon State University.
-> 
-> Fixes: fc0ddb3174b0 ("char: tpm: Use SIMPLE_DEV_PM_OPS for ibmvtpm power management")
-> Signed-off-by: Zhouyi Zhou <zhouzhouyi@gmail.com>
-> ---
-> Changes in v2:
-> - Remove the blank line between Fixes: and Signed-off-by:.
-> - Keep DEFINE_SIMPLE_DEV_PM_OPS() and its arguments on one line.
->   Both changes address Jarkko Sakkinen's review comments.
-> 
-> Only a targeted compile check was performed; the full RCU torture test
-> was not run because it takes too long.
-> 
->  drivers/char/tpm/tpm_ibmvtpm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/char/tpm/tpm_ibmvtpm.c b/drivers/char/tpm/tpm_ibmvtpm.c
-> index 51c7e2add3d2..dd577f075c57 100644
-> --- a/drivers/char/tpm/tpm_ibmvtpm.c
-> +++ b/drivers/char/tpm/tpm_ibmvtpm.c
-> @@ -462,7 +462,7 @@ static const struct tpm_class_ops tpm_ibmvtpm = {
->  	.req_canceled = tpm_ibmvtpm_req_canceled,
->  };
->  
-> -static SIMPLE_DEV_PM_OPS(tpm_ibmvtpm_pm_ops, tpm_ibmvtpm_suspend, tpm_ibmvtpm_resume);
-> +static DEFINE_SIMPLE_DEV_PM_OPS(tpm_ibmvtpm_pm_ops, tpm_ibmvtpm_suspend, tpm_ibmvtpm_resume);
->  
->  /**
->   * ibmvtpm_crq_get_next - Get next responded crq
-> @@ -714,7 +714,7 @@ static struct vio_driver ibmvtpm_driver = {
->  	.remove		 = tpm_ibmvtpm_remove,
->  	.get_desired_dma = tpm_ibmvtpm_get_desired_dma,
->  	.name		 = tpm_ibmvtpm_driver_name,
-> -	.pm		 = &tpm_ibmvtpm_pm_ops,
-> +	.pm		 = pm_sleep_ptr(&tpm_ibmvtpm_pm_ops),
->  };
->  
->  /**
-> 
-> base-commit: 5f22fb20497f4983094131f00a734362300d22d2
+> Agreed. I missed the point that the quiescent state is reported early
+> in __schedule(), and that the code from there until switch_to() is not
+> covered by synchronize_rcu(). Thanks for pointing that out.
 
-Thanks.
+Honestly, I think that synchronize_srcu() should work. Otherwise,
+the comment in rcu_tasks_postgp() would be wrong.
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+IMHO, the trick is that there are two interlacing rcu_read() periods
+in do_exit() and synchronize_rcu(), see the comment in
+rcu_tasks_postscan() and the commit e4e1e8089c5fd9 ("rcu-tasks:
+Improve comments explaining tasks_rcu_exit_srcu purpose").
 
-Br, Jarkko
+Best Regards,
+Petr
