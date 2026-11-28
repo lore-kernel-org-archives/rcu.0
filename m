@@ -1,84 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.208.52
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795876093;
-	b=utwPGvAMn7/HjrvOH9w2p5O/lQk1VU2p6IwLg7dcZ6MSAxqNo1PCUExIOMRbX/ZOkFW6
-	 65txnt0QDyKx+9+TVr1KLU4KNxo0w2fea5SxO0hPj84bt1i3iejZYQpNpaiWffHcdfDqZ
-	 3AsYsPi2JBIXcNszmo+l5/lsL987OYTL45vJHBTHFdyhHV+qe06d2+V4geVTBPD1nPaRn
-	 FiSsQiopTFIlR83K9dQtD9Rb3W8AfEKGoba2CUMknYZoG5oneJa6+TkDbtDj9GB7NZvDQ
-	 0uiLEKI2ZRSN5CSma6GwHClMomQ9B7Hop2HYAwZWvRLNkh+5ksZwuqYFPmRK7AubjRg==
+	t=1795876098;
+	b=pshgySrlKjeLshYI+p2ctkHCbe5HEo2kEqwGqbYgo7YDzRMEsyh8VLMsGAJ4KXztZxBg
+	 ybcZMmaR9xssttiAYzp7w//dRBA7ju1Tqepiu6Uc+0qAFYhgRpNQKlOAgEZP5rWgHk/Ss
+	 TOq484L4p1Q9pucb5kqAP3eNUbfckKOYkNPHtNPlrlXN1j0RtwK2pJnWah2bFNtcZnk2L
+	 kx+/k1SvUhLV8JRo+EFruuEZzCSr0zlkF9pDES7YXIXGJUwUPKW3OsTzC53xOK1QZFVX4
+	 Py5jy7CegSGng3tFLRJJ2yNTXb/njhkzyWZoIPeyntC8O39MOo4iwEEH5wq5ijNYltg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795876093;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795876098;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
 	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
 	 MIME-Version:Content-Transfer-Encoding;
-	bh=0o84T4cIEODIdxIW03HBz3DMcad7hAu5Aie4F8icjdo=;
-	b=0EUKdx3hVaN2XNgEA351yS6FQLsiDPXSneR3YldrduthZs7YNl1sP1zcOFxECxXMWjLS
-	 yFhuiPfHKH9mMNa7LKp6XergBRlmKZbRa4Alwqiai/sOpmTPSE2VoEkhnUjjEZTKnbJ3B
-	 jKAJT0xA5JV0M8L+7aqZ6gAy8mwki/iszlBvDdl8MXI1EuMRn4MTNmJMya2khjGFOj7qD
-	 MIFYHb0dEgpWhufdvg4Yab/Npm65k+slQjeZPXN0iIjb+N05ZRqrTq+WZR2RjIYBub3mu
-	 BXH1XWoqDc63dKemXhdBX47Yyr9eb82Apsodq3TBwfvrFeWErJrMpR5OIS2Inwfm8jQ==
+	bh=SVXDDamLHMF92XnuX0UjakXuHcnZyMGPGvNPTWLGMxo=;
+	b=qWv2pe42jePpjanrZ7RhPHqIsM6J9HApY+4lemtHf1AOAr06jL+KRlxlxCBJ4U4Cwn8r
+	 D/uaIaMaMFRpAt3TD0fj8rYuWlLilcptTr+PClivl3yLgQr/MdHp7SXrfGtTU0ugZQvFi
+	 33P3Sghypi8VLNLxBXtdRilZ6E/81XuC1pCInv1F6/bFqx7qCg7xvKTFAHzlM6Zt1Pmll
+	 uhm1zzp0kKMGSR3JJKlVP4JF7qmWnqnAhd8m/UNlWFqc0xtwMyuXLQlW82gFw0SBEKXEc
+	 fwjhlTvcoRUrPofN5GZ1D3oIxh6s1ypToaSMswAK+ExkX+IYo/DVoiZucU2M/GVKfyg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=dIJcUaxG;
-	arc=none smtp.remote-ip=209.85.208.51
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ece1USJV;
+	arc=none smtp.remote-ip=209.85.208.52
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD32606A321
-	for <rcu@vger.kernel.org>; Sat, 28 Nov 2026 14:28:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2BD32606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64D8B606A31C
+	for <rcu@vger.kernel.org>; Sat, 28 Nov 2026 14:28:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 64D8B606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=dIJcUaxG
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6b894a5ce3dso3527679a12.2
-        for <rcu@vger.kernel.org>; Sat, 28 Nov 2026 06:28:12 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=Ece1USJV
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-6b88d143160so10610100a12.1
+        for <rcu@vger.kernel.org>; Sat, 28 Nov 2026 06:28:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795876091; x=1796480891; darn=vger.kernel.org;
+        d=gmail.com; s=20260707; t=1795876096; x=1796480896; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=0o84T4cIEODIdxIW03HBz3DMcad7hAu5Aie4F8icjdo=;
-        b=dIJcUaxGqzsAB+oWbEo3fQgPqrdi8Is0Smd4eL85KHJkI5D0MsdthAH+f+cpKczc/Q
-         R5o2eqKAuJT6Gix1wpUMHMQIOiOqTzJRL6ZDvXyaZRgJFbA9FwF/yXKJcZtEbH/caJqN
-         HUGmZ4b9hkb7QRMTU3xy3gE9KCAn9Cxabr69rm5D57EI6Uvf2zxizREqAMRRGtWKRnCy
-         MSR1ahCsN0JaZ47PUxWR31MIRu08mevXnlpiCeySpTW9VddxMb3+OuJxMyFYwJ/uvZRg
-         D70iNerv8E7rWwwFPCpdqyPY78MY565ZF03lZ8Jt+A8mKkZP9+g6wGCghdQa4FCsaGYD
-         4mQw==
+        bh=SVXDDamLHMF92XnuX0UjakXuHcnZyMGPGvNPTWLGMxo=;
+        b=Ece1USJV+dGTn5Owg1jCUwffrcrgKvqQOTDu05sdL7GQYK+8jyRf69VgBxqm2/5Bul
+         7lg1bUinaEEgR/evmcR0/+DhgsMGsod/LG3FT2aTl7uCIzYmilu//qljKzFg1udAm4b7
+         E6kvEiK/GyQHvy6oXYfn+yPXb/2Q+7gMziq/DDdbPhTTtwC4d8Jv4Z8ZrDx4vA6CUf8W
+         wCK0Jwp3xTgG83ABKn7epoWfhD24lO2RjOX4a0IAAsXBt6AUq2Sw3LSsEUKGUyqVGxX+
+         wVv8CRWFLOxid7EXsxQvgbTP5ztWnH+018szdP4nmMXYBgnB8DTqRbJV6/hLfq0B73Tz
+         H3VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795876091; x=1796480891;
+        d=1e100.net; s=20260707; t=1795876096; x=1796480896;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0o84T4cIEODIdxIW03HBz3DMcad7hAu5Aie4F8icjdo=;
-        b=yWGBDxg4exah6t0HUjfAknYLj6G6Ns2jYzCf/IM7NyAJv/gMkGyuH8WfNtV0nJBc+b
-         CyDGsZDJp9Lkz5nMB3fDRTIrPcpBaDfaRR/esPGpa8dZSuTqnVwQgtcsCSuJclCjCt4w
-         YOx3J/iHjl1NW3uPd7imNX7rK1QrnGg+o04UitalnDmxgsz2I8Vw3aaEgauB4gapX2/o
-         iGgwH7vbXvd4WOVfxstUP2TaV1eVcK+qY6eornqQo7ozQ37uduJVfpy06oaI7tTryugK
-         venLu2Ojcykx0ANa8/ECRStrTaM64glKhCi2bnl5dG+cOOmsMYvJWHhU3gedWJGlUPAN
-         r91Q==
-X-Forwarded-Encrypted: i=1; AL+hErFU0RhC1Q+vvhsEyNqO8d2OZpCJJ4vabSBKO1pDp2ODXdW3EmRFSfix6YOMEK3ev5FsYq0=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/YftV2lyBow+IzIdDjBMLxXoZQYaOXUKlfykSz8ht0H7nyI7BG
-	/+hs0i6uMtUUoxJyivvtGjxtaVy8gdcmy3c8/76msyFJTxkLUb8AsJM5
-X-Gm-Gg: AZFdTZc5KMmD7CEpqB+tWYT+5isGk9HgblLWlu8wMRZ3hW5ey+v+SPW41o9c5sVffLJ
-	ibs6w2fM2Oe7aMPo+gESOgS+1JXeKBwM+GObZDqLOc7IqLf+O8q4aYKkDiF2smLxwdCb4FaxcM6
-	a1oYZTmF+Cgw2y338l9ViV6SC0RCv/koZNVkf4hi2XCY1v7K9OqbaZrYiX5qBZoFy9I4fxaU+/x
-	KM0HXVi8sYu+dzZ27WJiZmfUleyj23szPKetleAgxhpaGX4Zdlihvg7PtNZTpSjWl2RojztnqSn
-	PLh3adgsB3+FErwNLbl//x5LtqXqLOtc0uavsyBtKtJLSRr+AmY3o57tdCIhI37kAAXmQ6GT9O6
-	kvBLQ6gJJmtT+fKuZLSPB/3o9GsirgRZpJu+sVMO66TARQXRdduQ92Gehwn5ZbwqVgfXQ+r3KPD
-	JcVrtP/GiMtP7e1k1RIwGdW3PA775ZjkTgLFwgWR1yXP6tgUQPLCj+xXIbEHt5MYndX7MmlKZxZ
-	yBc+MaEduVN3aLhEAEiJ4ZnUKt9NNlRAcqEF6JWh0ubxlM/Npct6I0rICoWyOaenzJNmxzWZz+A
-	VlFRTCaRqHVumdKj012yi/w/CmuBzKgu6D4KDtg4CACLWtKVBZHhWoZgI8GfyaPhUK+uU7HmuXJ
-	4vi31OcMhJ5zFTO+f
-X-Received: by 2002:a05:6402:1e96:b0:6ba:2f05:2508 with SMTP id 4fb4d7f45d1cf-6ba37ec0a65mr25175886a12.39.1795876091074;
-        Sat, 28 Nov 2026 06:28:11 -0800 (PST)
+        bh=SVXDDamLHMF92XnuX0UjakXuHcnZyMGPGvNPTWLGMxo=;
+        b=gS6mlQgE2oX5w90+x966QbybzFP9y7Ys4xWQBSi734CdD0K8R3L1earbf+KIASS/TU
+         W2fyQm7U8vBfd5z36OeQbqoamva1Go0KNbLhWOFLvFHiwl+iECwB+cC1ZP3D0qWe/UF+
+         gkNJTfkZKspYSZlZD7XJEOgv6dQk/dv9S7CglD21ck7msaMAWkGCjd+SR3a4D01BC1DG
+         Ji8k8qAV8af0g1n/QhYXa5+QV/uOCrC2tvLLtfvCZOEmtyUQJXf6EAH9h0DA4KXFABQk
+         DXmCZe9XpnbKksw/dXcGWLaylg0dXNINFYuZdjZzGwStYs4393lDc+rLgD/vX6rg0jny
+         jTkw==
+X-Forwarded-Encrypted: i=1; AL+hErGRZ8Ciq97iQyyj9XOrcEf2ufso0XWrQQin37rWQtpPhX81mG2zmHMvOutixvGhQhtoRrs=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/Q8TOQcRBxvNirYKm/rtiUNgNbGMSgbi7I4EDa9XqX27p6pYBn
+	QyWRxrK0JOzZPuH6FKQ6R1IEAx5T5jPsjO8BgV8FjN2c+GSYEgVZTnv2
+X-Gm-Gg: AZFdTZf/oIWReOVOCVowpGJ3fc39aaIgKkpRVyhDmQRMeQRZeqk9uggRQ9XqKG+Ee7d
+	1rMMYk4ih2Bv2LV2Mt5PP2IRiuYz2XZ0tv7S+1cx/0seP+UiOgb/SbhvxAP/JRjCazJVfHqNWl4
+	ybQKopX0e3ERPD5siUg9YdEQeupJSDV/U29Tz3Cu89ojYx0YW6imiPA3NvlLtpxmckF6rFjPX1d
+	6DmKSfgjrid+X7Zb5tPtp9NCW/W//9jfwEPI8BYXvBAwVvs7Fjx0V3z63sHBVYum5c29AY/2HLf
+	G+Wk1pKsXBnZbNhODkUwmaoutZJpZBkKP2RX6xRAKKO7tBhNwxvt7Aibr0ZDzk07gKIKlkbyRi+
+	v16e2eFSE4rdkUiBomGzTBE6FgyBS8qto7tSeWJJAgTfAS6ihRW53BUOyhh//zzvzTmlsjQkutH
+	t4W6jJ3XRLOhditW6BJUPGRBZ+xM0Gki2hqvB97lTejlXSrrSvXNVgwi8ZUgPwt7Q0zx1240VG4
+	C68BpzYStwGHDrZj74yiQO23OGI/AaAf4Jf5gaKztXEWqizQ6j3q+QNcbvdAKPrHs6cDPZn2HSA
+	Ux2vTMQZMJYFIZimWTVKRmWF1JtV9cVfQ1awthu+wHzqgLwj3oGDTHeXg2hqkZSsQoMCBCm+VPY
+	zfKHAXebNgV05FmYF
+X-Received: by 2002:a05:6402:249c:b0:6bb:7b37:2e09 with SMTP id 4fb4d7f45d1cf-6bb7b372ed2mr4454533a12.32.1795876095428;
+        Sat, 28 Nov 2026 06:28:15 -0800 (PST)
 Received: from kernel.. ([191.40.25.3])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6ba36e35ca6sm12448436a12.4.2026.11.28.06.28.06
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6ba36e35ca6sm12448436a12.4.2026.11.28.06.28.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Nov 2026 06:28:10 -0800 (PST)
+        Sat, 28 Nov 2026 06:28:15 -0800 (PST)
 From: Kunwu Chan <kunwu.chan@gmail.com>
 To: dave@stgolabs.net,
 	paulmck@kernel.org,
@@ -96,9 +96,9 @@ Cc: rostedt@goodmis.org,
 	rcu@vger.kernel.org,
 	Kunwu Chan <kunwu.chan@gmail.com>,
 	Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH v3 6/7] rcutorture: Run KASAN aux-stack checks from torture.sh
-Date: Sat, 28 Nov 2026 22:27:28 +0800
-Message-ID: <20261128142729.3756679-7-kunwu.chan@gmail.com>
+Subject: [PATCH v3 7/7] rcutorture: Accept TRIVIAL-PREEMPT skips in kasan-aux.sh
+Date: Sat, 28 Nov 2026 22:27:29 +0800
+Message-ID: <20261128142729.3756679-8-kunwu.chan@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20261128142729.3756679-1-kunwu.chan@gmail.com>
 References: <20261128142729.3756679-1-kunwu.chan@gmail.com>
@@ -113,66 +113,48 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Invoke kasan-aux.sh when torture.sh has both RCU-torture and KASAN
-testing enabled, reusing the existing --do-kasan switch, the
-torture_one bookkeeping, and the --configs-rcutorture scenario
-selection, so the added kernel builds scale with that selection.
---no-kasan disables both ordinary KASAN and aux-stack testing.
+The TRIVIAL-PREEMPT scenario selects trivial-preempt, which has no
+callback or barrier operations. The kernel correctly skips the
+KASAN aux-stack self-test, but kasan-aux.sh rejects the saved flavor
+and kasan-aux-check.sh does not recognize the expected skip.
 
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-Suggested-by: Joel Fernandes <joelagnelf@nvidia.com>
+Accept trivial-preempt in both scripts and require its skip message
+and a successful torture run, as for the other skip-only flavors.
+
 Cc: Kunwu Chan <kunwu.chan@gmail.com>
 Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
 ---
- Documentation/RCU/torture.rst                     | 14 ++++++++++++++
- tools/testing/selftests/rcutorture/bin/torture.sh |  9 +++++++++
- 2 files changed, 23 insertions(+)
+ tools/testing/selftests/rcutorture/bin/kasan-aux-check.sh | 2 +-
+ tools/testing/selftests/rcutorture/bin/kasan-aux.sh       | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/RCU/torture.rst b/Documentation/RCU/torture.rst
-index 15a430f5111f4..8c8dcf6449bf0 100644
---- a/Documentation/RCU/torture.rst
-+++ b/Documentation/RCU/torture.rst
-@@ -244,6 +244,20 @@ As with the intentional warnings tested by ``srcu_lockdep.sh``, ordinary
- diagnostic; use the dedicated check to distinguish the expected report
- from failures.
+diff --git a/tools/testing/selftests/rcutorture/bin/kasan-aux-check.sh b/tools/testing/selftests/rcutorture/bin/kasan-aux-check.sh
+index 7a6f425975207..5518ca507557f 100755
+--- a/tools/testing/selftests/rcutorture/bin/kasan-aux-check.sh
++++ b/tools/testing/selftests/rcutorture/bin/kasan-aux-check.sh
+@@ -25,7 +25,7 @@ BEGIN {
+ 	test_name = "rcutorture: WARN: KASAN aux-stack call_" flavor "()";
+ 	success = flavor "-torture:--- End of test: SUCCESS: ";
+ 	skip_name = "rcutorture: " flavor " has no callback/barrier ops, skipping KASAN test";
+-	skip_mode = flavor ~ /^(tasks-rude|busted|trivial)$/;
++	skip_mode = flavor ~ /^(tasks-rude|busted|trivial(-preempt)?)$/;
+ }
  
-+``torture.sh`` includes these dedicated runs when both RCU torture and
-+KASAN testing are enabled, as they are by default, using the scenarios
-+selected by ``--configs-rcutorture`` and 30-second run durations.
-+``--no-kasan`` disables both ordinary KASAN and auxiliary-stack testing.
-+For example::
-+
-+	tools/testing/selftests/rcutorture/bin/torture.sh \
-+		--do-none --do-rcutorture --do-kasan \
-+		--configs-rcutorture TREE03 --duration 2
-+
-+This runs ordinary KASAN torture with TREE03, followed by the dedicated
-+auxiliary-stack verification of TREE03.  To run only the auxiliary
-+checks, invoke ``kasan-aux.sh`` directly.
-+
- Kernel boot arguments can also be supplied, for example, to control
- rcutorture's module parameters.  For example, to test a change to RCU's
- CPU stall-warning code, use "--bootargs 'rcutorture.stall_cpu=30'".
-diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 0498fce14ccd6..98edd2f3e747a 100755
---- a/tools/testing/selftests/rcutorture/bin/torture.sh
-+++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -514,6 +514,15 @@ then
- 	torture_set "rcutorture" tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus \
- 		--duration "$duration_rcutorture" --configs "$configs_rcutorture" \
- 		${qemu_args:+--qemu-args "$qemu_args"} --trust-make
-+
-+	# Check intentional reports separately from the ordinary KASAN bug hunts.
-+	# kasan-aux.sh supplies its own boot arguments and rejects --bootargs.
-+	if test "$do_kasan" = "yes"
-+	then
-+		torture_bootargs=""
-+		curflavor=rcu-aux-kasan
-+		torture_one tools/testing/selftests/rcutorture/bin/kasan-aux.sh --configs "$configs_rcutorture"
-+	fi
- fi
- 
- # Test atomic SRCU across Tree SRCU (SRCU-N and SRCU-P) and Tiny SRCU
+ function fail(message)
+diff --git a/tools/testing/selftests/rcutorture/bin/kasan-aux.sh b/tools/testing/selftests/rcutorture/bin/kasan-aux.sh
+index ae7896658e94d..6b6d9971f03d7 100755
+--- a/tools/testing/selftests/rcutorture/bin/kasan-aux.sh
++++ b/tools/testing/selftests/rcutorture/bin/kasan-aux.sh
+@@ -157,7 +157,8 @@ check_results () {
+ 			}
+ 		END {
+ 			if (!valid || commands != 1 || !multi_shot ||
+-			    flavor !~ /^(rcu|srcu|srcud|tasks|tasks-tracing|tasks-rude|busted|trivial)$/)
++			    (flavor !~ /^(rcu|srcu|srcud|tasks|tasks-tracing)$/ &&
++			     flavor !~ /^(tasks-rude|busted|trivial(-preempt)?)$/))
+ 				exit 1;
+ 			print flavor;
+ 		}' "$dir/qemu-cmd")
 -- 
 2.43.0
 
